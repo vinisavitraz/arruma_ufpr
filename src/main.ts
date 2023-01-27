@@ -14,6 +14,8 @@ async function bootstrap() {
   process.env.TZ = 'America/Sao_Paulo';
 
   const { httpAdapter } = app.get(HttpAdapterHost);
+  
+  hbs.registerPartials(resolve('./dashboard/views/partials'));
   app.useStaticAssets(resolve('./dashboard/public'));
   app.setBaseViewsDir(resolve('./dashboard/views'));
   app.setViewEngine('hbs');
