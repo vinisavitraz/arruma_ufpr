@@ -9,7 +9,6 @@ import { UserModule } from 'src/user/user.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-
 @Module({
   imports: [DatabaseModule, AuthModule, DashboardModule, LocationModule, ObjectModule, UserModule, IncidentModule],
   controllers: [AppController],
