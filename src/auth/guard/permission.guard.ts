@@ -8,10 +8,10 @@ import { PermissionEntity } from '../entity/permission.entity';
 const PermissionGuard = (permission: PermissionEnum): Type<CanActivate> => {
   
   class PermissionGuardMixin implements CanActivate {
+    
     canActivate(context: ExecutionContext) {
-      console.log('porra');
       const { user } = context.switchToHttp().getRequest();
-      console.log(user);
+
       if (!user) {
         throw new HttpOperationException(
           HttpStatus.UNAUTHORIZED, 
@@ -35,14 +35,10 @@ const PermissionGuard = (permission: PermissionEnum): Type<CanActivate> => {
           HttpOperationErrorCodes.USER_WITHOUT_PERMISSIONS,
         );
       }
-
-      console.log(user.role.permissions);
-      console.log(permission);
       
       for (let i = 0; i < user.role.permissions.length; i++) {
         const permissionEntity: PermissionEntity = user.role.permissions[i];
         if (permissionEntity.key === permission) {
-          console.log('permission exists');
           return true;
         }
       }
