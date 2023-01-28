@@ -35,12 +35,13 @@ model role_permission {
 
 model user {
   id               Int           @id @default(autoincrement())
-  email            String        @db.VarChar(100)
+  email            String        @db.VarChar(100) @unique
   password         String        @db.VarChar(100)
   role_id          Int
   role             role          @relation(fields: [role_id], references: [id])
   users            incident_user[]
   interactions     incident_interaction[]
+  user_token       user_token[]
 
   @@index([email])
 }
@@ -114,4 +115,16 @@ model incident_interaction {
 
   @@index([description])
   @@index([sent_date])
+}
+
+model user_token {
+  id              Int      @id @default(autoincrement())
+  type            String   @db.VarChar(80)
+  token_number    String   @db.VarChar(200)
+  create_date     DateTime @db.Timestamp(0) @default(now())
+  expiration_date DateTime @db.Timestamp(0)
+  user_id         Int      
+  user            user     @relation(fields: [user_id], references: [id])
+
+  @@index([token_number])
 }
