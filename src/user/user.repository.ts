@@ -10,10 +10,11 @@ export class UserRepository {
   }
 
   public async findUserByEmail(email: string): Promise<user | null> {
-    return await this.connection.user.findUnique({ where: { email: email } })
+    return await this.connection.user.findUnique({ where: { email: email } });
   }
 
-public async findUserByID(id: number): Promise<user | null> {
-    return await this.connection.user.findUnique({ where: { id: id } })
-}
+  public async findUserByID(id: number): Promise<user | null> {
+      return await this.connection.user.findUnique({ where: { id: id } })
+  }
+  
 }

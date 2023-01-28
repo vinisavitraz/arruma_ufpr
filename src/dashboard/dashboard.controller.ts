@@ -4,6 +4,7 @@ import { Response } from 'express';
 import { DashboardExceptionFilter } from 'src/app/exception/filter/dashboard-exception-filter';
 import { DashboardAuthGuard } from 'src/auth/guard/dashboard-auth.guard';
 import { AuthenticatedGuard } from 'src/auth/guard/authenticated.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('dashboard')
 @UseFilters(DashboardExceptionFilter)
@@ -11,7 +12,7 @@ export class DashboardController {
   
   constructor(private readonly dashboardService: DashboardService) {}
 
-  @UseGuards(AuthenticatedGuard)
+  //@UseGuards(AuthenticatedGuard)
   @Get('')
   public async getHomePage(@Request() req, @Res() res: Response): Promise<void> {
     const user = req.user;
@@ -27,7 +28,7 @@ export class DashboardController {
     return res.render('login/login', {});
   }
 
-  @UseGuards(DashboardAuthGuard)
+  @UseGuards(AuthGuard('local'))
   @Post('login')
   public async login(@Request() req, @Res() res: Response): Promise<void> {    
     //const response: AuthResponseDto = await this.authService.auth(req.user, AuthOrigin.DASHBOARD);

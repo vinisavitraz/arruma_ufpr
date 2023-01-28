@@ -5,27 +5,49 @@ import { DatabaseService } from 'src/database/database.service';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
 import { UserEntity } from 'src/user/entity/user.entity';
+import { AuthRepository } from './auth.repository';
+import { permission, role, role_permission, user_token } from '@prisma/client';
+import { RoleEntity } from './entity/role.entity';
+import { TokenType } from 'src/app/enum/token.enum';
+import { TokenEntity } from './entity/token.entity';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
 
-  constructor(private databaseService: DatabaseService, private userService: UserService) {
-    //this.repository = new AuthRepository(this.databaseService);
-}
+  static AUTH_TOKEN_EXPIRATION_TIME_MINUTES = '43800m';
+
+  readonly repository: AuthRepository;
+
+  constructor(
+    private databaseService: DatabaseService, 
+    private userService: UserService,
+    private jwtService: JwtService,
+  ) {
+    this.repository = new AuthRepository(this.databaseService);
+  }
+
+  public async auth(user: UserEntity): Promise<TokenEntity> {
+    const tokenDb: user_token | null = await this.repository.findTokenByType(user.id, TokenType.AUTH);
+    
+    if (tokenDb) {
+      return TokenEntity.fromRepository(tokenDb);
+    }
+
+    return await this.buildNewTokenAuth(user);
+  }
 
   public async validateJWTStrategyOrCry(req: Request, payload: any): Promise<UserEntity> {
     const userDb: UserEntity = await this.userService.findUserByEmailOrCry(payload.username);
-    //const activeToken: token_mib = await this.findUserActiveTokenOrCry(userDb.id, TokenMibType.AUTH);;
-    const activeToken: string = '123';
-    
+    const activeToken: TokenEntity = await this.findUserTokenOrCry(userDb.id, TokenType.AUTH);;
     const tokenFromRequest: string = req.headers['authorization'].replace('Bearer ', '');
     
-    if (tokenFromRequest !== activeToken) {
-        throw new HttpOperationException(
-          HttpStatus.UNAUTHORIZED, 
-          'Token from header authorization not found!', 
-          HttpOperationErrorCodes.INVALID_TOKEN_AUTH
-        );
+    if (tokenFromRequest !== activeToken.number) {
+      throw new HttpOperationException(
+        HttpStatus.UNAUTHORIZED, 
+        'Invalid token from header authorization', 
+        HttpOperationErrorCodes.INVALID_TOKEN_AUTH
+      );
     }
 
     return userDb;
@@ -36,14 +58,79 @@ export class AuthService {
     const passwordMatch: boolean = await bcrypt.compare(password, userDb.password);
 
     if (!passwordMatch) {
-        throw new HttpOperationException(
-          HttpStatus.FORBIDDEN, 
-          'Wrong password!', 
-          HttpOperationErrorCodes.WRONG_PASSWORD,
-        );
+      throw new HttpOperationException(
+        HttpStatus.UNAUTHORIZED, 
+        'Wrong password!', 
+        HttpOperationErrorCodes.WRONG_PASSWORD,
+      );
     }
     
     return userDb;
+  }
+
+  public async findRoleWithPermissions(roleId: number): Promise<RoleEntity> {
+    const roleWithPermissions: role & {permissions: (role_permission & {permission: permission})[]} = await this.repository.findRoleWithPermissions(roleId);
+
+    if (!roleWithPermissions) {
+      throw new HttpOperationException(
+        HttpStatus.NOT_FOUND, 
+        'Role not found for id: ' + roleId, 
+        HttpOperationErrorCodes.INVALID_ROLE,
+      );
+    }
+
+    return RoleEntity.fromRepository(roleWithPermissions);
+  }
+
+  private async findUserTokenOrCry(userId: number, type: TokenType): Promise<TokenEntity> {
+    const token: user_token = await this.repository.findTokenByType(userId, type);
+    
+    if (!token) {
+      throw new HttpOperationException(
+        HttpStatus.UNAUTHORIZED, 
+        'User ' + userId + ' does not have one "' + type + '" token.', 
+        HttpOperationErrorCodes.TOKEN_NOT_FOUND,
+      );
+    }
+
+    return TokenEntity.fromRepository(token);
+  }
+
+  private async buildNewTokenAuth(user: UserEntity): Promise<TokenEntity> {
+    const payload: object = { username: user.email, sub: user.id };
+    const tokenExpirationDate: Date = new Date();
+    tokenExpirationDate.setMonth(tokenExpirationDate.getMonth() + 1);
+    
+    return await this.createAndSaveToken(
+      TokenType.AUTH, 
+      payload, 
+      tokenExpirationDate, 
+      user.id, 
+      AuthService.AUTH_TOKEN_EXPIRATION_TIME_MINUTES
+    );
+  }
+
+  private async createAndSaveToken(
+    type: TokenType,
+    payload: object,
+    expirationDate: Date,
+    userId: number,
+    expirationTimeInMinutes: string,
+  ): Promise<TokenEntity> {
+    const tokenNumber: string = this.jwtService.sign(payload, { expiresIn: expirationTimeInMinutes });
+    const token: TokenEntity = new TokenEntity(
+      0,
+      type, 
+      tokenNumber, 
+      new Date(), 
+      expirationDate,
+      userId,
+      payload,
+    );
+
+    const tokenDb: user_token = await this.repository.saveToken(token);
+    
+    return TokenEntity.fromRepository(tokenDb);
   }
 
 }
