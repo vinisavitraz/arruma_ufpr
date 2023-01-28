@@ -3,6 +3,7 @@ import { user } from '@prisma/client';
 import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-codes';
 import { HttpOperationException } from 'src/app/exception/http-operation.exception';
 import { DatabaseService } from 'src/database/database.service';
+import { UserEntity } from './entity/user.entity';
 import { UserRepository } from './user.repository';
 
 @Injectable()
@@ -14,7 +15,7 @@ export class UserService {
       this.repository = new UserRepository(this.databaseService);
   }
 
-  public async findUserByIDOrCry(id: number): Promise<user> {
+  public async findUserByIDOrCry(id: number): Promise<UserEntity> {
     const userDb: user | null = await this.repository.findUserByID(id);
 
     if (!userDb) {
@@ -25,10 +26,10 @@ export class UserService {
       );
     }
 
-    return userDb;
+    return UserEntity.fromRepository(userDb);
   }
 
-  public async findUserByEmailOrCry(email: string): Promise<user> {
+  public async findUserByEmailOrCry(email: string): Promise<UserEntity> {
     const userDb: user | null = await this.repository.findUserByEmail(email);
 
     if (!userDb) {
@@ -39,7 +40,7 @@ export class UserService {
       );
     }
 
-    return userDb;
+    return UserEntity.fromRepository(userDb);
   }
 
 }
