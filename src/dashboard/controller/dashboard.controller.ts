@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Request, Res, UseFilters, UseGuards } from '@nestjs/common';
-import { DashboardService } from './dashboard.service';
+import { DashboardService } from '../dashboard.service';
 import { Response } from 'express';
 import { DashboardExceptionFilter } from 'src/app/exception/filter/dashboard-exception-filter';
 import { DashboardAuthGuard } from 'src/auth/guard/dashboard-auth.guard';
@@ -28,7 +28,7 @@ export class DashboardController {
     return res.render('login/login', {});
   }
 
-  @UseGuards(AuthGuard('local'))
+  @UseGuards(AuthGuard('local'), DashboardAuthGuard)
   @Post('login')
   public async login(@Request() req, @Res() res: Response): Promise<void> {    
     //const response: AuthResponseDto = await this.authService.auth(req.user, AuthOrigin.DASHBOARD);
@@ -46,6 +46,13 @@ export class DashboardController {
     //   error: true,
     //   errorMessage: errorMessage
     // });
+  }
+
+  @UseGuards(AuthenticatedGuard)
+  @Get('logout')
+  public async logout(@Request() req, @Res() res: Response): Promise<void> {
+    req.logout();
+    res.redirect('/dashboard/login');
   }
 
 }

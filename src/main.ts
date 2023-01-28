@@ -6,6 +6,7 @@ import { resolve } from 'path';
 import * as session from 'express-session';
 import * as passport from 'passport';
 import * as flash from 'connect-flash';
+import { formatDate, formatDateTime, select, formatMilliseconds } from './dashboard/helpers/helpers';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {cors: true});
@@ -18,6 +19,7 @@ async function bootstrap() {
   hbs.registerPartials(resolve('./dashboard/views/partials'));
   app.useStaticAssets(resolve('./dashboard/public'));
   app.setBaseViewsDir(resolve('./dashboard/views'));
+  await registerHBSHelpers();
   app.setViewEngine('hbs');
 
   app.use(
@@ -33,4 +35,12 @@ async function bootstrap() {
 
   await app.listen(3000);
 }
+
+async function registerHBSHelpers() {
+  hbs.registerHelper('format_date', formatDate);
+  hbs.registerHelper('format_datetime', formatDateTime);
+  hbs.registerHelper('select', select);
+  hbs.registerHelper('format_milliseconds', formatMilliseconds);
+}
+
 bootstrap();
