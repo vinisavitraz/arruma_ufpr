@@ -26,9 +26,15 @@ export class DashboardExceptionFilter implements ExceptionFilter {
       error_message: exception.message,
     };
 
+    let redirectPage: string = '/dashboard/login';
+
+    if (statusCode === 401) {
+      redirectPage = '/dashboard/unauthorized'
+    }
+
     //if (exception instanceof UnauthorizedException || exception instanceof ForbiddenException) {
       request.flash('error', 'Please try again!');
-      response.redirect('/dashboard/login');
+      response.redirect(redirectPage);
       return;
     //} 
     

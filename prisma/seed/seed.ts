@@ -49,6 +49,87 @@ async function main() {
     },
   });
 
+  const allIncidentsPagePermission: permission = await prisma.permission.upsert({
+    where: { key: 'all_incidents_page' },
+    update: {},
+    create: {
+      name: 'Página `Listar incidentes`',
+      key: 'all_incidents_page',
+    },
+  });
+
+  const incidentsPagePermission: permission = await prisma.permission.upsert({
+    where: { key: 'incidents_page' },
+    update: {},
+    create: {
+      name: 'Página `Listar meus incidentes`',
+      key: 'incidents_page',
+    },
+  });
+
+  const createIncidentPagePermission: permission = await prisma.permission.upsert({
+    where: { key: 'create_incident_page' },
+    update: {},
+    create: {
+      name: 'Página `Criar incidente`',
+      key: 'create_incident_page',
+    },
+  });
+
+  const incidentTypesPagePermission: permission = await prisma.permission.upsert({
+    where: { key: 'incident_types_page' },
+    update: {},
+    create: {
+      name: 'Página `Listar tipos de incidente`',
+      key: 'incident_types_page',
+    },
+  });
+
+  const createIncidentTypePagePermission: permission = await prisma.permission.upsert({
+    where: { key: 'create_incident_type_page' },
+    update: {},
+    create: {
+      name: 'Página `Criar tipo de incidente`',
+      key: 'create_incident_type_page',
+    },
+  });
+
+  const locationPagePermission: permission = await prisma.permission.upsert({
+    where: { key: 'locations_page' },
+    update: {},
+    create: {
+      name: 'Página `Listar locais`',
+      key: 'locations_page',
+    },
+  });
+
+  const createLocationPagePermission: permission = await prisma.permission.upsert({
+    where: { key: 'create_location_page' },
+    update: {},
+    create: {
+      name: 'Página `Criar local`',
+      key: 'create_location_page',
+    },
+  });
+
+  const itemsPagePermission: permission = await prisma.permission.upsert({
+    where: { key: 'items_page' },
+    update: {},
+    create: {
+      name: 'Página `Listar itens`',
+      key: 'items_page',
+    },
+  });
+
+  const createItemPagePermission: permission = await prisma.permission.upsert({
+    where: { key: 'create_item_page' },
+    update: {},
+    create: {
+      name: 'Página `Criar item`',
+      key: 'create_item_page',
+    },
+  });
+
   const listUserTeacherRolePermission: role_permission = await prisma.role_permission.create({
     data: {
       role_id: teacherRole.id,
@@ -74,6 +155,69 @@ async function main() {
     data: {
       role_id: teacherRole.id,
       permission_id: createLocationPermission.id,
+    },
+  });
+
+  const listAllIncidentsTeacherRolePermission: role_permission = await prisma.role_permission.create({
+    data: {
+      role_id: teacherRole.id,
+      permission_id: allIncidentsPagePermission.id,
+    },
+  });
+
+  const listIncidentsTeacherRolePermission: role_permission = await prisma.role_permission.create({
+    data: {
+      role_id: teacherRole.id,
+      permission_id: incidentsPagePermission.id,
+    },
+  });
+
+  const createIncidentTeacherRolePermission: role_permission = await prisma.role_permission.create({
+    data: {
+      role_id: teacherRole.id,
+      permission_id: createIncidentPagePermission.id,
+    },
+  });
+
+  const incidentTypesTeacherRolePermission: role_permission = await prisma.role_permission.create({
+    data: {
+      role_id: teacherRole.id,
+      permission_id: incidentTypesPagePermission.id,
+    },
+  });
+
+  const createIncidentTypeTeacherRolePermission: role_permission = await prisma.role_permission.create({
+    data: {
+      role_id: teacherRole.id,
+      permission_id: createIncidentTypePagePermission.id,
+    },
+  });
+
+  const listLocationsTeacherRolePermission: role_permission = await prisma.role_permission.create({
+    data: {
+      role_id: teacherRole.id,
+      permission_id: locationPagePermission.id,
+    },
+  });
+
+  const createLocationPageTeacherRolePermission: role_permission = await prisma.role_permission.create({
+    data: {
+      role_id: teacherRole.id,
+      permission_id: createLocationPagePermission.id,
+    },
+  });
+
+  const listItemsTeacherRolePermission: role_permission = await prisma.role_permission.create({
+    data: {
+      role_id: teacherRole.id,
+      permission_id: itemsPagePermission.id,
+    },
+  });
+
+  const createItemTeacherRolePermission: role_permission = await prisma.role_permission.create({
+    data: {
+      role_id: teacherRole.id,
+      permission_id: createItemPagePermission.id,
     },
   });
 

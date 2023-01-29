@@ -1,7 +1,9 @@
 import { Controller, Get, UseFilters, UseGuards, Request, Res } from "@nestjs/common";
 import { Response } from 'express';
+import { PermissionEnum } from "src/app/enum/permission.enum";
 import { DashboardExceptionFilter } from "src/app/exception/filter/dashboard-exception-filter";
 import { AuthenticatedGuard } from "src/auth/guard/authenticated.guard";
+import PermissionGuard from "src/auth/guard/permission.guard";
 import { DashboardService } from "../dashboard.service";
 
 @Controller('dashboard/incident')
@@ -10,7 +12,10 @@ export class DashboardIncidentController {
   
   constructor(private readonly dashboardService: DashboardService) {}
 
-  @UseGuards(AuthenticatedGuard)
+  @UseGuards(
+    AuthenticatedGuard,
+    PermissionGuard(PermissionEnum.INCIDENTS_PAGE),
+  )
   @Get()
   public async getIncidentsPage(@Request() req, @Res() res: Response): Promise<void> {    
     
@@ -20,7 +25,10 @@ export class DashboardIncidentController {
     });
   }
 
-  @UseGuards(AuthenticatedGuard)
+  @UseGuards(
+    AuthenticatedGuard,
+    PermissionGuard(PermissionEnum.CREATE_INCIDENT_PAGE),
+  )
   @Get('create')
   public async getCreateIncidentPage(@Request() req, @Res() res: Response): Promise<void> {    
     
@@ -30,7 +38,10 @@ export class DashboardIncidentController {
     });
   }
 
-  @UseGuards(AuthenticatedGuard)
+  @UseGuards(
+    AuthenticatedGuard,
+    PermissionGuard(PermissionEnum.INCIDENT_TYPES_PAGE),
+  )
   @Get('types')
   public async getIncidentTypesPage(@Request() req, @Res() res: Response): Promise<void> {    
     
@@ -40,7 +51,10 @@ export class DashboardIncidentController {
     });
   }
 
-  @UseGuards(AuthenticatedGuard)
+  @UseGuards(
+    AuthenticatedGuard,
+    PermissionGuard(PermissionEnum.CREATE_INCIDENT_TYPE_PAGE),
+  )
   @Get('types/create')
   public async getCreateIncidentTypePage(@Request() req, @Res() res: Response): Promise<void> {    
     

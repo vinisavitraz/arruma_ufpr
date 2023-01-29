@@ -10,8 +10,8 @@ datasource db {
 
 model role {
   id               Int           @id @default(autoincrement())
-  name             String        @db.VarChar(30)
-  key              String        @db.VarChar(30) @unique
+  name             String        @db.VarChar(100)
+  key              String        @db.VarChar(100) @unique
   users            user[]
   permissions      role_permission[]
   
@@ -20,8 +20,8 @@ model role {
 
 model permission {
   id               Int           @id @default(autoincrement())
-  name             String        @db.VarChar(30) 
-  key              String        @db.VarChar(30) @unique
+  name             String        @db.VarChar(100) 
+  key              String        @db.VarChar(100) @unique
   permissions      role_permission[]
   
   @@index([name])
