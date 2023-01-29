@@ -59,7 +59,7 @@ model location {
   @@index([name])
 }
 
-model object {
+model item {
   id               Int           @id @default(autoincrement())
   name             String        @db.VarChar(100)
   description      String        @db.VarChar(500)
@@ -87,8 +87,8 @@ model incident {
   end_date         DateTime?     @db.Timestamp(0) 
   type_id          Int
   incident_type    incident_type @relation(fields: [type_id], references: [id])
-  object_id        Int
-  object           object        @relation(fields: [object_id], references: [id])
+  item_id          Int
+  item             item        @relation(fields: [item_id], references: [id])
   location_id      Int
   location         location      @relation(fields: [location_id], references: [id])
   users            incident_user[]
