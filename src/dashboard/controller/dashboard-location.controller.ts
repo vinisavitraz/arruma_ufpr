@@ -4,17 +4,17 @@ import { DashboardExceptionFilter } from "src/app/exception/filter/dashboard-exc
 import { AuthenticatedGuard } from "src/auth/guard/authenticated.guard";
 import { DashboardService } from "../dashboard.service";
 
-@Controller('dashboard/item')
+@Controller('dashboard/location')
 @UseFilters(DashboardExceptionFilter)
-export class DashboardObjectController {
+export class DashboardLocationController {
   
   constructor(private readonly dashboardService: DashboardService) {}
 
   @UseGuards(AuthenticatedGuard)
   @Get()
-  public async getItemsPage(@Request() req, @Res() res: Response): Promise<void> {    
+  public async getLocationsPage(@Request() req, @Res() res: Response): Promise<void> {    
     
-    return res.render('item/items', {
+    return res.render('location/locations', {
       cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}],
       jsScripts: [{filePath: '/js/header.js'}],
     });
@@ -22,9 +22,9 @@ export class DashboardObjectController {
 
   @UseGuards(AuthenticatedGuard)
   @Get('create')
-  public async getCreateItemPage(@Request() req, @Res() res: Response): Promise<void> {    
+  public async getCreateLocationPage(@Request() req, @Res() res: Response): Promise<void> {    
     
-    return res.render('item/create-item', {
+    return res.render('location/create-location', {
       cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}],
       jsScripts: [{filePath: '/js/header.js'}],
     });

@@ -11,7 +11,6 @@ export class DashboardAuthGuard extends AuthGuard('local') {
 
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: any = context.switchToHttp().getRequest();
-    console.log(request);
     await super.logIn(request);
     
     return (await super.canActivate(context)) as boolean; 
