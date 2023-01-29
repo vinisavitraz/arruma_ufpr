@@ -19,13 +19,17 @@ export class DashboardController {
 
     return res.render('home/home', { 
       user: user,
+      cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}],
+      jsScripts: [{filePath: '/js/header.js'}],
     });
   }
 
   @Get('login')
   public async getLoginPage(@Res() res: Response): Promise<void> {    
     
-    return res.render('login/login', {});
+    return res.render('login/login', {
+      cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/login.css'}],
+    });
   }
 
   @UseGuards(AuthGuard('local'), DashboardAuthGuard)
@@ -51,8 +55,14 @@ export class DashboardController {
   @UseGuards(AuthenticatedGuard)
   @Get('logout')
   public async logout(@Request() req, @Res() res: Response): Promise<void> {
-    req.logout();
-    res.redirect('/dashboard/login');
+    req.logout(function(err) {
+      if (err) { 
+        console.log('Error during logout');
+        return;
+      }
+      res.redirect('/dashboard/login');
+    });
+    
   }
 
 }

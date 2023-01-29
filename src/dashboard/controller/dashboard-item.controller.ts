@@ -4,7 +4,7 @@ import { DashboardExceptionFilter } from "src/app/exception/filter/dashboard-exc
 import { AuthenticatedGuard } from "src/auth/guard/authenticated.guard";
 import { DashboardService } from "../dashboard.service";
 
-@Controller('dashboard/object')
+@Controller('dashboard/item')
 @UseFilters(DashboardExceptionFilter)
 export class DashboardObjectController {
   
@@ -12,9 +12,12 @@ export class DashboardObjectController {
 
   @UseGuards(AuthenticatedGuard)
   @Get()
-  public async listMarkets(@Request() req, @Res() res: Response): Promise<void> {    
+  public async getItemsPage(@Request() req, @Res() res: Response): Promise<void> {    
     
-    return res.render('object/objects', {});
+    return res.render('item/items', {
+      cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}],
+      jsScripts: [{filePath: '/js/header.js'}],
+    });
   }
 
 }

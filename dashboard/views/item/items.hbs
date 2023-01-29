@@ -1,10 +1,15 @@
-<body>
+<body id="body-pd">
   {{>header}}
   <div class="container-fluid">
     <br>
     <br>
     <div class="row ms-3">
-      <h1>Objetos</h1>
+      <div class="col-10">
+        <h1>Itens</h1>
+      </div>
+      <div class="col-2">
+        <a class="btn btn-success" href="/dashboard/create-item" role="button">Novo item</a>
+      </div>
     </div>
     <hr class="bg-dark border-1 border-top border-dark">
     <br>
@@ -96,10 +101,9 @@
     {{else}}
       <div class="row mx-5 d-flex justify-content-center">
         <div class="col-3 justify-content-center">
-          <h4>Nenhum objeto cadastrado</h4>
+          <h4>Nenhum item cadastrado</h4>
         </div>
       </div>
     {{/if}}
   </div>
 </body>
-<script src="/js/filter-tables.js"></script>
