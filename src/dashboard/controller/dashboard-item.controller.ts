@@ -5,6 +5,7 @@ import { DashboardExceptionFilter } from "src/app/exception/filter/dashboard-exc
 import { AuthenticatedGuard } from "src/auth/guard/authenticated.guard";
 import PermissionGuard from "src/auth/guard/permission.guard";
 import { DashboardService } from "../dashboard.service";
+import { DashboardResponseRender } from "../render/dashboard-response-render";
 
 @Controller('dashboard/item')
 @UseFilters(DashboardExceptionFilter)
@@ -18,11 +19,11 @@ export class DashboardObjectController {
   )
   @Get()
   public async getItemsPage(@Request() req, @Res() res: Response): Promise<void> {    
-    
-    return res.render('item/items', {
-      cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}],
-      jsScripts: [{filePath: '/js/header.js'}],
-    });
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'item/items',
+      req.user,
+    );
   }
 
   @UseGuards(
@@ -31,11 +32,11 @@ export class DashboardObjectController {
   )
   @Get('create')
   public async getCreateItemPage(@Request() req, @Res() res: Response): Promise<void> {    
-    
-    return res.render('item/create-item', {
-      cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}],
-      jsScripts: [{filePath: '/js/header.js'}],
-    });
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'item/create-item',
+      req.user,
+    );
   }
 
 }

@@ -5,6 +5,7 @@ import { DashboardExceptionFilter } from "src/app/exception/filter/dashboard-exc
 import { AuthenticatedGuard } from "src/auth/guard/authenticated.guard";
 import PermissionGuard from "src/auth/guard/permission.guard";
 import { DashboardService } from "../dashboard.service";
+import { DashboardResponseRender } from "../render/dashboard-response-render";
 
 @Controller('dashboard/location')
 @UseFilters(DashboardExceptionFilter)
@@ -18,11 +19,11 @@ export class DashboardLocationController {
   )
   @Get()
   public async getLocationsPage(@Request() req, @Res() res: Response): Promise<void> {    
-    
-    return res.render('location/locations', {
-      cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}],
-      jsScripts: [{filePath: '/js/header.js'}],
-    });
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'location/locations',
+      req.user,
+    );
   }
 
   @UseGuards(
@@ -31,11 +32,11 @@ export class DashboardLocationController {
   )
   @Get('create')
   public async getCreateLocationPage(@Request() req, @Res() res: Response): Promise<void> {    
-    
-    return res.render('location/create-location', {
-      cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}],
-      jsScripts: [{filePath: '/js/header.js'}],
-    });
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'location/create-location',
+      req.user,
+    );
   }
 
 }

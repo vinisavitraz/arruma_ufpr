@@ -5,6 +5,7 @@ import { DashboardExceptionFilter } from "src/app/exception/filter/dashboard-exc
 import { AuthenticatedGuard } from "src/auth/guard/authenticated.guard";
 import PermissionGuard from "src/auth/guard/permission.guard";
 import { DashboardService } from "../dashboard.service";
+import { DashboardResponseRender } from "../render/dashboard-response-render";
 
 @Controller('dashboard/incident')
 @UseFilters(DashboardExceptionFilter)
@@ -18,11 +19,11 @@ export class DashboardIncidentController {
   )
   @Get()
   public async getIncidentsPage(@Request() req, @Res() res: Response): Promise<void> {    
-    
-    return res.render('incident/incidents', {
-      cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}],
-      jsScripts: [{filePath: '/js/header.js'}],
-    });
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'incident/incidents',
+      req.user,
+    );
   }
 
   @UseGuards(
@@ -31,11 +32,11 @@ export class DashboardIncidentController {
   )
   @Get('create')
   public async getCreateIncidentPage(@Request() req, @Res() res: Response): Promise<void> {    
-    
-    return res.render('incident/create-incident', {
-      cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}],
-      jsScripts: [{filePath: '/js/header.js'}],
-    });
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'incident/create-incident',
+      req.user,
+    );
   }
 
   @UseGuards(
@@ -44,11 +45,11 @@ export class DashboardIncidentController {
   )
   @Get('types')
   public async getIncidentTypesPage(@Request() req, @Res() res: Response): Promise<void> {    
-    
-    return res.render('incident/incident-types', {
-      cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}],
-      jsScripts: [{filePath: '/js/header.js'}],
-    });
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'incident/incident-types',
+      req.user,
+    );
   }
 
   @UseGuards(
@@ -57,11 +58,11 @@ export class DashboardIncidentController {
   )
   @Get('types/create')
   public async getCreateIncidentTypePage(@Request() req, @Res() res: Response): Promise<void> {    
-    
-    return res.render('incident/create-incident-type', {
-      cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}],
-      jsScripts: [{filePath: '/js/header.js'}],
-    });
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'incident/create-incident-type',
+      req.user,
+    );
   }
 
 }
