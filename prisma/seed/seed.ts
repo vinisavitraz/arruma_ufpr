@@ -40,6 +40,15 @@ async function main() {
     },
   });
 
+  const createLocationPermission: permission = await prisma.permission.upsert({
+    where: { key: 'create_location' },
+    update: {},
+    create: {
+      name: 'Criar local',
+      key: 'create_location',
+    },
+  });
+
   const listUserTeacherRolePermission: role_permission = await prisma.role_permission.create({
     data: {
       role_id: teacherRole.id,
@@ -58,6 +67,13 @@ async function main() {
     data: {
       role_id: teacherRole.id,
       permission_id: createUserPermission.id,
+    },
+  });
+
+  const createLocationTeacherRolePermission: role_permission = await prisma.role_permission.create({
+    data: {
+      role_id: teacherRole.id,
+      permission_id: createLocationPermission.id,
     },
   });
 

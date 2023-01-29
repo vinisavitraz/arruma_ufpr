@@ -1,4 +1,4 @@
-import { item } from "@prisma/client";
+import { location } from "@prisma/client";
 
 export class LocationEntity {
 
@@ -16,7 +16,7 @@ export class LocationEntity {
     this.description = description;
   }
 
-  public static fromRepository(location: item): LocationEntity {
+  public static fromRepository(location: location): LocationEntity {
     return new LocationEntity(
       location.id,
       location.name,

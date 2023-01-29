@@ -6,7 +6,7 @@ export class UserRepository {
   private connection: DatabaseService;
 
   constructor(databaseService: DatabaseService) {
-      this.connection = databaseService;
+    this.connection = databaseService;
   }
 
   public async findUserByEmail(email: string): Promise<user | null> {
@@ -14,7 +14,7 @@ export class UserRepository {
   }
 
   public async findUserByID(id: number): Promise<user | null> {
-      return await this.connection.user.findUnique({ where: { id: id } })
+    return await this.connection.user.findUnique({ where: { id: id } })
   }
   
 }
