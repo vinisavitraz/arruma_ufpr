@@ -8,7 +8,7 @@
         <h1>Locais</h1>
       </div>
       <div class="col-2">
-        <a class="btn btn-success" href="/dashboard/item/create" role="button">Novo item</a>
+        <a class="btn btn-success" href="/dashboard/location/create" role="button">Novo local</a>
       </div>
     </div>
     <hr class="bg-dark border-1 border-top border-dark">
@@ -52,7 +52,7 @@
         </div>
       {{/if}}
       <div class="p-2">
-        <a class="btn btn-secondary" href="/dashboard/object">Limpar filtros</a>
+        <a class="btn btn-secondary" href="/dashboard/location">Limpar filtros</a>
       </div>
       <div class="p-2">
         <select class="form-select" name="limit" id="registers-per-page">
@@ -71,27 +71,25 @@
       </div>
     </div>
     <br>
-    {{#if showMarkets }}
+    {{#if showContent }}
       <div class="row mx-5">
         <div class="table-responsive">
           <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
-                <th>Nome</th>
                 <th>ID</th>
+                <th>Nome</th>
                 <th>Descrição</th>
-                <th>Status</th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
-            {{#each markets}}
+            {{#each locations}}
                 <tr>
-                    <td>{{this.name}}</td>
                     <td>{{this.id}}</td>
+                    <td>{{this.name}}</td>
                     <td>{{this.description}}</td>
-                    <td><span class="badge bg-{{label_status_entity this.status}}">{{text_status_entity this.status }}</span></td>
-                    <td><a class="btn btn-success" href="/dashboard/object/{{this.id}}">Visualizar</a></td>
+                    <td><a class="btn btn-success" href="/dashboard/location/{{this.id}}">Visualizar</a></td>
                 </tr>
             {{/each}}
             </tbody>

@@ -4,7 +4,7 @@ import { PermissionEnum } from "src/app/enum/permission.enum";
 import { DashboardExceptionFilter } from "src/app/exception/filter/dashboard-exception-filter";
 import { AuthenticatedGuard } from "src/auth/guard/authenticated.guard";
 import PermissionGuard from "src/auth/guard/permission.guard";
-import { DashboardService } from "../dashboard.service";
+import { DashboardService } from "../service/dashboard.service";
 import { DashboardResponseRender } from "../render/dashboard-response-render";
 
 @Controller('dashboard/incident')

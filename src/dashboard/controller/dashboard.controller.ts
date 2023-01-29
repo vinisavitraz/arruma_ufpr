@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Request, Res, UseFilters, UseGuards } from '@nestjs/common';
-import { DashboardService } from '../dashboard.service';
+import { DashboardService } from '../service/dashboard.service';
 import { Response } from 'express';
 import { DashboardExceptionFilter } from 'src/app/exception/filter/dashboard-exception-filter';
 import { DashboardAuthGuard } from 'src/auth/guard/dashboard-auth.guard';

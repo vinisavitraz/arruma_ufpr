@@ -7,6 +7,7 @@ import * as session from 'express-session';
 import * as passport from 'passport';
 import * as flash from 'connect-flash';
 import { formatDate, formatDateTime, select, formatMilliseconds } from './dashboard/helpers/helpers';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {cors: true});
@@ -16,6 +17,7 @@ async function bootstrap() {
 
   const { httpAdapter } = app.get(HttpAdapterHost);
   
+  app.useGlobalPipes(new ValidationPipe());
   hbs.registerPartials(resolve('./dashboard/views/partials'));
   app.useStaticAssets(resolve('./dashboard/public'));
   app.setBaseViewsDir(resolve('./dashboard/views'));
