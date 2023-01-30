@@ -10,15 +10,25 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { APP_FILTER } from '@nestjs/core';
 import { ClassValidatorExceptionFilter } from './exception/filter/class-validator-exception-filter';
+import { HttpOperationExceptionFilter } from './exception/filter/http-operation-exception-filter';
+import { AllExceptionsFilter } from './exception/filter/all-exception-filter';
 
 @Module({
   imports: [DatabaseModule, AuthModule, DashboardModule, LocationModule, ItemModule, UserModule, IncidentModule],
   controllers: [AppController],
   providers: [
-    AppService, 
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: HttpOperationExceptionFilter,
+    },
     {
       provide: APP_FILTER,
       useClass: ClassValidatorExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: AllExceptionsFilter,
     },
   ],
 })

@@ -8,6 +8,7 @@ import * as passport from 'passport';
 import * as flash from 'connect-flash';
 import { formatDate, formatDateTime, select, formatMilliseconds } from './dashboard/helpers/helpers';
 import { ValidationPipe } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder, SwaggerDocumentOptions } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {cors: true});
@@ -34,6 +35,21 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
   app.use(flash());
+
+  const config: any = new DocumentBuilder()
+    .setTitle('ArrumaUFPR')
+    .setDescription('Descrição da API e operações disponíveis')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+
+  const options: SwaggerDocumentOptions = {
+    deepScanRoutes: true,
+  };
+  const document = SwaggerModule.createDocument(app, config, options);
+  SwaggerModule.setup('api', app, document, {
+    customSiteTitle: 'Documentação ArrumaUFPR',
+  });
 
   await app.listen(3000);
 }

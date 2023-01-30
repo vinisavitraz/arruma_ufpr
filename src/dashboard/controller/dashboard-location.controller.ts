@@ -1,4 +1,5 @@
 import { Controller, Get, UseFilters, UseGuards, Request, Res, Post, Param, ParseIntPipe } from "@nestjs/common";
+import { ApiExcludeController } from "@nestjs/swagger";
 import { Response } from 'express';
 import { PermissionEnum } from "src/app/enum/permission.enum";
 import { DashboardExceptionFilter } from "src/app/exception/filter/dashboard-exception-filter";
@@ -11,6 +12,7 @@ import { DashboardResponseRender } from "../render/dashboard-response-render";
 import { DashboardLocationService } from "../service/dashboard-location.service";
 
 @Controller('dashboard/location')
+@ApiExcludeController()
 @UseFilters(DashboardExceptionFilter)
 export class DashboardLocationController {
   

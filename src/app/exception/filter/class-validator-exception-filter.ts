@@ -1,5 +1,6 @@
 import { ExceptionFilter, Catch, ArgumentsHost, BadRequestException } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { APIErrorEntity } from 'src/app/entity/api-error.entity';
 import { HttpOperationErrorCodes } from '../http-operation-error-codes';
 
 @Catch(BadRequestException)
@@ -17,12 +18,8 @@ export class ClassValidatorExceptionFilter implements ExceptionFilter {
 
     console.log('Bad request exception occurred! Endpoint: ' + request.url + ' Http Status: ' + statusCode + ' | Message: ' + key);
 
-    const responseBody = {
-      status_code: statusCode,
-      error_code: errorCode,
-      error_message: key,
-    };
-
+    const responseBody: APIErrorEntity = new APIErrorEntity(statusCode, errorCode, key);
+    
     response
       .status(statusCode)
       .json(responseBody);

@@ -6,8 +6,10 @@ import { AuthenticatedGuard } from "src/auth/guard/authenticated.guard";
 import PermissionGuard from "src/auth/guard/permission.guard";
 import { DashboardService } from "../service/dashboard.service";
 import { DashboardResponseRender } from "../render/dashboard-response-render";
+import { ApiExcludeController } from "@nestjs/swagger";
 
 @Controller('dashboard/incident')
+@ApiExcludeController()
 @UseFilters(DashboardExceptionFilter)
 export class DashboardIncidentController {
   
