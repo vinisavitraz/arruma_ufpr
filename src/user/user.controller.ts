@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { ClassSerializerInterceptor, Controller, Get, Param, ParseIntPipe, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiHeader, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { UnauthorizedExample } from 'src/app/docs/example/auth/unauthorized-example';
 import { PermissionEnum } from 'src/app/enum/permission.enum';
@@ -16,6 +16,7 @@ export class UserController {
   
   constructor(private readonly userService: UserService) {}
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   @UseGuards(
     JwtAuthGuard,
