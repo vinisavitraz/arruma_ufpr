@@ -67,7 +67,7 @@ export class DashboardLocationController {
       {
         locations: locations,
         showContent: locations.length > 0,
-      }
+      },
     );
   }
 

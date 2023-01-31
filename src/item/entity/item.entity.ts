@@ -6,17 +6,20 @@ export class ItemEntity {
   readonly name: string;
   readonly description: string;
   readonly status: string;
+  readonly locationId: number;
 
   constructor(
     id: number,
     name: string,
     description: string,
     status: string,
+    locationId: number,
   ) {
     this.id = id;
     this.name = name;
     this.description = description;
     this.status = status;
+    this.locationId = locationId;
   }
 
   public static fromRepository(item: item): ItemEntity {
@@ -25,6 +28,7 @@ export class ItemEntity {
       item.name,
       item.description,
       item.status,
+      item.location_id,
     );
   }
 

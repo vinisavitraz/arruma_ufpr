@@ -6,7 +6,7 @@ import { resolve } from 'path';
 import * as session from 'express-session';
 import * as passport from 'passport';
 import * as flash from 'connect-flash';
-import { formatDate, formatDateTime, select, formatMilliseconds } from './dashboard/helpers/helpers';
+import { formatDate, formatDateTime, select, formatMilliseconds, labelStatusItem, textStatusItem } from './dashboard/helpers/helpers';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder, SwaggerDocumentOptions } from '@nestjs/swagger';
 
@@ -59,6 +59,8 @@ async function registerHBSHelpers() {
   hbs.registerHelper('format_datetime', formatDateTime);
   hbs.registerHelper('select', select);
   hbs.registerHelper('format_milliseconds', formatMilliseconds);
+  hbs.registerHelper('label_status_item', labelStatusItem);
+  hbs.registerHelper('text_status_item', textStatusItem);
 }
 
 bootstrap();

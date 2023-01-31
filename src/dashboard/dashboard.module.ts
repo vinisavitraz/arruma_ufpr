@@ -8,9 +8,12 @@ import { LocationModule } from 'src/location/location.module';
 import { DashboardLocationService } from './service/dashboard-location.service';
 import { DashboardIncidentService } from './service/dashboard-incident.service';
 import { IncidentModule } from 'src/incident/incident.module';
+import { ItemModule } from 'src/item/item.module';
+import { DashboardItemService } from './service/dashboard-item.service';
 
 @Module({
   imports: [
+    ItemModule,
     LocationModule,
     IncidentModule,
   ],
@@ -22,6 +25,7 @@ import { IncidentModule } from 'src/incident/incident.module';
   ],
   providers: [
     DashboardService,
+    DashboardItemService,
     DashboardLocationService,
     DashboardIncidentService,
   ],

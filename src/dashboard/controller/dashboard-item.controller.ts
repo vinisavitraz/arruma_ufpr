@@ -4,29 +4,17 @@ import { PermissionEnum } from "src/app/enum/permission.enum";
 import { DashboardExceptionFilter } from "src/app/exception/filter/dashboard-exception-filter";
 import { AuthenticatedGuard } from "src/auth/guard/authenticated.guard";
 import PermissionGuard from "src/auth/guard/permission.guard";
-import { DashboardService } from "../service/dashboard.service";
 import { DashboardResponseRender } from "../render/dashboard-response-render";
 import { ApiExcludeController } from "@nestjs/swagger";
+import { DashboardItemService } from "../service/dashboard-item.service";
+import { ItemEntity } from "src/item/entity/item.entity";
 
 @Controller('dashboard/item')
 @ApiExcludeController()
 @UseFilters(DashboardExceptionFilter)
 export class DashboardItemController {
   
-  constructor(private readonly dashboardService: DashboardService) {}
-
-  @UseGuards(
-    AuthenticatedGuard,
-    PermissionGuard(PermissionEnum.ITEMS_PAGE),
-  )
-  @Get()
-  public async getItemsPage(@Request() req, @Res() res: Response): Promise<void> {    
-    return DashboardResponseRender.renderForAuthenticatedUser(
-      res,
-      'item/items',
-      req.user,
-    );
-  }
+  constructor(private readonly service: DashboardItemService) {}
 
   @UseGuards(
     AuthenticatedGuard,
@@ -38,6 +26,25 @@ export class DashboardItemController {
       res,
       'item/create-item',
       req.user,
+    );
+  }
+
+  @UseGuards(
+    AuthenticatedGuard,
+    PermissionGuard(PermissionEnum.ITEMS_PAGE),
+  )
+  @Get()
+  public async getItemsPage(@Request() req, @Res() res: Response): Promise<void> {
+    const items: ItemEntity[] = await this.service.findItems();
+    
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'item/items',
+      req.user,
+      {
+        items: items,
+        showContent: items.length > 0,
+      },
     );
   }
 

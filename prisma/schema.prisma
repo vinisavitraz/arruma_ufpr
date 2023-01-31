@@ -55,6 +55,7 @@ model location {
   name             String        @db.VarChar(100)
   description      String        @db.VarChar(500)
   incidents        incident[]
+  items            item[]
   
   @@index([name])
 }
@@ -64,6 +65,8 @@ model item {
   name             String        @db.VarChar(100)
   description      String        @db.VarChar(500)
   status           String        @db.VarChar(50)
+  location_id      Int
+  location         location      @relation(fields: [location_id], references: [id])
   incidents        incident[]
   
   @@index([name])

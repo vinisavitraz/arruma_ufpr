@@ -71,7 +71,7 @@
       </div>
     </div>
     <br>
-    {{#if showMarkets }}
+    {{#if showContent }}
       <div class="row mx-5">
         <div class="table-responsive">
           <table class="table table-bordered table-hover table-striped">
@@ -82,16 +82,18 @@
                 <th>Descrição</th>
                 <th>Status</th>
                 <th></th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
-            {{#each markets}}
+            {{#each items}}
                 <tr>
                     <td>{{this.name}}</td>
                     <td>{{this.id}}</td>
                     <td>{{this.description}}</td>
-                    <td><span class="badge bg-{{label_status_entity this.status}}">{{text_status_entity this.status }}</span></td>
-                    <td><a class="btn btn-success" href="/dashboard/object/{{this.id}}">Visualizar</a></td>
+                    <td><span class="badge bg-{{label_status_item this.status}}">{{text_status_item this.status }}</span></td>
+                    <td><a class="btn btn-success" href="/dashboard/item/{{this.id}}">Visualizar</a></td>
+                    <td><a href="/dashboard/item/delete/{{this.id}}" onclick="return confirm('Tem certeza que deseja excluir esse registro?')" class="btn btn-danger">Remover</a></td>
                 </tr>
             {{/each}}
             </tbody>
@@ -100,7 +102,7 @@
       </div>
     {{else}}
       <div class="row mx-5 d-flex justify-content-center">
-        <div class="col-3 justify-content-center">
+        <div class="col-4 justify-content-center">
           <h4>Nenhum item cadastrado</h4>
         </div>
       </div>
