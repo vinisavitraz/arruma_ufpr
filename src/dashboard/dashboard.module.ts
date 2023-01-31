@@ -6,10 +6,13 @@ import { DashboardLocationController } from './controller/dashboard-location.con
 import { DashboardIncidentController } from './controller/dashboard-incident.controller';
 import { LocationModule } from 'src/location/location.module';
 import { DashboardLocationService } from './service/dashboard-location.service';
+import { DashboardIncidentService } from './service/dashboard-incident.service';
+import { IncidentModule } from 'src/incident/incident.module';
 
 @Module({
   imports: [
     LocationModule,
+    IncidentModule,
   ],
   controllers: [
     DashboardController, 
@@ -19,7 +22,8 @@ import { DashboardLocationService } from './service/dashboard-location.service';
   ],
   providers: [
     DashboardService,
-    DashboardLocationService
+    DashboardLocationService,
+    DashboardIncidentService,
   ],
   exports: [DashboardService],
 })

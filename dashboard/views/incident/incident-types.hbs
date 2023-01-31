@@ -8,7 +8,7 @@
         <h1>Tipos de incidente</h1>
       </div>
       <div class="col-2">
-        <a class="btn btn-success" href="/dashboard/item/create" role="button">Novo item</a>
+        <a class="btn btn-success" href="/dashboard/incident/types/create" role="button">Novo tipo de incidente</a>
       </div>
     </div>
     <hr class="bg-dark border-1 border-top border-dark">
@@ -71,27 +71,27 @@
       </div>
     </div>
     <br>
-    {{#if showMarkets }}
+    {{#if showContent }}
       <div class="row mx-5">
         <div class="table-responsive">
           <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
-                <th>Nome</th>
                 <th>ID</th>
+                <th>Nome</th>
                 <th>Descrição</th>
-                <th>Status</th>
+                <th></th>
                 <th></th>
             </tr>
             </thead>
             <tbody>
-            {{#each markets}}
+            {{#each locations}}
                 <tr>
-                    <td>{{this.name}}</td>
                     <td>{{this.id}}</td>
+                    <td>{{this.name}}</td>
                     <td>{{this.description}}</td>
-                    <td><span class="badge bg-{{label_status_entity this.status}}">{{text_status_entity this.status }}</span></td>
-                    <td><a class="btn btn-success" href="/dashboard/object/{{this.id}}">Visualizar</a></td>
+                    <td><a class="btn btn-success" href="/dashboard/incident/types/{{this.id}}">Visualizar</a></td>
+                    <td><a href="/dashboard/incident/types/delete/{{this.id}}" onclick="return confirm('Tem certeza que deseja excluir esse registro?')" class="btn btn-danger">Remover</a></td>
                 </tr>
             {{/each}}
             </tbody>
@@ -100,8 +100,8 @@
       </div>
     {{else}}
       <div class="row mx-5 d-flex justify-content-center">
-        <div class="col-3 justify-content-center">
-          <h4>Nenhum item cadastrado</h4>
+        <div class="col-4 justify-content-center">
+          <h4>Nenhum tipo de incidente cadastrado</h4>
         </div>
       </div>
     {{/if}}

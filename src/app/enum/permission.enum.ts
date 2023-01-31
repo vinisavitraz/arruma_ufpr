@@ -12,6 +12,7 @@ export enum PermissionEnum {
   CREATE_INCIDENT_PAGE = 'create_incident_page',
   INCIDENT_TYPES_PAGE = 'incident_types_page',
   CREATE_INCIDENT_TYPE_PAGE = 'create_incident_type_page',
+  DELETE_INCIDENT_TYPE_PAGE = 'delete_incident_type_page',
   LOCATIONS_PAGE = 'locations_page',
   CREATE_LOCATION_PAGE = 'create_location_page',
   DELETE_LOCATION_PAGE = 'delete_location_page',
