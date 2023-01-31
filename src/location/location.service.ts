@@ -44,4 +44,10 @@ export class LocationService {
     return LocationEntity.fromRepository(locationDb);
   }
 
+  public async deleteLocation(locationId: number): Promise<void> {
+    const location: LocationEntity = await this.findLocationByIDOrCry(locationId);
+
+    await this.repository.deleteLocation(location);
+  }
+
 }

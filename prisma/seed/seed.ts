@@ -112,6 +112,15 @@ async function main() {
     },
   });
 
+  const deleteLocationPagePermission: permission = await prisma.permission.upsert({
+    where: { key: 'delete_location_page' },
+    update: {},
+    create: {
+      name: 'Página `Deletar local`',
+      key: 'delete_location_page',
+    },
+  });
+
   const itemsPagePermission: permission = await prisma.permission.upsert({
     where: { key: 'items_page' },
     update: {},
@@ -204,6 +213,13 @@ async function main() {
     data: {
       role_id: teacherRole.id,
       permission_id: createLocationPagePermission.id,
+    },
+  });
+
+  const deleteLocationPageTeacherRolePermission: role_permission = await prisma.role_permission.create({
+    data: {
+      role_id: teacherRole.id,
+      permission_id: deleteLocationPagePermission.id,
     },
   });
 

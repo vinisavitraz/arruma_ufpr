@@ -91,7 +91,7 @@
                     <td>{{this.name}}</td>
                     <td>{{this.description}}</td>
                     <td><a class="btn btn-success" href="/dashboard/location/{{this.id}}">Visualizar</a></td>
-                    <td><a class="btn btn-danger" href="/dashboard/location/{{this.id}}">Remover</a></td>
+                    <td><a href="/dashboard/location/delete/{{this.id}}" onclick="return confirm('Tem certeza que deseja excluir esse registro?')" class="btn btn-danger">Remover</a></td>
                 </tr>
             {{/each}}
             </tbody>

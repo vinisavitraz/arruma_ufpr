@@ -1,6 +1,7 @@
 import { location } from "@prisma/client";
 import { DatabaseService } from "src/database/database.service";
 import { CreateLocationRequestDTO } from "./dto/request/create-location-request.dto";
+import { LocationEntity } from "./entity/location.entity";
 
 export class LocationRepository {
 
@@ -36,6 +37,10 @@ export class LocationRepository {
         description: createLocationRequestDTO.description,
       },
     });
+  }
+
+  public async deleteLocation(location: LocationEntity): Promise<void> {
+    await this.connection.location.delete({where: { id: location.id }});
   }
   
 }

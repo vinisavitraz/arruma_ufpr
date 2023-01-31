@@ -23,4 +23,8 @@ export class DashboardLocationService {
     await this.locationService.createLocation(createLocationRequestDto); 
   }
 
+  public async deleteLocation(locationId: number): Promise<void> {
+    await this.locationService.deleteLocation(locationId); 
+  }
+
 }

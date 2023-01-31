@@ -98,4 +98,15 @@ export class DashboardLocationController {
     return res.redirect('/dashboard/location');
   }
 
+  @UseGuards(
+    AuthenticatedGuard,
+    PermissionGuard(PermissionEnum.DELETE_LOCATION_PAGE),
+  )
+  @Get('delete/:id')
+  public async deleteLocation(@Param('id', ParseIntPipe) locationId: number, @Request() req, @Res() res: Response): Promise<void> {     
+    await this.service.deleteLocation(locationId);
+
+    return res.redirect('/dashboard/location');
+  }
+
 }
