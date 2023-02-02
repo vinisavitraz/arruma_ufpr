@@ -4,6 +4,7 @@ import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-
 import { HttpOperationException } from 'src/app/exception/http-operation.exception';
 import { DatabaseService } from 'src/database/database.service';
 import { CreateLocationRequestDTO } from './dto/request/create-location-request.dto';
+import { UpdateLocationRequestDTO } from './dto/request/update-location-request.dto';
 import { LocationEntity } from './entity/location.entity';
 import { LocationRepository } from './location.repository';
 
@@ -40,6 +41,14 @@ export class LocationService {
 
   public async createLocation(createLocationRequestDTO: CreateLocationRequestDTO): Promise<LocationEntity> {
     const locationDb: location = await this.repository.createLocation(createLocationRequestDTO);
+
+    return LocationEntity.fromRepository(locationDb);
+  }
+
+  public async updateLocation(updateLocationRequestDTO: UpdateLocationRequestDTO): Promise<LocationEntity> {
+    await this.findLocationByIDOrCry(updateLocationRequestDTO.id);
+    
+    const locationDb: location = await this.repository.updateLocation(updateLocationRequestDTO);
 
     return LocationEntity.fromRepository(locationDb);
   }

@@ -1,6 +1,6 @@
 import { Controller, Post, UseGuards, Request } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthExample } from 'src/app/docs/example/auth/auth-example';
 import { DateFormatter } from 'src/app/util/date.formatter';
 import { AuthService } from './auth.service';
@@ -14,7 +14,9 @@ export class AuthController {
 
   @UseGuards(AuthGuard('local'))
   @Post()
+  @ApiOperation({ summary: 'Autenticar usuário' })
   @ApiBody({ type: AuthExample })
+  @ApiOkResponse({ type: AuthResponseDto })
   public async auth(@Request() req): Promise<AuthResponseDto> {
     const token: TokenEntity = await this.authService.auth(req.user.user);
 

@@ -1,5 +1,5 @@
 import { ClassSerializerInterceptor, Controller, Get, Param, ParseIntPipe, UseGuards, UseInterceptors } from '@nestjs/common';
-import { ApiBearerAuth, ApiHeader, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeader, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { UnauthorizedExample } from 'src/app/docs/example/auth/unauthorized-example';
 import { PermissionEnum } from 'src/app/enum/permission.enum';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
@@ -20,8 +20,10 @@ export class UserController {
   @Get(':id')
   @UseGuards(
     JwtAuthGuard,
-    PermissionGuard(PermissionEnum.LIST_USER)
+    PermissionGuard(PermissionEnum.USERS_PAGE)
   )
+  @ApiOperation({ summary: 'Listar usuário pelo ID' })
+  @ApiOkResponse({ type: ListUserResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
   public async listUserByID(@Param('id', ParseIntPipe) id: number): Promise<ListUserResponseDTO> {
     const user: UserEntity = await this.userService.findUserByIDOrCry(id);

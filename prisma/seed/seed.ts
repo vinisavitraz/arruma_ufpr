@@ -121,6 +121,15 @@ async function main() {
     },
   });
 
+  const updateLocationPagePermission: permission = await prisma.permission.upsert({
+    where: { key: 'update_location_page' },
+    update: {},
+    create: {
+      name: 'Página `Atualizar local`',
+      key: 'update_location_page',
+    },
+  });
+
   const deleteLocationPagePermission: permission = await prisma.permission.upsert({
     where: { key: 'delete_location_page' },
     update: {},
@@ -250,6 +259,13 @@ async function main() {
     data: {
       role_id: teacherRole.id,
       permission_id: createItemPagePermission.id,
+    },
+  });
+
+  const updateLocationTeacherRolePermission: role_permission = await prisma.role_permission.create({
+    data: {
+      role_id: teacherRole.id,
+      permission_id: updateLocationPagePermission.id,
     },
   });
 

@@ -13,7 +13,7 @@
       </div>
       <hr class="bg-dark border-1 border-top border-dark mx-5">
       <br>
-      <form method="POST" action="/dashboard/location/create" class="needs-validation" novalidate="" autocomplete="off">
+      <form method="POST" action="{{ uri }}" class="needs-validation" novalidate="" autocomplete="off">
         <input type="hidden" id="id" name="id" value="{{location.id}}">
         <div class="row mx-3">
           <label for="name" class="col-sm-2 col-form-label d-flex justify-content-end">Nome: </label>

@@ -6,6 +6,7 @@ import { DashboardExceptionFilter } from "src/app/exception/filter/dashboard-exc
 import { AuthenticatedGuard } from "src/auth/guard/authenticated.guard";
 import PermissionGuard from "src/auth/guard/permission.guard";
 import { CreateLocationRequestDTO } from "src/location/dto/request/create-location-request.dto";
+import { UpdateLocationRequestDTO } from "src/location/dto/request/update-location-request.dto";
 import { LocationEntity } from "src/location/entity/location.entity";
 import { DashboardErrorMapper } from "../render/dashboard-error-mapper";
 import { DashboardResponseRender } from "../render/dashboard-response-render";
@@ -30,6 +31,7 @@ export class DashboardLocationController {
       req.user,
       {
         location: new CreateLocationRequestDTO(),
+        uri: '/dashboard/location/create'
       },
     );
   }
@@ -48,6 +50,7 @@ export class DashboardLocationController {
       req.user,
       {
         location: CreateLocationRequestDTO.fromEntity(location),
+        uri: '/dashboard/location/update'
       }
     );
   }
@@ -77,11 +80,11 @@ export class DashboardLocationController {
   )
   @Post('create')
   public async createLocation(@Request() req, @Res() res: Response): Promise<void> { 
+    console.log('createLocation');
     const createLocationRequestDto: CreateLocationRequestDTO = CreateLocationRequestDTO.fromDashboard(req.body);
     
     try {
       await this.service.createLocation(createLocationRequestDto);
-      console.log('createlocation 1');
     } catch (errors) {
       console.log(errors);
       return DashboardResponseRender.renderForAuthenticatedUser(
@@ -90,6 +93,33 @@ export class DashboardLocationController {
         req.user,
         {
           location: createLocationRequestDto,
+          ...DashboardErrorMapper.map(errors)
+        }
+      );
+    }  
+
+    return res.redirect('/dashboard/location');
+  }
+
+  @UseGuards(
+    AuthenticatedGuard,
+    PermissionGuard(PermissionEnum.UPDATE_LOCATION_PAGE),
+  )
+  @Post('update')
+  public async updateLocation(@Request() req, @Res() res: Response): Promise<void> { 
+    console.log('updateLocation');
+    const updateLocationRequestDTO: UpdateLocationRequestDTO = UpdateLocationRequestDTO.fromDashboard(req.body);
+    
+    try {
+      await this.service.updateLocation(updateLocationRequestDTO);
+    } catch (errors) {
+      console.log(errors);
+      return DashboardResponseRender.renderForAuthenticatedUser(
+        res,
+        'location/create-location',
+        req.user,
+        {
+          location: updateLocationRequestDTO,
           ...DashboardErrorMapper.map(errors)
         }
       );
