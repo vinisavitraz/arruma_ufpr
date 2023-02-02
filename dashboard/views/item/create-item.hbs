@@ -13,48 +13,49 @@
       </div>
       <hr class="bg-dark border-1 border-top border-dark mx-5">
       <br>
-      <form method="POST" action="/dashboard/new-door" class="needs-validation" novalidate="" autocomplete="off">
-        <input type="hidden" id="marketId" name="marketId" value="{{marketId}}">
+      <form method="POST" action="{{ uri }}" class="needs-validation" novalidate="" autocomplete="off">
+        <input type="hidden" id="id" name="id" value="{{item.id}}">
+        <div class="row mx-3">
+          <label for="name" class="col-sm-2 col-form-label d-flex justify-content-end">Nome: </label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" id="name" name="name" value="{{ item.name }}">
+          </div>
+        </div>
+        <br>
         <div class="row mx-3">
           <label for="description" class="col-sm-2 col-form-label d-flex justify-content-end">Descrição: </label>
           <div class="col-sm-4">
-            <input type="text" class="form-control" id="description" name="description">
+            <input type="text" class="form-control" id="description" name="description" value="{{ item.description }}">
           </div>
         </div>
         <br>
         <div class="row mx-3">
-          <label for="type" class="col-sm-2 col-form-label d-flex justify-content-end">Tipo: </label>
+          <label for="locationId" class="col-sm-2 col-form-label d-flex justify-content-end">Local: </label>
           <div class="col-sm-4">
-            <select class="form-select form-control" name="type" id="type">
+            <select class="form-select form-control" name="locationId" id="locationId">
+              {{#select item.locationId}}
                 <option disabled selected value></option>
-                <option value="0">Entrada</option>
-                <option value="1">Geladeira</option>
-            </select>
-          </div>
-        </div>
-        <br>
-        <div class="row mx-3">
-          <label for="idTopicCloudMqtt" class="col-sm-2 col-form-label d-flex justify-content-end">Tópico CloudMQQT: </label>
-          <div class="col-sm-4">
-            <select class="form-select form-control" name="idTopicCloudMqtt" id="idTopicCloudMqtt">
-                <option disabled selected value></option>
-                {{#each topics}}
-                  <option value="{{ this.id }}">{{ this.topic }}</option>
+                {{#each locations}}
+                  <option value="{{ this.id }}">{{ this.name }}</option>
                 {{/each}}
+              {{/select}}
             </select>
           </div>
         </div>
         <br>
-        <div class="row mx-3">
-          <label for="idCloudMqtt" class="col-sm-2 col-form-label d-flex justify-content-end">ID CloudMQQT: </label>
-          <div class="col-sm-4">
-            <input type="text" class="form-control" id="idCloudMqtt" name="idCloudMqtt">
-          </div>
-        </div>
         <br>
+        {{#if showError }}
+          {{#each errors}}
+            <div class="row mx-3">
+              <div class="col-sm-4">
+                <p class="text-danger">ERRO: {{this}}</p>
+              </div>
+            </div>
+          {{/each}}
+        {{/if}}
         <div class="row mx-3 d-flex justify-content-end">
             <div class="col-2 ">
-              <button type="submit" id= "aButton" class="btn btn-success ms-auto">Salvar</button>
+              <button type="submit" class="btn btn-success ms-auto btn-lg">Salvar</button>
             </div>
         </div>
       </form>

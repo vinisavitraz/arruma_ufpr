@@ -166,6 +166,24 @@ async function main() {
     },
   });
 
+  const updateItemPagePermission: permission = await prisma.permission.upsert({
+    where: { key: 'update_item_page' },
+    update: {},
+    create: {
+      name: 'Página `Atualizar item`',
+      key: 'update_item_page',
+    },
+  });
+
+  const deleteItemPagePermission: permission = await prisma.permission.upsert({
+    where: { key: 'delete_item_page' },
+    update: {},
+    create: {
+      name: 'Página `Deletar item`',
+      key: 'delete_item_page',
+    },
+  });
+
   const listUserTeacherRolePermission: role_permission = await prisma.role_permission.create({
     data: {
       role_id: teacherRole.id,
@@ -282,6 +300,20 @@ async function main() {
     data: {
       role_id: teacherRole.id,
       permission_id: updateIncidentTypePagePermission.id,
+    },
+  });
+
+  const updateItemTeacherRolePermission: role_permission = await prisma.role_permission.create({
+    data: {
+      role_id: teacherRole.id,
+      permission_id: updateItemPagePermission.id,
+    },
+  });
+
+  const deleteItemTeacherRolePermission: role_permission = await prisma.role_permission.create({
+    data: {
+      role_id: teacherRole.id,
+      permission_id: deleteItemPagePermission.id,
     },
   });
 

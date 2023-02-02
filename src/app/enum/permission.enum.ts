@@ -12,6 +12,8 @@ export enum PermissionEnum {
   DELETE_LOCATION_PAGE = 'delete_location_page',
   ITEMS_PAGE = 'items_page',
   CREATE_ITEM_PAGE = 'create_item_page',
+  UPDATE_ITEM_PAGE = 'update_item_page',
+  DELETE_ITEM_PAGE = 'delete_item_page',
   USERS_PAGE = 'users_page',
   CREATE_USER_PAGE = 'create_user_page',
   DELETE_USER_PAGE = 'delete_user_page',

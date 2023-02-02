@@ -1,5 +1,5 @@
 import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
-import { IsString, MaxLength, MinLength } from "class-validator";
+import { IsInt, IsNumber, IsString, MaxLength, MinLength } from "class-validator";
 import { HttpOperationErrorCodes } from "src/app/exception/http-operation-error-codes";
 import { ItemEntity } from "src/item/entity/item.entity";
 
@@ -21,15 +21,7 @@ export class CreateItemRequestDTO {
   @ApiProperty({example: 'Projetor da sala A10'})
   description: string;
 
-  @IsString({message: HttpOperationErrorCodes.INVALID_ITEM_STATUS})
-  @MinLength(1, {message: HttpOperationErrorCodes.INVALID_ITEM_STATUS})
-  @MaxLength(50, {message: HttpOperationErrorCodes.INVALID_ITEM_STATUS})
-  @ApiProperty({example: 'Ativo'})
-  status: string;
-
-  @IsString({message: HttpOperationErrorCodes.INVALID_ITEM_LOCATION})
-  @MinLength(1, {message: HttpOperationErrorCodes.INVALID_ITEM_LOCATION})
-  @MaxLength(50, {message: HttpOperationErrorCodes.INVALID_ITEM_LOCATION})
+  @IsInt({message: HttpOperationErrorCodes.INVALID_ITEM_LOCATION})
   @ApiProperty({example: 1})
   locationId: number;
 
@@ -39,7 +31,6 @@ export class CreateItemRequestDTO {
     createItemRequestDTO.id = Number(payload['id']) ?? 0;
     createItemRequestDTO.name = payload['name'] ?? '';
     createItemRequestDTO.description = payload['description'] ?? '';
-    createItemRequestDTO.status = payload['status'] ?? '';
     createItemRequestDTO.locationId = Number(payload['locationId']) ?? 0;
 
     return createItemRequestDTO;
@@ -51,7 +42,6 @@ export class CreateItemRequestDTO {
     createItemRequestDTO.id = item.id;
     createItemRequestDTO.name = item.name;
     createItemRequestDTO.description = item.description;
-    createItemRequestDTO.status = item.status;
     createItemRequestDTO.locationId = item.locationId;
 
     return createItemRequestDTO;

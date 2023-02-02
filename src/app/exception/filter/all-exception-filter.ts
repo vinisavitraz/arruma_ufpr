@@ -24,6 +24,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
     const message: string = exception.response ? exception.response.message : '';
+    console.log(httpStatus);
     console.log(message);
     const responseBody: APIErrorEntity = new APIErrorEntity(httpStatus, '', message);
     // const responseBody = {

@@ -4,6 +4,7 @@ import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-
 import { HttpOperationException } from 'src/app/exception/http-operation.exception';
 import { DatabaseService } from 'src/database/database.service';
 import { CreateItemRequestDTO } from './dto/request/create-item-request.dto';
+import { UpdateItemRequestDTO } from './dto/request/update-item-request.dto';
 import { ItemEntity } from './entity/item.entity';
 import { ItemRepository } from './item.repository';
 
@@ -40,6 +41,14 @@ export class ItemService {
 
   public async createItem(createItemRequestDTO: CreateItemRequestDTO): Promise<ItemEntity> {
     const itemDb: item = await this.repository.createItem(createItemRequestDTO);
+
+    return ItemEntity.fromRepository(itemDb);
+  }
+
+  public async updateItem(updateItemRequestDTO: UpdateItemRequestDTO): Promise<ItemEntity> {
+    await this.findItemByIDOrCry(updateItemRequestDTO.id);
+
+    const itemDb: item = await this.repository.updateItem(updateItemRequestDTO);
 
     return ItemEntity.fromRepository(itemDb);
   }

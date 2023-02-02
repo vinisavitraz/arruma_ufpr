@@ -1,6 +1,7 @@
 import { item } from "@prisma/client";
 import { DatabaseService } from "src/database/database.service";
 import { CreateItemRequestDTO } from "./dto/request/create-item-request.dto";
+import { UpdateItemRequestDTO } from "./dto/request/update-item-request.dto";
 import { ItemEntity } from "./entity/item.entity";
 
 export class ItemRepository {
@@ -26,19 +27,22 @@ export class ItemRepository {
   }
 
   public async createItem(createItemRequestDTO: CreateItemRequestDTO): Promise<item | null> {
-    return await this.connection.item.upsert({ 
-      where: { id: createItemRequestDTO.id },
-      update: {
+    return await this.connection.item.create({ 
+      data: {
         name: createItemRequestDTO.name,
         description: createItemRequestDTO.description,
-        status: createItemRequestDTO.status,
         location_id: createItemRequestDTO.locationId,
       },
-      create: {
-        name: createItemRequestDTO.name,
-        description: createItemRequestDTO.description,
-        status: createItemRequestDTO.status,
-        location_id: createItemRequestDTO.locationId,
+    });
+  }
+
+  public async updateItem(updateItemRequestDTO: UpdateItemRequestDTO): Promise<item | null> {
+    return await this.connection.item.update({ 
+      where: { id: updateItemRequestDTO.id },
+      data: {
+        name: updateItemRequestDTO.name,
+        description: updateItemRequestDTO.description,
+        location_id: updateItemRequestDTO.locationId,
       },
     });
   }

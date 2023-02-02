@@ -110,7 +110,6 @@ export class DashboardLocationController {
     try {
       await this.service.updateLocation(updateLocationRequestDTO);
     } catch (errors) {
-      console.log(errors);
       return DashboardResponseRender.renderForAuthenticatedUser(
         res,
         'location/create-location',

@@ -1,4 +1,4 @@
-export enum ItemStatusEnum {
+export enum IncidentStatusEnum {
   ACTIVE = "ativo",
   INACTIVE = "inativo",
 }

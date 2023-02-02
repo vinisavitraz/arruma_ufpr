@@ -1,12 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNumber, IsString, MaxLength, MinLength } from "class-validator";
+import { IsInt, IsString, MaxLength, MinLength } from "class-validator";
 import { HttpOperationErrorCodes } from "src/app/exception/http-operation-error-codes";
 import { LocationEntity } from "src/location/entity/location.entity";
 
 export class UpdateLocationRequestDTO {
 
-  @IsNumber({})
-  @ApiProperty({example: 'ID'})
+  @IsInt({message: HttpOperationErrorCodes.INVALID_INCIDENT_TYPE_ID})
+  @ApiProperty({example: 1})
   id: number;
 
   @IsString({message: HttpOperationErrorCodes.INVALID_LOCATION_NAME})

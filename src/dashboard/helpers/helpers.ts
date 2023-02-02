@@ -1,4 +1,4 @@
-import { ItemStatusEnum } from "src/app/enum/status.enum";
+import { IncidentStatusEnum } from "src/app/enum/status.enum";
 import { DateFormatter } from "src/app/util/date.formatter";
 
 export function formatDate(date: string | null) { 
@@ -29,22 +29,22 @@ export function formatMilliseconds(milliseconds: number) {
     return seconds.toFixed(3);
 }
 
-export function labelStatusItem(status: string) { 
+export function labelStatusIncident(status: string) { 
   switch (status) {
-    case ItemStatusEnum.ACTIVE:
+    case IncidentStatusEnum.ACTIVE:
       return 'success';
-    case ItemStatusEnum.INACTIVE:
+    case IncidentStatusEnum.INACTIVE:
       return 'warning';
     default:
       return 'dark';
   }
 }
 
-export function textStatusItem(status: string) { 
+export function textStatusIncident(status: string) { 
   switch (status) {
-    case ItemStatusEnum.ACTIVE:
+    case IncidentStatusEnum.ACTIVE:
       return 'Ativo';
-    case ItemStatusEnum.INACTIVE:
+    case IncidentStatusEnum.INACTIVE:
       return 'Inativo';
     default:
       return 'Desconhecido';

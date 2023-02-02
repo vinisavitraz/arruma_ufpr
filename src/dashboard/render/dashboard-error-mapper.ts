@@ -5,6 +5,9 @@ export class DashboardErrorMapper {
   static readonly errorMap: Map<string, string> = new Map([
     ['LOC_002', 'Nome inválido'],
     ['LOC_003', 'Descrição inválida'],
+    ['ITM_001', 'Nome inválido'],
+    ['ITM_002', 'Descrição inválida'],
+    ['ITM_004', 'Local inválido'],
   ]);
 
   public static map(validationErrors: any[]): object {
@@ -23,7 +26,7 @@ export class DashboardErrorMapper {
       const errorCode: string = errorCodes[i];
       const error: string | null = this.errorMap.get(errorCode);
 
-      if (error) {
+      if (error && !errors.includes(error)) {
         errors.push(error);
       }
     }

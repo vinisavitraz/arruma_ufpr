@@ -80,7 +80,6 @@
                 <th>Nome</th>
                 <th>ID</th>
                 <th>Descrição</th>
-                <th>Status</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -91,7 +90,6 @@
                     <td>{{this.name}}</td>
                     <td>{{this.id}}</td>
                     <td>{{this.description}}</td>
-                    <td><span class="badge bg-{{label_status_item this.status}}">{{text_status_item this.status }}</span></td>
                     <td><a class="btn btn-success" href="/dashboard/item/{{this.id}}">Visualizar</a></td>
                     <td><a href="/dashboard/item/delete/{{this.id}}" onclick="return confirm('Tem certeza que deseja excluir esse registro?')" class="btn btn-danger">Remover</a></td>
                 </tr>

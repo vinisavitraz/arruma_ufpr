@@ -1,13 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { validateOrReject } from 'class-validator';
 import { CreateItemRequestDTO } from 'src/item/dto/request/create-item-request.dto';
+import { UpdateItemRequestDTO } from 'src/item/dto/request/update-item-request.dto';
 import { ItemEntity } from 'src/item/entity/item.entity';
 import { ItemService } from 'src/item/item.service';
+import { LocationEntity } from 'src/location/entity/location.entity';
+import { LocationService } from 'src/location/location.service';
 
 @Injectable()
 export class DashboardItemService {
 
-  constructor(private readonly itemService: ItemService) {}
+  constructor(
+    private readonly itemService: ItemService,
+    private readonly locationService: LocationService,
+  ) {}
+
+  public async findLocations(): Promise<LocationEntity[]> {
+    return await this.locationService.findLocations();
+  }
 
   public async findItems(): Promise<ItemEntity[]> {
     return await this.itemService.findItems();
@@ -21,6 +31,12 @@ export class DashboardItemService {
     await validateOrReject(createItemRequestDTO);
 
     await this.itemService.createItem(createItemRequestDTO); 
+  }
+
+  public async updateItem(updateItemRequestDTO: UpdateItemRequestDTO): Promise<void> {
+    await validateOrReject(updateItemRequestDTO);
+
+    await this.itemService.updateItem(updateItemRequestDTO); 
   }
 
   public async deleteItem(itemId: number): Promise<void> {
