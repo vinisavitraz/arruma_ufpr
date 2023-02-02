@@ -1,6 +1,7 @@
 import { incident_type } from "@prisma/client";
 import { DatabaseService } from "src/database/database.service";
 import { CreateIncidentTypeRequestDTO } from "./dto/request/create-incident-type-request.dto";
+import { UpdateIncidentTypeRequestDTO } from "./dto/request/update-incident-type-request.dto";
 import { IncidentTypeEntity } from "./entity/incident-type.entity";
 
 export class IncidentRepository {
@@ -26,15 +27,20 @@ export class IncidentRepository {
   }
 
   public async createIncidentType(createIncidentTypeRequestDTO: CreateIncidentTypeRequestDTO): Promise<incident_type | null> {
-    return await this.connection.incident_type.upsert({ 
-      where: { id: createIncidentTypeRequestDTO.id },
-      update: {
+    return await this.connection.incident_type.create({ 
+      data: {
         name: createIncidentTypeRequestDTO.name,
         description: createIncidentTypeRequestDTO.description,
       },
-      create: {
-        name: createIncidentTypeRequestDTO.name,
-        description: createIncidentTypeRequestDTO.description,
+    });
+  }
+
+  public async updateIncidentType(updateIncidentTypeRequestDTO: UpdateIncidentTypeRequestDTO): Promise<incident_type | null> {
+    return await this.connection.incident_type.update({ 
+      where: { id: updateIncidentTypeRequestDTO.id },
+      data: {
+        name: updateIncidentTypeRequestDTO.name,
+        description: updateIncidentTypeRequestDTO.description,
       },
     });
   }

@@ -10,6 +10,7 @@ import { IncidentTypeEntity } from "src/incident/entity/incident-type.entity";
 import { DashboardIncidentService } from "../service/dashboard-incident.service";
 import { CreateIncidentTypeRequestDTO } from "src/incident/dto/request/create-incident-type-request.dto";
 import { DashboardErrorMapper } from "../render/dashboard-error-mapper";
+import { UpdateIncidentTypeRequestDTO } from "src/incident/dto/request/update-incident-type-request.dto";
 
 @Controller('dashboard/incident')
 @ApiExcludeController()
@@ -73,6 +74,10 @@ export class DashboardIncidentController {
       res,
       'incident/create-incident-type',
       req.user,
+      {
+        location: new CreateIncidentTypeRequestDTO(),
+        uri: '/dashboard/incident/types/create',
+      },
     );
   }
 
@@ -90,6 +95,7 @@ export class DashboardIncidentController {
       req.user,
       {
         location: CreateIncidentTypeRequestDTO.fromEntity(incidentType),
+        uri: '/dashboard/incident/types/update',
       }
     );
   }
@@ -111,6 +117,31 @@ export class DashboardIncidentController {
         req.user,
         {
           location: createIncidentTypeRequestDTO,
+          ...DashboardErrorMapper.map(errors)
+        }
+      );
+    }  
+
+    return res.redirect('/dashboard/incident/types');
+  }
+
+  @UseGuards(
+    AuthenticatedGuard,
+    PermissionGuard(PermissionEnum.UPDATE_INCIDENT_TYPE_PAGE),
+  )
+  @Post('types/update')
+  public async updateIncidentType(@Request() req, @Res() res: Response): Promise<void> { 
+    const updateIncidentTypeRequestDTO: UpdateIncidentTypeRequestDTO = UpdateIncidentTypeRequestDTO.fromDashboard(req.body);
+    
+    try {
+      await this.service.updateIncidentType(updateIncidentTypeRequestDTO);
+    } catch (errors) {
+      return DashboardResponseRender.renderForAuthenticatedUser(
+        res,
+        'incident/create-incident-type',
+        req.user,
+        {
+          location: updateIncidentTypeRequestDTO,
           ...DashboardErrorMapper.map(errors)
         }
       );

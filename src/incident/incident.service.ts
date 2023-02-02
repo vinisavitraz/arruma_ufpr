@@ -4,6 +4,7 @@ import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-
 import { HttpOperationException } from 'src/app/exception/http-operation.exception';
 import { DatabaseService } from 'src/database/database.service';
 import { CreateIncidentTypeRequestDTO } from './dto/request/create-incident-type-request.dto';
+import { UpdateIncidentTypeRequestDTO } from './dto/request/update-incident-type-request.dto';
 import { IncidentTypeEntity } from './entity/incident-type.entity';
 import { IncidentRepository } from './incident.repository';
 
@@ -40,6 +41,14 @@ export class IncidentService {
 
   public async createIncidentType(createIncidentTypeRequestDTO: CreateIncidentTypeRequestDTO): Promise<IncidentTypeEntity> {
     const incidentTypeDb: incident_type = await this.repository.createIncidentType(createIncidentTypeRequestDTO);
+
+    return IncidentTypeEntity.fromRepository(incidentTypeDb);
+  }
+
+  public async updateIncidentType(updateIncidentTypeRequestDTO: UpdateIncidentTypeRequestDTO): Promise<IncidentTypeEntity> {
+    await this.findIncidentTypeByIDOrCry(updateIncidentTypeRequestDTO.id);
+    
+    const incidentTypeDb: incident_type = await this.repository.updateIncidentType(updateIncidentTypeRequestDTO);
 
     return IncidentTypeEntity.fromRepository(incidentTypeDb);
   }

@@ -31,7 +31,7 @@ export class DashboardLocationController {
       req.user,
       {
         location: new CreateLocationRequestDTO(),
-        uri: '/dashboard/location/create'
+        uri: '/dashboard/location/create',
       },
     );
   }
@@ -50,7 +50,7 @@ export class DashboardLocationController {
       req.user,
       {
         location: CreateLocationRequestDTO.fromEntity(location),
-        uri: '/dashboard/location/update'
+        uri: '/dashboard/location/update',
       }
     );
   }
@@ -80,13 +80,11 @@ export class DashboardLocationController {
   )
   @Post('create')
   public async createLocation(@Request() req, @Res() res: Response): Promise<void> { 
-    console.log('createLocation');
     const createLocationRequestDto: CreateLocationRequestDTO = CreateLocationRequestDTO.fromDashboard(req.body);
     
     try {
       await this.service.createLocation(createLocationRequestDto);
     } catch (errors) {
-      console.log(errors);
       return DashboardResponseRender.renderForAuthenticatedUser(
         res,
         'location/create-location',
@@ -107,7 +105,6 @@ export class DashboardLocationController {
   )
   @Post('update')
   public async updateLocation(@Request() req, @Res() res: Response): Promise<void> { 
-    console.log('updateLocation');
     const updateLocationRequestDTO: UpdateLocationRequestDTO = UpdateLocationRequestDTO.fromDashboard(req.body);
     
     try {

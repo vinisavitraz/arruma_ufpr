@@ -94,6 +94,15 @@ async function main() {
     },
   });
 
+  const updateIncidentTypePagePermission: permission = await prisma.permission.upsert({
+    where: { key: 'update_incident_type_page' },
+    update: {},
+    create: {
+      name: 'Página `Atualizar tipo de incidente`',
+      key: 'update_incident_type_page',
+    },
+  });
+
   const deleteIncidentTypePagePermission: permission = await prisma.permission.upsert({
     where: { key: 'delete_incident_type_page' },
     update: {},
@@ -266,6 +275,13 @@ async function main() {
     data: {
       role_id: teacherRole.id,
       permission_id: updateLocationPagePermission.id,
+    },
+  });
+
+  const updateIncidentTypeTeacherRolePermission: role_permission = await prisma.role_permission.create({
+    data: {
+      role_id: teacherRole.id,
+      permission_id: updateIncidentTypePagePermission.id,
     },
   });
 
