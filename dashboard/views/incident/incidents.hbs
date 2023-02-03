@@ -71,13 +71,13 @@
       </div>
     </div>
     <br>
-    {{#if showMarkets }}
+    {{#if showContent }}
       <div class="row mx-5">
         <div class="table-responsive">
           <table class="table table-bordered table-hover table-striped">
             <thead>
             <tr>
-                <th>Nome</th>
+                <th>Título</th>
                 <th>ID</th>
                 <th>Descrição</th>
                 <th>Status</th>
@@ -85,13 +85,13 @@
             </tr>
             </thead>
             <tbody>
-            {{#each markets}}
+            {{#each incidents}}
                 <tr>
-                    <td>{{this.name}}</td>
+                    <td>{{this.title}}</td>
                     <td>{{this.id}}</td>
                     <td>{{this.description}}</td>
-                    <td><span class="badge bg-{{label_status_entity this.status}}">{{text_status_entity this.status }}</span></td>
-                    <td><a class="btn btn-success" href="/dashboard/object/{{this.id}}">Visualizar</a></td>
+                    <td><span class="badge bg-{{label_status_incident this.status}}">{{text_status_incident this.status }}</span></td>
+                    <td><a class="btn btn-success" href="/dashboard/incident/{{this.id}}">Visualizar</a></td>
                 </tr>
             {{/each}}
             </tbody>

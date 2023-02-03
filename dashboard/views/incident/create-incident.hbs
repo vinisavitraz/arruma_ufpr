@@ -3,7 +3,7 @@
   <div class="container-fluid">
     <br>
     <div class="col-2 d-flex">
-      <a class="btn btn-primary" id="aButton" href="/dashboard/item" role="button">Voltar</a>
+      <a class="btn btn-primary btn-lg" href="/dashboard/incident" role="button">Voltar</a>
     </div>
     <br>
     <div class="border bg-light">
@@ -13,8 +13,8 @@
       </div>
       <hr class="bg-dark border-1 border-top border-dark mx-5">
       <br>
-      <form method="POST" action="/dashboard/new-door" class="needs-validation" novalidate="" autocomplete="off">
-        <input type="hidden" id="id" name="id" value="{{item.id}}">
+      <form method="POST" action="{{ uri }}" class="needs-validation" novalidate="" autocomplete="off">
+        <input type="hidden" id="id" name="id" value="{{incident.id}}">
         <div class="row mx-3">
           <label for="title" class="col-sm-2 col-form-label d-flex justify-content-end">Título: </label>
           <div class="col-sm-4">
@@ -27,7 +27,7 @@
             <label for="incidentTypeId" class="col-sm-2 col-form-label d-flex justify-content-end">Tipo de incidente: </label>
             <div class="col-sm-4">
               <select class="form-select form-control" name="incidentTypeId" id="incidentTypeId">
-                {{#select item.locationId}}
+                {{#select incident.incidentTypeId}}
                   <option disabled selected value></option>
                   {{#each incidentTypes}}
                     <option value="{{ this.id }}">{{ this.name }}</option>
@@ -65,7 +65,7 @@
             <label for="locationId" class="col-sm-2 col-form-label d-flex justify-content-end">Local: </label>
             <div class="col-sm-4">
               <select class="form-select form-control" name="locationId" id="locationId">
-                {{#select item.locationId}}
+                {{#select incident.locationId}}
                   <option disabled selected value></option>
                   {{#each locations}}
                     <option value="{{ this.id }}">{{ this.name }}</option>
@@ -103,7 +103,7 @@
             <label for="itemId" class="col-sm-2 col-form-label d-flex justify-content-end">Item: </label>
             <div class="col-sm-4">
               <select class="form-select form-control" name="itemId" id="itemId">
-                {{#select item.itemId}}
+                {{#select incident.itemId}}
                   <option disabled selected value></option>
                   {{#each items}}
                     <option value="{{ this.id }}">{{ this.name }}</option>
@@ -142,14 +142,6 @@
             <textarea type="text" rows="5" class="form-control" id="description" name="description">{{ incident.description }}</textarea>
           </div>
         </div>
-        <br>
-        <div class="row mx-3">
-          <label for="startDate" class="col-sm-2 col-form-label d-flex justify-content-end">Data: </label>
-          <div class="col-sm-4">
-            <input type="datetime-local" class="form-control" id="startDate" name="startDate" value="{{ incident.startDate }}">
-          </div>
-        </div>
-        <br>
         <br>
         <br>
         {{#if showError }}

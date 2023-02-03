@@ -50,29 +50,29 @@ $(function () {
     requestItems(selected);
   });
 
-  function requestItems(locationId) {
+  async function requestItems(locationId) {
     const base_url = window.location.origin;
     const url = base_url + '/dashboard/item/location/' + locationId;
-    console.log(url);
-    fetch(url)
-    .then(function(response) {
-      console.log(response);
-      return response.blob();
-    })
-    .then(function(myBlob) {
-      console.log(myBlob);
-    });
+    const response = await fetch(url, 
+      {
+        headers : { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      }
+    );
+    const responseJson = await response.json();
+    appendItemsToSelect(responseJson.items);
   }
 
-  // function appendModulesToSelect(modules) {
-  //     reports = modules;
-
-  //     reports.forEach(module => {
-  //         $('#modules').append($('<option>', { 
-  //             value: module.name,
-  //             text : module.description 
-  //         }));
-  //     });
-  // }
+  function appendItemsToSelect(items) {
+    items.forEach(item => {
+      console.log(item);
+      $('#itemId').append($('<option>', { 
+          value: item.id,
+          text : item.name 
+      }));
+    });
+  }
 
 });

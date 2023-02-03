@@ -31,10 +31,8 @@ export function formatMilliseconds(milliseconds: number) {
 
 export function labelStatusIncident(status: string) { 
   switch (status) {
-    case IncidentStatusEnum.ACTIVE:
+    case IncidentStatusEnum.OPEN:
       return 'success';
-    case IncidentStatusEnum.INACTIVE:
-      return 'warning';
     default:
       return 'dark';
   }
@@ -42,10 +40,8 @@ export function labelStatusIncident(status: string) {
 
 export function textStatusIncident(status: string) { 
   switch (status) {
-    case IncidentStatusEnum.ACTIVE:
-      return 'Ativo';
-    case IncidentStatusEnum.INACTIVE:
-      return 'Inativo';
+    case IncidentStatusEnum.OPEN:
+      return 'Aberto';
     default:
       return 'Desconhecido';
   }
