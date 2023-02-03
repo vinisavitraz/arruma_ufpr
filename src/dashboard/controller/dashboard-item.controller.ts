@@ -12,6 +12,7 @@ import { DashboardErrorMapper } from "../render/dashboard-error-mapper";
 import { UpdateItemRequestDTO } from "src/item/dto/request/update-item-request.dto";
 import { Roles } from "src/auth/roles/require-roles.decorator";
 import { RoleEnum } from "src/app/enum/role.enum";
+import { ListItemsResponseDTO } from "src/item/dto/response/list-items-response.dto";
 
 @Controller('dashboard/item')
 @ApiExcludeController()
@@ -140,6 +141,13 @@ export class DashboardItemController {
     await this.service.deleteItem(itemId);
 
     return res.redirect('/dashboard/item');
+  }
+
+  @Get('location/:id')
+  public async listItemsByLocationID(@Param('id', ParseIntPipe) locationId: number): Promise<ListItemsResponseDTO> {
+    const items: ItemEntity[] = await this.service.findItemsByLocationID(locationId);
+    
+    return new ListItemsResponseDTO(items);
   }
 
 }

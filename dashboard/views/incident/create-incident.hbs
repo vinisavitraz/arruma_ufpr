@@ -24,12 +24,12 @@
         <div id="incidentTypeSelect" class="d-block">
           <br>
           <div class="row mx-3">
-            <label for="locationId" class="col-sm-2 col-form-label d-flex justify-content-end">Tipo de incidente: </label>
+            <label for="incidentTypeId" class="col-sm-2 col-form-label d-flex justify-content-end">Tipo de incidente: </label>
             <div class="col-sm-4">
-              <select class="form-select form-control" name="locationId" id="locationId">
+              <select class="form-select form-control" name="incidentTypeId" id="incidentTypeId">
                 {{#select item.locationId}}
                   <option disabled selected value></option>
-                  {{#each locations}}
+                  {{#each incidentTypes}}
                     <option value="{{ this.id }}">{{ this.name }}</option>
                   {{/each}}
                 {{/select}}
@@ -100,12 +100,12 @@
         <div id="itemSelect" class="d-block">
           <br>
           <div class="row mx-3">
-            <label for="locationId" class="col-sm-2 col-form-label d-flex justify-content-end">Item: </label>
+            <label for="itemId" class="col-sm-2 col-form-label d-flex justify-content-end">Item: </label>
             <div class="col-sm-4">
-              <select class="form-select form-control" name="locationId" id="locationId">
-                {{#select item.locationId}}
+              <select class="form-select form-control" name="itemId" id="itemId">
+                {{#select item.itemId}}
                   <option disabled selected value></option>
-                  {{#each locations}}
+                  {{#each items}}
                     <option value="{{ this.id }}">{{ this.name }}</option>
                   {{/each}}
                 {{/select}}

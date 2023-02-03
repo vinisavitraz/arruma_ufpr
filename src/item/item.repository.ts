@@ -22,6 +22,19 @@ export class ItemRepository {
     });
   }
 
+  public async findItemsByLocationID(locationId: number): Promise<item[]> {
+    return await this.connection.item.findMany({
+      where: {
+        location_id: locationId,
+      },
+      orderBy: [
+        {
+          id: 'asc',
+        },
+      ],
+    });
+  }
+
   public async findItemByID(id: number): Promise<item | null> {
     return await this.connection.item.findUnique({ where: { id: id } });
   }

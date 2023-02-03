@@ -11,6 +11,7 @@ import { DashboardErrorMapper } from "../render/dashboard-error-mapper";
 import { UpdateIncidentTypeRequestDTO } from "src/incident/dto/request/update-incident-type-request.dto";
 import { Roles } from "src/auth/roles/require-roles.decorator";
 import { RoleEnum } from "src/app/enum/role.enum";
+import { LocationEntity } from "src/location/entity/location.entity";
 
 @Controller('dashboard/incident')
 @ApiExcludeController()
@@ -23,12 +24,17 @@ export class DashboardIncidentController {
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(AuthenticatedGuard)
   public async getCreateIncidentPage(@Request() req, @Res() res: Response): Promise<void> {    
+    const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
+    const locations: LocationEntity[] = await this.service.findLocations();
+
     return DashboardResponseRender.renderForAuthenticatedUser(
       res,
       'incident/create-incident',
       req.user,
       'incident',
       {
+        incidentTypes: incidentTypes,
+        locations: locations,
         jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/create-incident.js'}],
       }
     );
@@ -50,7 +56,7 @@ export class DashboardIncidentController {
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(AuthenticatedGuard)
   public async getIncidentTypesPage(@Request() req, @Res() res: Response): Promise<void> {    
-    const incidents: IncidentTypeEntity[] = await this.service.findIncidentTypes();
+    const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
 
     return DashboardResponseRender.renderForAuthenticatedUser(
       res,
@@ -58,8 +64,8 @@ export class DashboardIncidentController {
       req.user,
       'incidentType',
       {
-        incidentTypes: incidents,
-        showContent: incidents.length > 0,
+        incidentTypes: incidentTypes,
+        showContent: incidentTypes.length > 0,
       }
     );
   }

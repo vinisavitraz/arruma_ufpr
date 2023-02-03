@@ -25,6 +25,14 @@ export class ItemService {
     });
   }
 
+  public async findItemsByLocationID(locationId: number): Promise<ItemEntity[]> {
+    const itemsDb: item[] = await this.repository.findItemsByLocationID(locationId);
+
+    return itemsDb.map((item: item) => {
+      return ItemEntity.fromRepository(item);
+    });
+  }
+  
   public async findItemByIDOrCry(id: number): Promise<ItemEntity> {
     const itemDb: item | null = await this.repository.findItemByID(id);
 

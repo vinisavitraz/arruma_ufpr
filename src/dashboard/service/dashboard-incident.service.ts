@@ -4,14 +4,23 @@ import { CreateIncidentTypeRequestDTO } from 'src/incident/dto/request/create-in
 import { UpdateIncidentTypeRequestDTO } from 'src/incident/dto/request/update-incident-type-request.dto';
 import { IncidentTypeEntity } from 'src/incident/entity/incident-type.entity';
 import { IncidentService } from 'src/incident/incident.service';
+import { LocationEntity } from 'src/location/entity/location.entity';
+import { LocationService } from 'src/location/location.service';
 
 @Injectable()
 export class DashboardIncidentService {
 
-  constructor(private readonly incidentService: IncidentService) {}
+  constructor(
+    private readonly incidentService: IncidentService,
+    private readonly locationService: LocationService,
+  ) {}
 
   public async findIncidentTypes(): Promise<IncidentTypeEntity[]> {
     return await this.incidentService.findIncidentTypes();
+  }
+
+  public async findLocations(): Promise<LocationEntity[]> {
+    return await this.locationService.findLocations();
   }
 
   public async findIncidentTypeByIDOrCry(id: number): Promise<IncidentTypeEntity> {

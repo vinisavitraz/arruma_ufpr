@@ -23,6 +23,10 @@ export class DashboardItemService {
     return await this.itemService.findItems();
   }
 
+  public async findItemsByLocationID(locationId: number): Promise<ItemEntity[]> {
+    return await this.itemService.findItemsByLocationID(locationId);
+  }
+
   public async findItemByIDOrCry(id: number): Promise<ItemEntity> {
     return await this.itemService.findItemByIDOrCry(id);
   }
