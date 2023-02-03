@@ -9,52 +9,89 @@
     <div class="border bg-light">
       <br>
       <div class="row ms-3">
-        <h3>Cadastrar item</h3>
+        <h3>Novo incidente</h3>
       </div>
       <hr class="bg-dark border-1 border-top border-dark mx-5">
       <br>
       <form method="POST" action="/dashboard/new-door" class="needs-validation" novalidate="" autocomplete="off">
-        <input type="hidden" id="marketId" name="marketId" value="{{marketId}}">
+        <input type="hidden" id="id" name="id" value="{{item.id}}">
+        <div class="row mx-3">
+          <label for="title" class="col-sm-2 col-form-label d-flex justify-content-end">Título: </label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" id="title" name="title" value="{{ incident.title }}">
+          </div>
+        </div>
+        <br>
+        <div class="row mx-3">
+          <label for="locationId" class="col-sm-2 col-form-label d-flex justify-content-end">Tipo de incidente: </label>
+          <div class="col-sm-4">
+            <select class="form-select form-control" name="locationId" id="locationId">
+              {{#select item.locationId}}
+                <option disabled selected value></option>
+                {{#each locations}}
+                  <option value="{{ this.id }}">{{ this.name }}</option>
+                {{/each}}
+              {{/select}}
+            </select>
+          </div>
+        </div>
+        <br>
+        <div class="row mx-3">
+          <label for="locationId" class="col-sm-2 col-form-label d-flex justify-content-end">Local: </label>
+          <div class="col-sm-4">
+            <select class="form-select form-control" name="locationId" id="locationId">
+              {{#select item.locationId}}
+                <option disabled selected value></option>
+                {{#each locations}}
+                  <option value="{{ this.id }}">{{ this.name }}</option>
+                {{/each}}
+              {{/select}}
+            </select>
+          </div>
+        </div>
+        <br>
+        <div class="row mx-3">
+          <label for="locationId" class="col-sm-2 col-form-label d-flex justify-content-end">Item: </label>
+          <div class="col-sm-4">
+            <select class="form-select form-control" name="locationId" id="locationId">
+              {{#select item.locationId}}
+                <option disabled selected value></option>
+                {{#each locations}}
+                  <option value="{{ this.id }}">{{ this.name }}</option>
+                {{/each}}
+              {{/select}}
+            </select>
+          </div>
+        </div>
+        <br>
         <div class="row mx-3">
           <label for="description" class="col-sm-2 col-form-label d-flex justify-content-end">Descrição: </label>
           <div class="col-sm-4">
-            <input type="text" class="form-control" id="description" name="description">
+            <textarea type="text" rows="5" class="form-control" id="description" name="description">{{ incident.description }}</textarea>
           </div>
         </div>
         <br>
         <div class="row mx-3">
-          <label for="type" class="col-sm-2 col-form-label d-flex justify-content-end">Tipo: </label>
+          <label for="startDate" class="col-sm-2 col-form-label d-flex justify-content-end">Data: </label>
           <div class="col-sm-4">
-            <select class="form-select form-control" name="type" id="type">
-                <option disabled selected value></option>
-                <option value="0">Entrada</option>
-                <option value="1">Geladeira</option>
-            </select>
+            <input type="datetime-local" class="form-control" id="startDate" name="startDate" value="{{ incident.startDate }}">
           </div>
         </div>
         <br>
-        <div class="row mx-3">
-          <label for="idTopicCloudMqtt" class="col-sm-2 col-form-label d-flex justify-content-end">Tópico CloudMQQT: </label>
-          <div class="col-sm-4">
-            <select class="form-select form-control" name="idTopicCloudMqtt" id="idTopicCloudMqtt">
-                <option disabled selected value></option>
-                {{#each topics}}
-                  <option value="{{ this.id }}">{{ this.topic }}</option>
-                {{/each}}
-            </select>
-          </div>
-        </div>
         <br>
-        <div class="row mx-3">
-          <label for="idCloudMqtt" class="col-sm-2 col-form-label d-flex justify-content-end">ID CloudMQQT: </label>
-          <div class="col-sm-4">
-            <input type="text" class="form-control" id="idCloudMqtt" name="idCloudMqtt">
-          </div>
-        </div>
         <br>
+        {{#if showError }}
+          {{#each errors}}
+            <div class="row mx-3">
+              <div class="col-sm-4">
+                <p class="text-danger">ERRO: {{this}}</p>
+              </div>
+            </div>
+          {{/each}}
+        {{/if}}
         <div class="row mx-3 d-flex justify-content-end">
             <div class="col-2 ">
-              <button type="submit" id= "aButton" class="btn btn-success ms-auto">Salvar</button>
+              <button type="submit" class="btn btn-success ms-auto btn-lg">Salvar</button>
             </div>
         </div>
       </form>
