@@ -6,8 +6,7 @@ import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { AuthRepository } from './auth.repository';
-import { permission, role, role_permission, user_token } from '@prisma/client';
-import { RoleEntity } from './entity/role.entity';
+import { user_token } from '@prisma/client';
 import { TokenType } from 'src/app/enum/token.enum';
 import { TokenEntity } from './entity/token.entity';
 import { JwtService } from '@nestjs/jwt';
@@ -66,20 +65,6 @@ export class AuthService {
     }
     
     return userDb;
-  }
-
-  public async findRoleWithPermissions(roleId: number): Promise<RoleEntity> {
-    const roleWithPermissions: role & {permissions: (role_permission & {permission: permission})[]} = await this.repository.findRoleWithPermissions(roleId);
-
-    if (!roleWithPermissions) {
-      throw new HttpOperationException(
-        HttpStatus.NOT_FOUND, 
-        'Role not found for id: ' + roleId, 
-        HttpOperationErrorCodes.INVALID_ROLE,
-      );
-    }
-
-    return RoleEntity.fromRepository(roleWithPermissions);
   }
 
   private async findUserTokenOrCry(userId: number, type: TokenType): Promise<TokenEntity> {

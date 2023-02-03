@@ -18,20 +18,20 @@ export class UserEntity {
   readonly password: string;
   
   @ApiProperty({example: 1})
-  readonly roleId: number;
+  readonly role: number;
 
   constructor(
     id: number,
     name: string,
     email: string,
     password: string,
-    roleId: number,
+    role: number,
   ) {
     this.id = id;
     this.name = name;
     this.email = email;
     this.password = password;
-    this.roleId = roleId;
+    this.role = role;
   }
 
   public static fromRepository(user: user): UserEntity {
@@ -40,7 +40,7 @@ export class UserEntity {
       user.name,
       user.email,
       user.password,
-      user.role_id,
+      user.role,
     );
   }
 

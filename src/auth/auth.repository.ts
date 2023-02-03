@@ -1,4 +1,4 @@
-import { permission, role, role_permission, user_token } from "@prisma/client";
+import { user_token } from "@prisma/client";
 import { TokenType } from "src/app/enum/token.enum";
 import { DatabaseService } from "src/database/database.service";
 import { TokenEntity } from "./entity/token.entity";
@@ -9,21 +9,6 @@ export class AuthRepository {
 
   constructor(databaseService: DatabaseService) {
       this.connection = databaseService;
-  }
-
-  public async findRoleWithPermissions(roleId: number): Promise<role & {permissions: (role_permission & {permission: permission})[]}> {
-    return await this.connection.role.findUnique({ 
-      where: { 
-        id: roleId,
-      }, 
-      include: {
-        permissions: {
-          include: {
-            permission: true,
-          },
-        }
-      },
-    });
   }
 
   public async saveToken(token: TokenEntity): Promise<user_token> {

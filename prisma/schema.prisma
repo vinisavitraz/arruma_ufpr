@@ -8,41 +8,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model role {
-  id               Int           @id @default(autoincrement())
-  name             String        @db.VarChar(100)
-  key              String        @db.VarChar(100) @unique
-  users            user[]
-  permissions      role_permission[]
-  
-  @@index([name])
-}
-
-model permission {
-  id               Int           @id @default(autoincrement())
-  name             String        @db.VarChar(100) 
-  key              String        @db.VarChar(100) @unique
-  permissions      role_permission[]
-  
-  @@index([name])
-}
-
-model role_permission {
-  role_id          Int
-  role             role          @relation(fields: [role_id], references: [id])
-  permission_id    Int
-  permission       permission    @relation(fields: [permission_id], references: [id])
-
-  @@id([role_id, permission_id])
-}
-
 model user {
   id               Int           @id @default(autoincrement())
   name             String        @db.VarChar(200)
   email            String        @db.VarChar(100) @unique
   password         String        @db.VarChar(100)
-  role_id          Int
-  role             role          @relation(fields: [role_id], references: [id])
+  role             Int
   users            incident_user[]
   interactions     incident_interaction[]
   user_token       user_token[]

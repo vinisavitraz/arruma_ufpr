@@ -1,10 +1,10 @@
 import { Controller, Get, UseFilters, UseGuards, Request, Res, Post, Param, ParseIntPipe } from "@nestjs/common";
 import { ApiExcludeController } from "@nestjs/swagger";
 import { Response } from 'express';
-import { PermissionEnum } from "src/app/enum/permission.enum";
+import { RoleEnum } from "src/app/enum/role.enum";
 import { DashboardExceptionFilter } from "src/app/exception/filter/dashboard-exception-filter";
 import { AuthenticatedGuard } from "src/auth/guard/authenticated.guard";
-import PermissionGuard from "src/auth/guard/permission.guard";
+import { Roles } from "src/auth/roles/require-roles.decorator";
 import { CreateLocationRequestDTO } from "src/location/dto/request/create-location-request.dto";
 import { UpdateLocationRequestDTO } from "src/location/dto/request/update-location-request.dto";
 import { LocationEntity } from "src/location/entity/location.entity";
@@ -57,11 +57,9 @@ export class DashboardUserController {
   //   );
   // }
 
-  @UseGuards(
-    AuthenticatedGuard,
-    PermissionGuard(PermissionEnum.USERS_PAGE),
-  )
   @Get()
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(AuthenticatedGuard)
   public async getUsersPage(@Request() req, @Res() res: Response): Promise<void> {    
     const users: UserEntity[] = await this.service.findUsers();
 

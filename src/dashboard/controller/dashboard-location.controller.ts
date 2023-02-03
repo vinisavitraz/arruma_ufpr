@@ -1,10 +1,10 @@
 import { Controller, Get, UseFilters, UseGuards, Request, Res, Post, Param, ParseIntPipe } from "@nestjs/common";
 import { ApiExcludeController } from "@nestjs/swagger";
 import { Response } from 'express';
-import { PermissionEnum } from "src/app/enum/permission.enum";
+import { RoleEnum } from "src/app/enum/role.enum";
 import { DashboardExceptionFilter } from "src/app/exception/filter/dashboard-exception-filter";
 import { AuthenticatedGuard } from "src/auth/guard/authenticated.guard";
-import PermissionGuard from "src/auth/guard/permission.guard";
+import { Roles } from "src/auth/roles/require-roles.decorator";
 import { CreateLocationRequestDTO } from "src/location/dto/request/create-location-request.dto";
 import { UpdateLocationRequestDTO } from "src/location/dto/request/update-location-request.dto";
 import { LocationEntity } from "src/location/entity/location.entity";
@@ -19,11 +19,9 @@ export class DashboardLocationController {
   
   constructor(private readonly service: DashboardLocationService) {}
 
-  @UseGuards(
-    AuthenticatedGuard,
-    PermissionGuard(PermissionEnum.CREATE_LOCATION_PAGE),
-  )
   @Get('create')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(AuthenticatedGuard)
   public async getCreateLocationPage(@Request() req, @Res() res: Response): Promise<void> {    
     return DashboardResponseRender.renderForAuthenticatedUser(
       res,
@@ -36,11 +34,9 @@ export class DashboardLocationController {
     );
   }
 
-  @UseGuards(
-    AuthenticatedGuard,
-    PermissionGuard(PermissionEnum.LOCATIONS_PAGE),
-  )
   @Get(':id')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(AuthenticatedGuard)
   public async getLocationPage(@Param('id', ParseIntPipe) locationId: number, @Request() req, @Res() res: Response): Promise<void> {    
     const location: LocationEntity = await this.service.findLocationByIDOrCry(locationId);
 
@@ -55,11 +51,9 @@ export class DashboardLocationController {
     );
   }
 
-  @UseGuards(
-    AuthenticatedGuard,
-    PermissionGuard(PermissionEnum.LOCATIONS_PAGE),
-  )
   @Get()
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(AuthenticatedGuard)
   public async getLocationsPage(@Request() req, @Res() res: Response): Promise<void> {    
     const locations: LocationEntity[] = await this.service.findLocations();
 
@@ -74,11 +68,9 @@ export class DashboardLocationController {
     );
   }
 
-  @UseGuards(
-    AuthenticatedGuard,
-    PermissionGuard(PermissionEnum.CREATE_LOCATION_PAGE),
-  )
   @Post('create')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(AuthenticatedGuard)
   public async createLocation(@Request() req, @Res() res: Response): Promise<void> { 
     const createLocationRequestDto: CreateLocationRequestDTO = CreateLocationRequestDTO.fromDashboard(req.body);
     
@@ -99,11 +91,9 @@ export class DashboardLocationController {
     return res.redirect('/dashboard/location');
   }
 
-  @UseGuards(
-    AuthenticatedGuard,
-    PermissionGuard(PermissionEnum.UPDATE_LOCATION_PAGE),
-  )
   @Post('update')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(AuthenticatedGuard)
   public async updateLocation(@Request() req, @Res() res: Response): Promise<void> { 
     const updateLocationRequestDTO: UpdateLocationRequestDTO = UpdateLocationRequestDTO.fromDashboard(req.body);
     
@@ -124,11 +114,9 @@ export class DashboardLocationController {
     return res.redirect('/dashboard/location');
   }
 
-  @UseGuards(
-    AuthenticatedGuard,
-    PermissionGuard(PermissionEnum.DELETE_LOCATION_PAGE),
-  )
   @Get('delete/:id')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(AuthenticatedGuard)
   public async deleteLocation(@Param('id', ParseIntPipe) locationId: number, @Request() req, @Res() res: Response): Promise<void> {     
     await this.service.deleteLocation(locationId);
 

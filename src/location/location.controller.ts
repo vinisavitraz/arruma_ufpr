@@ -2,9 +2,9 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuard
 import { ApiBearerAuth, ApiBody, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { UnauthorizedExample } from 'src/app/docs/example/auth/unauthorized-example';
 import { LocationNotFoundExample } from 'src/app/docs/example/location/location-not-found-example';
-import { PermissionEnum } from 'src/app/enum/permission.enum';
+import { RoleEnum } from 'src/app/enum/role.enum';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
-import PermissionGuard from 'src/auth/guard/permission.guard';
+import { Roles } from 'src/auth/roles/require-roles.decorator';
 import { CreateLocationRequestDTO } from './dto/request/create-location-request.dto';
 import { UpdateLocationRequestDTO } from './dto/request/update-location-request.dto';
 import { DeleteLocationResponseDTO } from './dto/response/delete-location-response.dto';
@@ -22,10 +22,8 @@ export class LocationController {
   constructor(private readonly locationService: LocationService) {}
 
   @Get()
-  @UseGuards(
-    JwtAuthGuard,
-    PermissionGuard(PermissionEnum.LOCATIONS_PAGE)
-  )
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Listar todos os locais' })
   @ApiOkResponse({ type: ListLocationsResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
@@ -36,10 +34,8 @@ export class LocationController {
   }
 
   @Get(':id')
-  @UseGuards(
-    JwtAuthGuard,
-    PermissionGuard(PermissionEnum.LOCATIONS_PAGE)
-  )
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Listar local pelo ID' })
   @ApiOkResponse({ type: ListLocationResponseDTO })
   @ApiNotFoundResponse({type: LocationNotFoundExample})
@@ -51,10 +47,8 @@ export class LocationController {
   }
 
   @Post()
-  @UseGuards(
-    JwtAuthGuard,
-    PermissionGuard(PermissionEnum.CREATE_LOCATION_PAGE)
-  )
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Criar novo local' })
   @ApiBody({ type: [CreateLocationRequestDTO] })
   @ApiOkResponse({ type: ListLocationResponseDTO })
@@ -66,10 +60,8 @@ export class LocationController {
   }
 
   @Put()
-  @UseGuards(
-    JwtAuthGuard,
-    PermissionGuard(PermissionEnum.UPDATE_LOCATION_PAGE)
-  )
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Atualizar local' })
   @ApiBody({ type: [UpdateLocationRequestDTO] })
   @ApiOkResponse({ type: ListLocationResponseDTO })
@@ -82,6 +74,8 @@ export class LocationController {
   }
 
   @Delete(':id')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Excluir local' })
   @ApiOkResponse({ type: DeleteLocationResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
