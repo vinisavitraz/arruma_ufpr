@@ -28,6 +28,9 @@ export class DashboardIncidentController {
       'incident/create-incident',
       req.user,
       'incident',
+      {
+        jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/create-incident.js'}],
+      }
     );
   }
 
@@ -55,7 +58,7 @@ export class DashboardIncidentController {
       req.user,
       'incidentType',
       {
-        locations: incidents,
+        incidentTypes: incidents,
         showContent: incidents.length > 0,
       }
     );
@@ -71,7 +74,7 @@ export class DashboardIncidentController {
       req.user,
       'incidentType',
       {
-        location: new CreateIncidentTypeRequestDTO(),
+        incidentType: new CreateIncidentTypeRequestDTO(),
         uri: '/dashboard/incident/types/create',
       },
     );
@@ -89,7 +92,7 @@ export class DashboardIncidentController {
       req.user,
       'incidentType',
       {
-        location: CreateIncidentTypeRequestDTO.fromEntity(incidentType),
+        incidentType: CreateIncidentTypeRequestDTO.fromEntity(incidentType),
         uri: '/dashboard/incident/types/update',
       }
     );
@@ -110,7 +113,7 @@ export class DashboardIncidentController {
         req.user,
         'incidentType',
         {
-          location: createIncidentTypeRequestDTO,
+          incidentType: createIncidentTypeRequestDTO,
           ...DashboardErrorMapper.map(errors)
         }
       );
@@ -134,7 +137,7 @@ export class DashboardIncidentController {
         req.user,
         'incidentType',
         {
-          location: updateIncidentTypeRequestDTO,
+          incidentType: updateIncidentTypeRequestDTO,
           ...DashboardErrorMapper.map(errors)
         }
       );

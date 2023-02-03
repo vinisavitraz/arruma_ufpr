@@ -14,18 +14,18 @@
       <hr class="bg-dark border-1 border-top border-dark mx-5">
       <br>
       <form method="POST" action="{{ uri }}" class="needs-validation" novalidate="" autocomplete="off">
-        <input type="hidden" id="id" name="id" value="{{location.id}}">
+        <input type="hidden" id="id" name="id" value="{{incidentType.id}}">
         <div class="row mx-3">
           <label for="name" class="col-sm-2 col-form-label d-flex justify-content-end">Nome: </label>
           <div class="col-sm-4">
-            <input type="text" class="form-control" id="name" name="name" value="{{ location.name }}">
+            <input type="text" class="form-control" id="name" name="name" value="{{ incidentType.name }}">
           </div>
         </div>
         <br>
         <div class="row mx-3">
           <label for="description" class="col-sm-2 col-form-label d-flex justify-content-end">Descrição: </label>
           <div class="col-sm-4">
-            <input type="text" class="form-control" id="description" name="description" value="{{ location.description }}">
+            <input type="text" class="form-control" id="description" name="description" value="{{ incidentType.description }}">
           </div>
         </div>
         <br>
