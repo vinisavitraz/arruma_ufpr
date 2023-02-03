@@ -10,25 +10,30 @@ import { DashboardIncidentService } from './service/dashboard-incident.service';
 import { IncidentModule } from 'src/incident/incident.module';
 import { ItemModule } from 'src/item/item.module';
 import { DashboardItemService } from './service/dashboard-item.service';
+import { UserModule } from 'src/user/user.module';
+import { DashboardUserController } from './controller/dashboard-user.controller';
+import { DashboardUserService } from './service/dashboard-user.service';
 
 @Module({
   imports: [
     ItemModule,
     LocationModule,
     IncidentModule,
+    UserModule,
   ],
   controllers: [
     DashboardController, 
     DashboardItemController,
     DashboardLocationController,
     DashboardIncidentController,
+    DashboardUserController,
   ],
   providers: [
     DashboardService,
     DashboardItemService,
     DashboardLocationService,
     DashboardIncidentService,
+    DashboardUserService,
   ],
-  exports: [DashboardService],
 })
 export class DashboardModule {}

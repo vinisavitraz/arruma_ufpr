@@ -9,6 +9,16 @@ export class UserRepository {
     this.connection = databaseService;
   }
 
+  public async findUsers(): Promise<user[]> {
+    return await this.connection.user.findMany({
+      orderBy: [
+        {
+          id: 'asc',
+        },
+      ],
+    });
+  }
+
   public async findUserByEmail(email: string): Promise<user | null> {
     return await this.connection.user.findUnique({ where: { email: email } });
   }

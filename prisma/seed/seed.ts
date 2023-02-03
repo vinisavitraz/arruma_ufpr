@@ -184,6 +184,15 @@ async function main() {
     },
   });
 
+  const usersPagePermission: permission = await prisma.permission.upsert({
+    where: { key: 'users_page' },
+    update: {},
+    create: {
+      name: 'Página `Listar usuários`',
+      key: 'users_page',
+    },
+  });
+
   const listUserTeacherRolePermission: role_permission = await prisma.role_permission.create({
     data: {
       role_id: teacherRole.id,
@@ -314,6 +323,13 @@ async function main() {
     data: {
       role_id: teacherRole.id,
       permission_id: deleteItemPagePermission.id,
+    },
+  });
+
+  const usersPageTeacherRolePermission: role_permission = await prisma.role_permission.create({
+    data: {
+      role_id: teacherRole.id,
+      permission_id: usersPagePermission.id,
     },
   });
 

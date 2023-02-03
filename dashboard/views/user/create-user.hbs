@@ -1,0 +1,66 @@
+<body id="body-pd">
+  {{>header}}
+  <div class="container-fluid">
+    <br>
+    <div class="col-2 d-flex">
+      <a class="btn btn-primary" id="aButton" href="/dashboard/item" role="button">Voltar</a>
+    </div>
+    <br>
+    <div class="border bg-light">
+      <br>
+      <div class="row ms-3">
+        <h3>Novo item</h3>
+      </div>
+      <hr class="bg-dark border-1 border-top border-dark mx-5">
+      <br>
+      <form method="POST" action="{{ uri }}" class="needs-validation" novalidate="" autocomplete="off">
+        <input type="hidden" id="id" name="id" value="{{item.id}}">
+        <div class="row mx-3">
+          <label for="name" class="col-sm-2 col-form-label d-flex justify-content-end">Nome: </label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" id="name" name="name" value="{{ item.name }}">
+          </div>
+        </div>
+        <br>
+        <div class="row mx-3">
+          <label for="description" class="col-sm-2 col-form-label d-flex justify-content-end">Descrição: </label>
+          <div class="col-sm-4">
+            <input type="text" class="form-control" id="description" name="description" value="{{ item.description }}">
+          </div>
+        </div>
+        <br>
+        <div class="row mx-3">
+          <label for="locationId" class="col-sm-2 col-form-label d-flex justify-content-end">Local: </label>
+          <div class="col-sm-4">
+            <select class="form-select form-control" name="locationId" id="locationId">
+              {{#select item.locationId}}
+                <option disabled selected value></option>
+                {{#each locations}}
+                  <option value="{{ this.id }}">{{ this.name }}</option>
+                {{/each}}
+              {{/select}}
+            </select>
+          </div>
+        </div>
+        <br>
+        <br>
+        {{#if showError }}
+          {{#each errors}}
+            <div class="row mx-3">
+              <div class="col-sm-4">
+                <p class="text-danger">ERRO: {{this}}</p>
+              </div>
+            </div>
+          {{/each}}
+        {{/if}}
+        <div class="row mx-3 d-flex justify-content-end">
+            <div class="col-2 ">
+              <button type="submit" class="btn btn-success ms-auto btn-lg">Salvar</button>
+            </div>
+        </div>
+      </form>
+      <br>
+      <br>
+    </div>
+  </div>
+</body>

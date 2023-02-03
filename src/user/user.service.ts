@@ -15,6 +15,14 @@ export class UserService {
       this.repository = new UserRepository(this.databaseService);
   }
 
+  public async findUsers(): Promise<UserEntity[]> {
+    const usersDb: user[] = await this.repository.findUsers();
+
+    return usersDb.map((user: user) => {
+      return UserEntity.fromRepository(user);
+    });
+  }
+
   public async findUserByIDOrCry(id: number): Promise<UserEntity> {
     const userDb: user | null = await this.repository.findUserByID(id);
 

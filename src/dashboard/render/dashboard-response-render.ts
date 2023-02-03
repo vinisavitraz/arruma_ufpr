@@ -34,6 +34,7 @@ export class DashboardResponseRender {
     let showMenuIncidentTypes: boolean = false;
     let showMenuLocations: boolean = false;
     let showMenuItems: boolean = false;
+    let showMenuUsers: boolean = false;
 
     for (let i = 0; i < permissions.length; i++) {
       const permission: PermissionEntity = permissions[i];
@@ -54,6 +55,9 @@ export class DashboardResponseRender {
         case PermissionEnum.ITEMS_PAGE:
           showMenuItems = true;
           break;
+        case PermissionEnum.USERS_PAGE:
+          showMenuUsers = true;
+          break;
         default:
           break;
       }
@@ -65,6 +69,7 @@ export class DashboardResponseRender {
       showMenuIncidentTypes,
       showMenuLocations,
       showMenuItems,
+      showMenuUsers,
     );
   }
 
