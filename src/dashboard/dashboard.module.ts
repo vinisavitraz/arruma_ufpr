@@ -13,6 +13,8 @@ import { DashboardItemService } from './service/dashboard-item.service';
 import { UserModule } from 'src/user/user.module';
 import { DashboardUserController } from './controller/dashboard-user.controller';
 import { DashboardUserService } from './service/dashboard-user.service';
+import { DashboardIncidentTypeService } from './service/dashboard-incident-type.service';
+import { DashboardIncidentTypeController } from './controller/dashboard-incident-type.controller';
 
 @Module({
   imports: [
@@ -27,6 +29,7 @@ import { DashboardUserService } from './service/dashboard-user.service';
     DashboardLocationController,
     DashboardIncidentController,
     DashboardUserController,
+    DashboardIncidentTypeController,
   ],
   providers: [
     DashboardService,
@@ -34,6 +37,7 @@ import { DashboardUserService } from './service/dashboard-user.service';
     DashboardLocationService,
     DashboardIncidentService,
     DashboardUserService,
+    DashboardIncidentTypeService,
   ],
 })
 export class DashboardModule {}

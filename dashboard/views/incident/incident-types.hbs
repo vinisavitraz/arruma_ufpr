@@ -8,7 +8,7 @@
         <h1>Tipos de incidente</h1>
       </div>
       <div class="col-2">
-        <a class="btn btn-success" href="/dashboard/incident/types/create" role="button">Novo tipo de incidente</a>
+        <a class="btn btn-success" href="/dashboard/incident/type/create" role="button">Novo tipo de incidente</a>
       </div>
     </div>
     <hr class="bg-dark border-1 border-top border-dark">
@@ -52,7 +52,7 @@
         </div>
       {{/if}}
       <div class="p-2">
-        <a class="btn btn-secondary" href="/dashboard/object">Limpar filtros</a>
+        <a class="btn btn-secondary" href="/dashboard/incident/type">Limpar filtros</a>
       </div>
       <div class="p-2">
         <select class="form-select" name="limit" id="registers-per-page">
@@ -90,8 +90,8 @@
                     <td>{{this.id}}</td>
                     <td>{{this.name}}</td>
                     <td>{{this.description}}</td>
-                    <td><a class="btn btn-success" href="/dashboard/incident/types/{{this.id}}">Visualizar</a></td>
-                    <td><a href="/dashboard/incident/types/delete/{{this.id}}" onclick="return confirm('Tem certeza que deseja excluir esse registro?')" class="btn btn-danger">Remover</a></td>
+                    <td><a class="btn btn-success" href="/dashboard/incident/type/{{this.id}}">Visualizar</a></td>
+                    <td><a href="/dashboard/incident/type/delete/{{this.id}}" onclick="return confirm('Tem certeza que deseja excluir esse registro?')" class="btn btn-danger">Remover</a></td>
                 </tr>
             {{/each}}
             </tbody>
