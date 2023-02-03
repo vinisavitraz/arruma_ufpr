@@ -67,6 +67,7 @@ export class DashboardUserController {
       res,
       'user/users',
       req.user,
+      'user',
       {
         users: users,
         showContent: users.length > 0,

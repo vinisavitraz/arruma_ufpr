@@ -27,6 +27,7 @@ export class DashboardLocationController {
       res,
       'location/create-location',
       req.user,
+      'location',
       {
         location: new CreateLocationRequestDTO(),
         uri: '/dashboard/location/create',
@@ -44,6 +45,7 @@ export class DashboardLocationController {
       res,
       'location/create-location',
       req.user,
+      'location',
       {
         location: CreateLocationRequestDTO.fromEntity(location),
         uri: '/dashboard/location/update',
@@ -61,6 +63,7 @@ export class DashboardLocationController {
       res,
       'location/locations',
       req.user,
+      'location',
       {
         locations: locations,
         showContent: locations.length > 0,
@@ -81,6 +84,7 @@ export class DashboardLocationController {
         res,
         'location/create-location',
         req.user,
+        'location',
         {
           location: createLocationRequestDto,
           ...DashboardErrorMapper.map(errors)
@@ -104,6 +108,7 @@ export class DashboardLocationController {
         res,
         'location/create-location',
         req.user,
+        'location',
         {
           location: updateLocationRequestDTO,
           ...DashboardErrorMapper.map(errors)

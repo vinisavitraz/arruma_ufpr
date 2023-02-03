@@ -52,6 +52,7 @@ export class DashboardController {
       res,
       'home/home',
       req.user,
+      'home',
     );
   }
 
@@ -62,6 +63,7 @@ export class DashboardController {
       res,
       'app/unauthorized',
       req.user,
+      'home',
     );
   }
 

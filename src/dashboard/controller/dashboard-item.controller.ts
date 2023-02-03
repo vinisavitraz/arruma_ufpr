@@ -30,6 +30,7 @@ export class DashboardItemController {
       res,
       'item/create-item',
       req.user,
+      'item',
       {
         locations: locations,
         item: new CreateItemRequestDTO(),
@@ -49,6 +50,7 @@ export class DashboardItemController {
       res,
       'item/create-item',
       req.user,
+      'item',
       {
         locations: locations,
         item: CreateItemRequestDTO.fromEntity(item),
@@ -67,6 +69,7 @@ export class DashboardItemController {
       res,
       'item/items',
       req.user,
+      'item',
       {
         items: items,
         showContent: items.length > 0,
@@ -89,6 +92,7 @@ export class DashboardItemController {
         res,
         'item/create-item',
         req.user,
+        'item',
         {
           locations: locations,
           item: createItemRequestDTO,
@@ -116,6 +120,7 @@ export class DashboardItemController {
         res,
         'item/create-item',
         req.user,
+        'item',
         {
           locations: locations,
           item: updateItemRequestDTO,

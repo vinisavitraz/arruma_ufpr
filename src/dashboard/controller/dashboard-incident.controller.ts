@@ -27,6 +27,7 @@ export class DashboardIncidentController {
       res,
       'incident/create-incident',
       req.user,
+      'incident',
     );
   }
 
@@ -38,6 +39,7 @@ export class DashboardIncidentController {
       res,
       'incident/incidents',
       req.user,
+      'incident',
     );
   }
 
@@ -51,6 +53,7 @@ export class DashboardIncidentController {
       res,
       'incident/incident-types',
       req.user,
+      'incidentType',
       {
         locations: incidents,
         showContent: incidents.length > 0,
@@ -66,6 +69,7 @@ export class DashboardIncidentController {
       res,
       'incident/create-incident-type',
       req.user,
+      'incidentType',
       {
         location: new CreateIncidentTypeRequestDTO(),
         uri: '/dashboard/incident/types/create',
@@ -83,6 +87,7 @@ export class DashboardIncidentController {
       res,
       'incident/create-incident-type',
       req.user,
+      'incidentType',
       {
         location: CreateIncidentTypeRequestDTO.fromEntity(incidentType),
         uri: '/dashboard/incident/types/update',
@@ -103,6 +108,7 @@ export class DashboardIncidentController {
         res,
         'incident/create-incident-type',
         req.user,
+        'incidentType',
         {
           location: createIncidentTypeRequestDTO,
           ...DashboardErrorMapper.map(errors)
@@ -126,6 +132,7 @@ export class DashboardIncidentController {
         res,
         'incident/create-incident-type',
         req.user,
+        'incidentType',
         {
           location: updateIncidentTypeRequestDTO,
           ...DashboardErrorMapper.map(errors)
@@ -139,7 +146,7 @@ export class DashboardIncidentController {
   @Get('types/delete/:id')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(AuthenticatedGuard)
-  public async deleteLocation(@Param('id', ParseIntPipe) locationId: number, @Request() req, @Res() res: Response): Promise<void> {     
+  public async deleteIncidentType(@Param('id', ParseIntPipe) locationId: number, @Request() req, @Res() res: Response): Promise<void> {     
     await this.service.deleteIncidentType(locationId);
 
     return res.redirect('/dashboard/incident/types');
