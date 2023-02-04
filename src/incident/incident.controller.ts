@@ -5,12 +5,15 @@ import { IncidentTypeNotFoundExample } from 'src/app/docs/example/incident/incid
 import { RoleEnum } from 'src/app/enum/role.enum';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { Roles } from 'src/auth/roles/require-roles.decorator';
+import { CreateIncidentRequestDTO } from './dto/request/create-incident-request.dto';
 import { CreateIncidentTypeRequestDTO } from './dto/request/create-incident-type-request.dto';
 import { UpdateIncidentTypeRequestDTO } from './dto/request/update-incident-type-request.dto';
 import { DeleteIncidentTypeResponseDTO } from './dto/response/delete-incident-type-response.dto';
+import { ListIncidentResponseDTO } from './dto/response/list-incident-response.dto';
 import { ListIncidentTypeResponseDTO } from './dto/response/list-incident-type-response.dto';
 import { ListIncidentTypesResponseDTO } from './dto/response/list-incident-types-response.dto';
 import { IncidentTypeEntity } from './entity/incident-type.entity';
+import { IncidentEntity } from './entity/incident.entity';
 import { IncidentService } from './incident.service';
 
 @Controller('incident')
@@ -46,11 +49,24 @@ export class IncidentController {
   @Post()
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Criar novo incidente' })
+  @ApiBody({ type: CreateIncidentRequestDTO })
+  @ApiOkResponse({ type: ListIncidentResponseDTO })
+  @ApiUnauthorizedResponse({type: UnauthorizedExample})
+  public async createIncident(@Body() createIncidentRequestDTO: CreateIncidentRequestDTO): Promise<ListIncidentResponseDTO> {
+    const incident: IncidentEntity = await this.incidentService.createIncident(createIncidentRequestDTO);
+    
+    return new ListIncidentResponseDTO(incident);
+  }
+
+  @Post('type')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Criar novo tipo de incidente' })
   @ApiBody({ type: [CreateIncidentTypeRequestDTO] })
   @ApiOkResponse({ type: ListIncidentTypeResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
-  public async createLocation(@Body() createIncidentTypeRequestDTO: CreateIncidentTypeRequestDTO): Promise<ListIncidentTypeResponseDTO> {
+  public async createIncidentType(@Body() createIncidentTypeRequestDTO: CreateIncidentTypeRequestDTO): Promise<ListIncidentTypeResponseDTO> {
     const incidentType: IncidentTypeEntity = await this.incidentService.createIncidentType(createIncidentTypeRequestDTO);
     
     return new ListIncidentTypeResponseDTO(incidentType);
@@ -64,7 +80,7 @@ export class IncidentController {
   @ApiOkResponse({ type: ListIncidentTypeResponseDTO })
   @ApiNotFoundResponse({type: IncidentTypeNotFoundExample})
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
-  public async updateLocation(@Body() updateIncidentTypeRequestDTO: UpdateIncidentTypeRequestDTO): Promise<ListIncidentTypeResponseDTO> {
+  public async updateIncidentType(@Body() updateIncidentTypeRequestDTO: UpdateIncidentTypeRequestDTO): Promise<ListIncidentTypeResponseDTO> {
     const incidentType: IncidentTypeEntity = await this.incidentService.updateIncidentType(updateIncidentTypeRequestDTO);
     
     return new ListIncidentTypeResponseDTO(incidentType);
@@ -76,7 +92,7 @@ export class IncidentController {
   @ApiOperation({ summary: 'Excluir tipo de incidente' })
   @ApiOkResponse({ type: DeleteIncidentTypeResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
-  public async deleteLocation(@Param('id', ParseIntPipe) id: number): Promise<DeleteIncidentTypeResponseDTO> {
+  public async deleteIncidentType(@Param('id', ParseIntPipe) id: number): Promise<DeleteIncidentTypeResponseDTO> {
     await this.incidentService.deleteIncidentType(id);
     
     return new DeleteIncidentTypeResponseDTO('DELETED');

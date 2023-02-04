@@ -3,6 +3,12 @@ import { incident, incident_type } from '@prisma/client';
 import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-codes';
 import { HttpOperationException } from 'src/app/exception/http-operation.exception';
 import { DatabaseService } from 'src/database/database.service';
+import { CreateItemRequestDTO } from 'src/item/dto/request/create-item-request.dto';
+import { ItemEntity } from 'src/item/entity/item.entity';
+import { ItemService } from 'src/item/item.service';
+import { CreateLocationRequestDTO } from 'src/location/dto/request/create-location-request.dto';
+import { LocationEntity } from 'src/location/entity/location.entity';
+import { LocationService } from 'src/location/location.service';
 import { CreateIncidentRequestDTO } from './dto/request/create-incident-request.dto';
 import { CreateIncidentTypeRequestDTO } from './dto/request/create-incident-type-request.dto';
 import { UpdateIncidentTypeRequestDTO } from './dto/request/update-incident-type-request.dto';
@@ -15,8 +21,12 @@ export class IncidentService {
 
   private repository: IncidentRepository;
 
-  constructor(private databaseService: DatabaseService) {
-      this.repository = new IncidentRepository(this.databaseService);
+  constructor(
+    private databaseService: DatabaseService,
+    private locationService: LocationService,
+    private itemService: ItemService,
+  ) {
+    this.repository = new IncidentRepository(this.databaseService);
   }
 
   public async findIncidents(): Promise<IncidentEntity[]> {
@@ -64,6 +74,10 @@ export class IncidentService {
   }
 
   public async createIncident(createIncidentRequestDTO: CreateIncidentRequestDTO): Promise<IncidentEntity> {
+    await this.findOrCreateIncidentType(createIncidentRequestDTO);
+    await this.findOrCreateLocation(createIncidentRequestDTO);
+    await this.findOrCreateItem(createIncidentRequestDTO);
+
     const incidentDb: incident = await this.repository.createIncident(createIncidentRequestDTO);
 
     return IncidentEntity.fromRepository(incidentDb);
@@ -87,6 +101,52 @@ export class IncidentService {
     const incidentType: IncidentTypeEntity = await this.findIncidentTypeByIDOrCry(incidentTypeId);
 
     await this.repository.deleteIncidentType(incidentType);
+  }
+
+  private async findOrCreateIncidentType(createIncidentRequestDTO: CreateIncidentRequestDTO): Promise<void> {
+    if (createIncidentRequestDTO.incidentTypeId > 0) {
+      const incidentType: IncidentTypeEntity = await this.findIncidentTypeByIDOrCry(createIncidentRequestDTO.incidentTypeId);
+      createIncidentRequestDTO.incidentTypeId = incidentType.id;
+      return;
+    }
+
+    const createIncidentTypeRequestDTO: CreateIncidentTypeRequestDTO = new CreateIncidentTypeRequestDTO();
+    createIncidentTypeRequestDTO.name = createIncidentRequestDTO.incidentTypeName;
+    createIncidentTypeRequestDTO.description = createIncidentRequestDTO.incidentTypeDescription;
+
+    const incidentType: IncidentTypeEntity = await this.createIncidentType(createIncidentTypeRequestDTO);
+    createIncidentRequestDTO.incidentTypeId = incidentType.id;
+  }
+
+  private async findOrCreateLocation(createIncidentRequestDTO: CreateIncidentRequestDTO): Promise<void> {
+    if (createIncidentRequestDTO.locationId > 0) {
+      const location: LocationEntity = await this.locationService.findLocationByIDOrCry(createIncidentRequestDTO.locationId);
+      createIncidentRequestDTO.locationId = location.id;
+      return;
+    }
+
+    const createLocationRequestDTO: CreateLocationRequestDTO = new CreateLocationRequestDTO();
+    createLocationRequestDTO.name = createIncidentRequestDTO.locationName;
+    createLocationRequestDTO.description = createIncidentRequestDTO.locationDescription;
+
+    const location: LocationEntity = await this.locationService.createLocation(createLocationRequestDTO);
+    createIncidentRequestDTO.locationId = location.id;
+  }
+
+  private async findOrCreateItem(createIncidentRequestDTO: CreateIncidentRequestDTO): Promise<ItemEntity> {
+    if (createIncidentRequestDTO.itemId > 0) {
+      const item: ItemEntity = await this.itemService.findItemByIDOrCry(createIncidentRequestDTO.itemId);
+      createIncidentRequestDTO.itemId = item.id;
+      return;
+    }
+
+    const createItemRequestDTO: CreateItemRequestDTO = new CreateItemRequestDTO();
+    createItemRequestDTO.name = createIncidentRequestDTO.itemName;
+    createItemRequestDTO.description = createIncidentRequestDTO.itemDescription;
+    createItemRequestDTO.locationId = createIncidentRequestDTO.locationId;
+
+    const item: ItemEntity = await this.itemService.createItem(createItemRequestDTO);
+    createIncidentRequestDTO.itemId = item.id;
   }
 
 }

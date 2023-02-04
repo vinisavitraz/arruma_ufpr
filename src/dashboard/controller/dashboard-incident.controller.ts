@@ -73,7 +73,7 @@ export class DashboardIncidentController {
   @UseGuards(AuthenticatedGuard)
   public async createIncident(@Request() req, @Res() res: Response): Promise<void> { 
     const createIncidentRequestDTO: CreateIncidentRequestDTO = CreateIncidentRequestDTO.fromDashboard(req.body);
-    console.log(createIncidentRequestDTO);
+    
     try {
       await this.service.createIncident(createIncidentRequestDTO);
     } catch (errors) {

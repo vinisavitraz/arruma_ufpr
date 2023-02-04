@@ -11,7 +11,7 @@ export class IncidentEntity {
   readonly description: string;
   @ApiProperty({example: '2023-01-01 00:00:00'})
   readonly startDate: Date;
-  @ApiProperty({example: '2023-01-01 00:00:00'})
+  @ApiProperty({example: ''})
   readonly endDate: Date | null;
   @ApiProperty({example: 'Aberto'})
   readonly status: string;
