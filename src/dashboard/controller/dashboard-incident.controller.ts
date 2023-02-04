@@ -52,6 +52,31 @@ export class DashboardIncidentController {
     const locations: LocationEntity[] = await this.service.findLocations(); 
     const incident: IncidentEntity = await this.service.findIncidentByIDOrCry(incidentId);
     const items: ItemEntity[] = await this.service.findItemsByLocationID(incident.locationId);
+    console.log(incident);
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'incident/incident-detail',
+      req.user,
+      'incident',
+      {
+        incident: incident,
+        // uri: '/dashboard/incident/update',
+        // incidentTypes: incidentTypes,
+        // locations: locations,
+        // items: items,
+        // jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/create-incident.js'}],
+      }
+    );
+  }
+
+  @Get('edit/:id')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(AuthenticatedGuard)
+  public async getEditIncidentPage(@Param('id', ParseIntPipe) incidentId: number, @Request() req, @Res() res: Response): Promise<void> {   
+    const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
+    const locations: LocationEntity[] = await this.service.findLocations(); 
+    const incident: IncidentEntity = await this.service.findIncidentByIDOrCry(incidentId);
+    const items: ItemEntity[] = await this.service.findItemsByLocationID(incident.locationId);
 
     return DashboardResponseRender.renderForAuthenticatedUser(
       res,

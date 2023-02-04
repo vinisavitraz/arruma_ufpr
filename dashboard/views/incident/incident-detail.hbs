@@ -1,0 +1,110 @@
+<body>
+  {{>header}}
+
+  <div class="container-fluid">
+    <br>
+    <div class="col-2 d-flex">
+      <a class="btn btn-primary btn-lg" href="/dashboard/incident" role="button">Voltar</a>
+    </div>
+    <br>
+    <div class="border bg-light">
+      <br>
+      <div class="row ms-3">
+        <h3>Incidente #{{ incident.id }}</h3>
+      </div>
+      <hr class="bg-dark border-1 border-top border-dark mx-5">
+      <br>
+      <div class="row mx-3">
+        <label for="id" class="col-sm-2 col-form-label d-flex justify-content-end">ID: </label>
+        <div class="col-sm-4">
+          <input type="text" readonly class="form-control" id="id" value="{{ incident.id }}">
+        </div>
+      </div>
+      <br>
+      <div class="row mx-3">
+        <label for="status" class="col-sm-2 col-form-label d-flex justify-content-end">Status: </label>
+        <div class="col-sm-4">
+          <h5><span class="badge rounded-pill bg-{{label_status_incident incident.status}}">{{text_status_incident incident.status }}</span></h5>
+        </div>
+      </div>
+      <br>
+      <div class="row mx-3">
+        <label for="title" class="col-sm-2 col-form-label d-flex justify-content-end">Título: </label>
+        <div class="col-sm-4">
+          <input type="text" readonly class="form-control" id="title" value="{{ incident.title }}">
+        </div>
+      </div>
+      <br>
+      <div class="row mx-3">
+        <label for="description" class="col-sm-2 col-form-label d-flex justify-content-end">Descrição: </label>
+        <div class="col-sm-4">
+          <input type="text" readonly class="form-control" id="description" value="{{ incident.description }}">
+        </div>
+      </div>
+      <br>
+      <div class="row mx-3">
+        <label for="startDate" class="col-sm-2 col-form-label d-flex justify-content-end">Data de abertura: </label>
+        <div class="col-sm-4">
+          <input type="text" readonly class="form-control" id="startDate" value="{{format_datetime incident.startDate }}">
+        </div>
+      </div>
+      <br>
+      <div class="row mx-3">
+        <label for="endDate" class="col-sm-2 col-form-label d-flex justify-content-end">Data de fechamento: </label>
+        <div class="col-sm-4">
+          <input type="text" readonly class="form-control" id="endDate" value="{{format_datetime incident.endDate }}">
+        </div>
+      </div>
+      <br>
+      <hr class="bg-dark border-1 border-top border-dark mx-5">
+      <br>
+      <div class="row ms-3">
+        <h4>Mensagens</h4>
+      </div>
+      <br>
+      {{#if showMessages }}
+        <div class="row mx-5">
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover table-striped">
+              <thead>
+              <tr>
+                  <th>ID</th>
+                  <th>Descrição</th>
+                  <th>Quantidade</th>
+                  <th></th>
+              </tr>
+              </thead>
+              <tbody>
+              {{#each products}}
+                  <tr>
+                      <td>{{this.id}}</td>
+                      <td>{{this.description}}</td>
+                      <td>{{this.quantity}}</td>
+                      <td><a class="btn btn-success" href="/dashboard/sale/detail/{{this.id}}">Visualizar</a></td>
+                  </tr>
+              {{/each}}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      {{else}}
+        <div class="row mx-5 d-flex justify-content-center">
+          <div class="col-3 d-flex justify-content-center">
+            <h4>Nenhuma mensagem adicionada</h4>
+          </div>
+        </div>
+        <br>
+        <div class="row mx-5 d-flex justify-content-center">
+          <div class="col-3 d-flex justify-content-center">
+            <a class="btn btn-success" href="/dashboard/sale/detail/{{this.id}}">Nova mensagem</a>
+          </div>
+        </div>
+
+        
+      {{/if}}
+      <br>
+      <br>
+    </div>
+    <br>
+  </div>
+</body>
