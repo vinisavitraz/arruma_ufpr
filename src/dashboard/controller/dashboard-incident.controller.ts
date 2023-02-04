@@ -13,6 +13,7 @@ import { LocationEntity } from "src/location/entity/location.entity";
 import { CreateIncidentRequestDTO } from "src/incident/dto/request/create-incident-request.dto";
 import { IncidentEntity } from "src/incident/entity/incident.entity";
 import { ItemEntity } from "src/item/entity/item.entity";
+import { UserEntity } from "src/user/entity/user.entity";
 
 @Controller('dashboard/incident')
 @ApiExcludeController()
@@ -72,8 +73,8 @@ export class DashboardIncidentController {
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(AuthenticatedGuard)
   public async createIncident(@Request() req, @Res() res: Response): Promise<void> { 
-    const createIncidentRequestDTO: CreateIncidentRequestDTO = CreateIncidentRequestDTO.fromDashboard(req.body);
-    
+    const createIncidentRequestDTO: CreateIncidentRequestDTO = CreateIncidentRequestDTO.fromDashboard(req.body, req.user);
+
     try {
       await this.service.createIncident(createIncidentRequestDTO);
     } catch (errors) {
@@ -90,6 +91,24 @@ export class DashboardIncidentController {
     }  
 
     return res.redirect('/dashboard/incident');
+  }
+
+  @Get('personal')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(AuthenticatedGuard)
+  public async getPersonalIncidentsPage(@Request() req, @Res() res: Response): Promise<void> { 
+    const incidents: IncidentEntity[] = await this.service.findPersonalIncidents(req.user);
+
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'incident/my-incidents',
+      req.user,
+      'incident',
+      {
+        incidents: incidents,
+        showContent: incidents.length > 0,
+      }
+    );
   }
 
   @Get()

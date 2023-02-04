@@ -14,7 +14,7 @@ model user {
   email            String        @db.VarChar(100) @unique
   password         String        @db.VarChar(100)
   role             Int
-  users            incident_user[]
+  incidents        incident[]
   interactions     incident_interaction[]
   user_token       user_token[]
 
@@ -64,21 +64,13 @@ model incident {
   item             item        @relation(fields: [item_id], references: [id])
   location_id      Int
   location         location      @relation(fields: [location_id], references: [id])
-  users            incident_user[]
+  user_id          Int
+  user             user      @relation(fields: [user_id], references: [id])
   interactions     incident_interaction[]
 
   @@index([title])
   @@index([status])
   @@index([start_date])
-}
-
-model incident_user {
-  user_id          Int
-  user             user          @relation(fields: [user_id], references: [id])
-  incident_id      Int
-  incident         incident      @relation(fields: [incident_id], references: [id])
-  
-  @@id([user_id, incident_id])
 }
 
 model incident_interaction {

@@ -1,6 +1,7 @@
 import { incident, incident_type } from "@prisma/client";
 import { IncidentStatusEnum } from "src/app/enum/status.enum";
 import { DatabaseService } from "src/database/database.service";
+import { UserEntity } from "src/user/entity/user.entity";
 import { CreateIncidentRequestDTO } from "./dto/request/create-incident-request.dto";
 import { CreateIncidentTypeRequestDTO } from "./dto/request/create-incident-type-request.dto";
 import { UpdateIncidentTypeRequestDTO } from "./dto/request/update-incident-type-request.dto";
@@ -16,6 +17,19 @@ export class IncidentRepository {
 
   public async findIncidents(): Promise<incident[]> {
     return await this.connection.incident.findMany({
+      orderBy: [
+        {
+          id: 'asc',
+        },
+      ],
+    });
+  }
+
+  public async findUserIncidents(user: UserEntity): Promise<incident[]> {
+    return await this.connection.incident.findMany({
+      where: {
+        user_id: user.id,
+      },
       orderBy: [
         {
           id: 'asc',
@@ -52,6 +66,7 @@ export class IncidentRepository {
         type_id: createIncidentRequestDTO.incidentTypeId,
         location_id: createIncidentRequestDTO.locationId,
         item_id: createIncidentRequestDTO.itemId,
+        user_id: createIncidentRequestDTO.userId,
       },
     });
   }

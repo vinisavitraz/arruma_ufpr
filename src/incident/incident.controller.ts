@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
-import { ApiBody, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { UnauthorizedExample } from 'src/app/docs/example/auth/unauthorized-example';
 import { IncidentTypeNotFoundExample } from 'src/app/docs/example/incident/incident-type-not-found-example';
 import { RoleEnum } from 'src/app/enum/role.enum';
@@ -16,6 +16,8 @@ import { IncidentTypeEntity } from './entity/incident-type.entity';
 import { IncidentEntity } from './entity/incident.entity';
 import { IncidentService } from './incident.service';
 
+@ApiBearerAuth()
+@ApiHeader({name: 'Authorization'})
 @Controller('incident')
 @ApiTags('incident')
 export class IncidentController {

@@ -1,5 +1,5 @@
 import { Controller, Get, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
-import { ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { UnauthorizedExample } from 'src/app/docs/example/auth/unauthorized-example';
 import { RoleEnum } from 'src/app/enum/role.enum';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
@@ -8,6 +8,8 @@ import { ListItemsResponseDTO } from './dto/response/list-items-response.dto';
 import { ItemEntity } from './entity/item.entity';
 import { ItemService } from './item.service';
 
+@ApiBearerAuth()
+@ApiHeader({name: 'Authorization'})
 @Controller('item')
 @ApiTags('item')
 export class ItemController {

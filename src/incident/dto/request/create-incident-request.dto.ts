@@ -2,6 +2,7 @@ import { ApiHideProperty, ApiProperty, ApiPropertyOptional } from "@nestjs/swagg
 import { IsInt, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 import { HttpOperationErrorCodes } from "src/app/exception/http-operation-error-codes";
 import { IncidentEntity } from "src/incident/entity/incident.entity";
+import { UserEntity } from "src/user/entity/user.entity";
 
 export class CreateIncidentRequestDTO {
 
@@ -20,6 +21,10 @@ export class CreateIncidentRequestDTO {
   @MaxLength(500, {message: HttpOperationErrorCodes.INVALID_INCIDENT_DESCRIPTION})
   @ApiProperty({example: 'Item precisa de manutenção'})
   description: string;
+
+  @IsInt({message: HttpOperationErrorCodes.INVALID_INCIDENT_USER})
+  @ApiProperty({example: 1})
+  userId: number;
   
   @IsInt({message: HttpOperationErrorCodes.INVALID_INCIDENT_TYPE})
   @ApiProperty({example: 1})
@@ -44,7 +49,6 @@ export class CreateIncidentRequestDTO {
   @ApiProperty({example: 'SEPT'})
   locationName: string;
 
-
   @IsOptional()
   @IsString({message: HttpOperationErrorCodes.INVALID_LOCATION_DESCRIPTION})
   @ApiProperty({ example: 'Setor de educação professional e tecnologica da UFPR' })
@@ -64,12 +68,13 @@ export class CreateIncidentRequestDTO {
   @ApiProperty({example: 'Projetor da sala A10'})
   itemDescription: string;
 
-  public static fromDashboard(payload: any): CreateIncidentRequestDTO {
+  public static fromDashboard(payload: any, user: UserEntity): CreateIncidentRequestDTO {
     const createIncidentRequestDTO: CreateIncidentRequestDTO = new CreateIncidentRequestDTO();
 
     createIncidentRequestDTO.id = payload['id'] ? Number(payload['id']) : 0;
     createIncidentRequestDTO.title = payload['title'] ?? '';
     createIncidentRequestDTO.description = payload['description'] ?? '';
+    createIncidentRequestDTO.userId = user.id;
     createIncidentRequestDTO.incidentTypeId = payload['incidentTypeId'] ? Number(payload['incidentTypeId']) : 0;
     createIncidentRequestDTO.incidentTypeName = payload['incidentTypeName'] ?? '';
     createIncidentRequestDTO.incidentTypeDescription = payload['incidentTypeDescription'] ?? '';

@@ -8,6 +8,7 @@ import { ItemEntity } from 'src/item/entity/item.entity';
 import { ItemService } from 'src/item/item.service';
 import { LocationEntity } from 'src/location/entity/location.entity';
 import { LocationService } from 'src/location/location.service';
+import { UserEntity } from 'src/user/entity/user.entity';
 
 @Injectable()
 export class DashboardIncidentService {
@@ -19,6 +20,10 @@ export class DashboardIncidentService {
   ) {}
 
   public async findIncidents(): Promise<IncidentEntity[]> {
+    return await this.incidentService.findIncidents();
+  }
+
+  public async findPersonalIncidents(user: UserEntity): Promise<IncidentEntity[]> {
     return await this.incidentService.findIncidents();
   }
 

@@ -9,6 +9,7 @@ import { ItemService } from 'src/item/item.service';
 import { CreateLocationRequestDTO } from 'src/location/dto/request/create-location-request.dto';
 import { LocationEntity } from 'src/location/entity/location.entity';
 import { LocationService } from 'src/location/location.service';
+import { UserEntity } from 'src/user/entity/user.entity';
 import { CreateIncidentRequestDTO } from './dto/request/create-incident-request.dto';
 import { CreateIncidentTypeRequestDTO } from './dto/request/create-incident-type-request.dto';
 import { UpdateIncidentTypeRequestDTO } from './dto/request/update-incident-type-request.dto';
@@ -30,6 +31,14 @@ export class IncidentService {
   }
 
   public async findIncidents(): Promise<IncidentEntity[]> {
+    const incidentDb: incident[] = await this.repository.findIncidents();
+
+    return incidentDb.map((incident: incident) => {
+      return IncidentEntity.fromRepository(incident);
+    });
+  }
+
+  public async findUserIncidents(user: UserEntity): Promise<IncidentEntity[]> {
     const incidentDb: incident[] = await this.repository.findIncidents();
 
     return incidentDb.map((incident: incident) => {
