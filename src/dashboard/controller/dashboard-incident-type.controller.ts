@@ -12,7 +12,7 @@ import { Roles } from "src/auth/roles/require-roles.decorator";
 import { RoleEnum } from "src/app/enum/role.enum";
 import { DashboardIncidentTypeService } from "../service/dashboard-incident-type.service";
 
-@Controller('dashboard/incident/type')
+@Controller('dashboard/incident-type')
 @ApiExcludeController()
 @UseFilters(DashboardExceptionFilter)
 export class DashboardIncidentTypeController {
@@ -48,34 +48,28 @@ export class DashboardIncidentTypeController {
       'incidentType',
       {
         incidentType: new CreateIncidentTypeRequestDTO(),
-        uri: '/dashboard/incident/type/create',
+        uri: '/dashboard/incident-type/create',
       },
     );
   }
 
-  
+  @Get(':id')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(AuthenticatedGuard)
+  public async getIncidentTypePage(@Param('id', ParseIntPipe) incidentTypeId: number, @Request() req, @Res() res: Response): Promise<void> {    
+    const incidentType: IncidentTypeEntity = await this.service.findIncidentTypeByIDOrCry(incidentTypeId);
 
-  // @Get(':id')
-  // @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  // @UseGuards(AuthenticatedGuard)
-  // public async getIncidentTypePage(@Param('id', ParseIntPipe) incidentTypeId: number, @Request() req, @Res() res: Response): Promise<void> {    
-  //   const incidentType: IncidentTypeEntity = await this.service.findIncidentTypeByIDOrCry(incidentTypeId);
-
-  //   return DashboardResponseRender.renderForAuthenticatedUser(
-  //     res,
-  //     'incident/create-incident-type',
-  //     req.user,
-  //     'incidentType',
-  //     {
-  //       incidentType: CreateIncidentTypeRequestDTO.fromEntity(incidentType),
-  //       uri: '/dashboard/incident/type/update',
-  //     }
-  //   );
-  // }
-
-  
-
-  
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'incident/create-incident-type',
+      req.user,
+      'incidentType',
+      {
+        incidentType: CreateIncidentTypeRequestDTO.fromEntity(incidentType),
+        uri: '/dashboard/incident-type/update',
+      }
+    );
+  }
 
   @Get('delete/:id')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
@@ -83,7 +77,7 @@ export class DashboardIncidentTypeController {
   public async deleteIncidentType(@Param('id', ParseIntPipe) locationId: number, @Request() req, @Res() res: Response): Promise<void> {     
     await this.service.deleteIncidentType(locationId);
 
-    return res.redirect('/dashboard/incident/type');
+    return res.redirect('/dashboard/incident-type');
   }
 
   
@@ -109,7 +103,7 @@ export class DashboardIncidentTypeController {
       );
     }  
 
-    return res.redirect('/dashboard/incident/type');
+    return res.redirect('/dashboard/incident-type');
   }
 
   @Post('update')
@@ -133,7 +127,7 @@ export class DashboardIncidentTypeController {
       );
     }  
 
-    return res.redirect('/dashboard/incident/type');
+    return res.redirect('/dashboard/incident-type');
   }
 
 }
