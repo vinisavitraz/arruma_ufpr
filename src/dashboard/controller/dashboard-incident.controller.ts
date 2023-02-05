@@ -13,7 +13,8 @@ import { LocationEntity } from "src/location/entity/location.entity";
 import { CreateIncidentRequestDTO } from "src/incident/dto/request/create-incident-request.dto";
 import { IncidentEntity } from "src/incident/entity/incident.entity";
 import { ItemEntity } from "src/item/entity/item.entity";
-import { UserEntity } from "src/user/entity/user.entity";
+import { IncidentInteractionEntity } from "src/incident/entity/incident-interaction.entity";
+import { CreateIncidentInteractionRequestDTO } from "src/incident/dto/request/create-incident-interaction-request.dto";
 
 @Controller('dashboard/incident')
 @ApiExcludeController()
@@ -48,23 +49,21 @@ export class DashboardIncidentController {
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(AuthenticatedGuard)
   public async getIncidentPage(@Param('id', ParseIntPipe) incidentId: number, @Request() req, @Res() res: Response): Promise<void> {   
-    const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
-    const locations: LocationEntity[] = await this.service.findLocations(); 
     const incident: IncidentEntity = await this.service.findIncidentByIDOrCry(incidentId);
-    const items: ItemEntity[] = await this.service.findItemsByLocationID(incident.locationId);
-    console.log(incident);
+    const incidentInteractions: IncidentInteractionEntity[] = await this.service.findIncidentInteractions(incident.id);
+
     return DashboardResponseRender.renderForAuthenticatedUser(
       res,
       'incident/incident-detail',
       req.user,
       'incident',
       {
+        admin: req.user.role === RoleEnum.ADMIN,
         incident: incident,
-        // uri: '/dashboard/incident/update',
-        // incidentTypes: incidentTypes,
-        // locations: locations,
-        // items: items,
-        // jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/create-incident.js'}],
+        incidentInteractions: incidentInteractions,
+        showContent: incidentInteractions.length > 0,
+        cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}, {filePath: '/styles/timeline.css'}],
+        jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/incident-detail.js'}],
       }
     );
   }
@@ -116,6 +115,21 @@ export class DashboardIncidentController {
     }  
 
     return res.redirect('/dashboard/incident');
+  }
+
+  @Post('interaction')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(AuthenticatedGuard)
+  public async addInteractionToIncident(@Request() req, @Res() res: Response): Promise<void> { 
+    const createIncidentInteractionRequestDTO: CreateIncidentInteractionRequestDTO = CreateIncidentInteractionRequestDTO.fromDashboard(req.body, req.user);
+
+    try {
+      await this.service.createIncidentInteraction(createIncidentInteractionRequestDTO);
+    } catch (errors) {
+      return res.redirect('/dashboard/incident');
+    }  
+
+    return res.redirect('/dashboard/incident/' + createIncidentInteractionRequestDTO.incidentId);
   }
 
   @Get('personal')

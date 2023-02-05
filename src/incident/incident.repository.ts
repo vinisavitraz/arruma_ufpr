@@ -1,7 +1,8 @@
-import { incident, incident_type } from "@prisma/client";
+import { incident, incident_interaction, incident_type } from "@prisma/client";
 import { IncidentStatusEnum } from "src/app/enum/status.enum";
 import { DatabaseService } from "src/database/database.service";
 import { UserEntity } from "src/user/entity/user.entity";
+import { CreateIncidentInteractionRequestDTO } from "./dto/request/create-incident-interaction-request.dto";
 import { CreateIncidentRequestDTO } from "./dto/request/create-incident-request.dto";
 import { CreateIncidentTypeRequestDTO } from "./dto/request/create-incident-type-request.dto";
 import { UpdateIncidentTypeRequestDTO } from "./dto/request/update-incident-type-request.dto";
@@ -43,6 +44,17 @@ export class IncidentRepository {
       orderBy: [
         {
           id: 'asc',
+        },
+      ],
+    });
+  }
+
+  public async findIncidentInteractions(incidentId: number): Promise<incident_interaction[]> {
+    return await this.connection.incident_interaction.findMany({
+      where: { incident_id: incidentId, },
+      orderBy: [
+        {
+          id: 'desc',
         },
       ],
     });
@@ -92,6 +104,17 @@ export class IncidentRepository {
 
   public async deleteIncidentType(incidentType: IncidentTypeEntity): Promise<void> {
     await this.connection.incident_type.delete({where: { id: incidentType.id }});
+  }
+
+  public async createIncidentInteraction(createIncidentInteractionRequestDTO: CreateIncidentInteractionRequestDTO): Promise<incident_interaction | null> {
+    return await this.connection.incident_interaction.create({ 
+      data: {
+        description: createIncidentInteractionRequestDTO.description,
+        incident_id: createIncidentInteractionRequestDTO.incidentId,
+        user_id: createIncidentInteractionRequestDTO.userId,
+        origin: createIncidentInteractionRequestDTO.origin,
+      },
+    });
   }
   
 }

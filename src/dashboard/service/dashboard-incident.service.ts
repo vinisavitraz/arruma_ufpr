@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { validateOrReject } from 'class-validator';
+import { CreateIncidentInteractionRequestDTO } from 'src/incident/dto/request/create-incident-interaction-request.dto';
 import { CreateIncidentRequestDTO } from 'src/incident/dto/request/create-incident-request.dto';
+import { IncidentInteractionEntity } from 'src/incident/entity/incident-interaction.entity';
 import { IncidentTypeEntity } from 'src/incident/entity/incident-type.entity';
 import { IncidentEntity } from 'src/incident/entity/incident.entity';
 import { IncidentService } from 'src/incident/incident.service';
@@ -31,6 +33,10 @@ export class DashboardIncidentService {
     return await this.incidentService.findIncidentTypes();
   }
 
+  public async findIncidentInteractions(interactionId: number): Promise<IncidentInteractionEntity[]> {
+    return await this.incidentService.findIncidentInteractions(interactionId);
+  }
+
   public async findLocations(): Promise<LocationEntity[]> {
     return await this.locationService.findLocations();
   }
@@ -47,6 +53,12 @@ export class DashboardIncidentService {
     await validateOrReject(createIncidentRequestDTO);
 
     await this.incidentService.createIncident(createIncidentRequestDTO); 
+  }
+
+  public async createIncidentInteraction(createIncidentInteractionRequestDTO: CreateIncidentInteractionRequestDTO): Promise<void> {
+    await validateOrReject(createIncidentInteractionRequestDTO);
+
+    await this.incidentService.createIncidentInteraction(createIncidentInteractionRequestDTO); 
   }
 
 }

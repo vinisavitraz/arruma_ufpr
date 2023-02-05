@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { incident, incident_type } from '@prisma/client';
+import { incident, incident_interaction, incident_type } from '@prisma/client';
 import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-codes';
 import { HttpOperationException } from 'src/app/exception/http-operation.exception';
 import { DatabaseService } from 'src/database/database.service';
@@ -10,9 +10,11 @@ import { CreateLocationRequestDTO } from 'src/location/dto/request/create-locati
 import { LocationEntity } from 'src/location/entity/location.entity';
 import { LocationService } from 'src/location/location.service';
 import { UserEntity } from 'src/user/entity/user.entity';
+import { CreateIncidentInteractionRequestDTO } from './dto/request/create-incident-interaction-request.dto';
 import { CreateIncidentRequestDTO } from './dto/request/create-incident-request.dto';
 import { CreateIncidentTypeRequestDTO } from './dto/request/create-incident-type-request.dto';
 import { UpdateIncidentTypeRequestDTO } from './dto/request/update-incident-type-request.dto';
+import { IncidentInteractionEntity } from './entity/incident-interaction.entity';
 import { IncidentTypeEntity } from './entity/incident-type.entity';
 import { IncidentEntity } from './entity/incident.entity';
 import { IncidentRepository } from './incident.repository';
@@ -110,6 +112,20 @@ export class IncidentService {
     const incidentType: IncidentTypeEntity = await this.findIncidentTypeByIDOrCry(incidentTypeId);
 
     await this.repository.deleteIncidentType(incidentType);
+  }
+
+  public async createIncidentInteraction(createIncidentInteractionRequestDTO: CreateIncidentInteractionRequestDTO): Promise<IncidentInteractionEntity> {
+    const incidentInteractionDb: incident_interaction = await this.repository.createIncidentInteraction(createIncidentInteractionRequestDTO);
+
+    return IncidentInteractionEntity.fromRepository(incidentInteractionDb);
+  }
+
+  public async findIncidentInteractions(incidentId: number): Promise<IncidentInteractionEntity[]> {
+    const incidentInteractionsDb: incident_interaction[] = await this.repository.findIncidentInteractions(incidentId);
+
+    return incidentInteractionsDb.map((incidentInteraction: incident_interaction) => {
+      return IncidentInteractionEntity.fromRepository(incidentInteraction);
+    });
   }
 
   private async findOrCreateIncidentType(createIncidentRequestDTO: CreateIncidentRequestDTO): Promise<void> {
