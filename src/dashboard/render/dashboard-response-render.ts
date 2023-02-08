@@ -23,6 +23,7 @@ export class DashboardResponseRender {
       headerPermissions: headerPermissions,
       headerActive: headerActive,
       user: user,
+      admin: user.role === RoleEnum.ADMIN,
       cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}],
       jsScripts: [{filePath: '/js/header.js'}],
       ...params,

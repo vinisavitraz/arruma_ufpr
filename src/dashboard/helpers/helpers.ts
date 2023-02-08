@@ -64,6 +64,10 @@ export function setInteractionSide(interaction: IncidentInteractionEntity, role:
   return direction;
 }
 
+export function isAdmin(role: number) { 
+  return role === RoleEnum.ADMIN;
+}
+
 export function formatInteractionDate(interactionDate: Date) { 
   return DateFormatter.formatDateToStringDashboardWithTime(interactionDate);
 }
