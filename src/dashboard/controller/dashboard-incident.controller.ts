@@ -45,6 +45,33 @@ export class DashboardIncidentController {
     );
   }
 
+  @Get('personal')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(AuthenticatedGuard)
+  public async getPersonalIncidentsPage(@Request() req, @Res() res: Response): Promise<void> { 
+    const incidents: IncidentEntity[] = await this.service.findPersonalIncidents(req.user);
+
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'incident/my-incidents',
+      req.user,
+      'incident',
+      {
+        incidents: incidents,
+        showContent: incidents.length > 0,
+      }
+    );
+  }
+
+  @Get('close/:id')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(AuthenticatedGuard)
+  public async closeIncident(@Param('id', ParseIntPipe) incidentId: number, @Request() req, @Res() res: Response): Promise<void> { 
+    await this.service.closeIncident(req.user, incidentId);
+    
+    return res.redirect('/dashboard/incident/' + incidentId);
+  }
+
   @Get(':id')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(AuthenticatedGuard)
@@ -132,23 +159,7 @@ export class DashboardIncidentController {
     return res.redirect('/dashboard/incident/' + createIncidentInteractionRequestDTO.incidentId);
   }
 
-  @Get('personal')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
-  public async getPersonalIncidentsPage(@Request() req, @Res() res: Response): Promise<void> { 
-    const incidents: IncidentEntity[] = await this.service.findPersonalIncidents(req.user);
-
-    return DashboardResponseRender.renderForAuthenticatedUser(
-      res,
-      'incident/my-incidents',
-      req.user,
-      'incident',
-      {
-        incidents: incidents,
-        showContent: incidents.length > 0,
-      }
-    );
-  }
+  
 
   @Get()
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)

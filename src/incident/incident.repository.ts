@@ -7,6 +7,7 @@ import { CreateIncidentRequestDTO } from "./dto/request/create-incident-request.
 import { CreateIncidentTypeRequestDTO } from "./dto/request/create-incident-type-request.dto";
 import { UpdateIncidentTypeRequestDTO } from "./dto/request/update-incident-type-request.dto";
 import { IncidentTypeEntity } from "./entity/incident-type.entity";
+import { IncidentEntity } from "./entity/incident.entity";
 
 export class IncidentRepository {
 
@@ -88,6 +89,25 @@ export class IncidentRepository {
       data: {
         name: createIncidentTypeRequestDTO.name,
         description: createIncidentTypeRequestDTO.description,
+      },
+    });
+  }
+
+  public async setIncidentToPending(incident: IncidentEntity): Promise<incident | null> {
+    return await this.connection.incident.update({ 
+      where: { id: incident.id },
+      data: {
+        status: IncidentStatusEnum.PENDING,
+      },
+    });
+  }
+
+  public async setIncidentToClosed(incident: IncidentEntity): Promise<incident | null> {
+    return await this.connection.incident.update({ 
+      where: { id: incident.id },
+      data: {
+        status: IncidentStatusEnum.CLOSED,
+        end_date: new Date(),
       },
     });
   }

@@ -61,4 +61,8 @@ export class DashboardIncidentService {
     await this.incidentService.createIncidentInteraction(createIncidentInteractionRequestDTO); 
   }
 
+  public async closeIncident(user: UserEntity, incidentId: number): Promise<IncidentEntity> {
+    return await this.incidentService.closeIncident(user, incidentId); 
+  }
+
 }

@@ -1,5 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { incident, incident_interaction, incident_type } from '@prisma/client';
+import { IncidentStatusEnum } from 'src/app/enum/status.enum';
 import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-codes';
 import { HttpOperationException } from 'src/app/exception/http-operation.exception';
 import { DatabaseService } from 'src/database/database.service';
@@ -115,7 +116,12 @@ export class IncidentService {
   }
 
   public async createIncidentInteraction(createIncidentInteractionRequestDTO: CreateIncidentInteractionRequestDTO): Promise<IncidentInteractionEntity> {
+    const incidentDb: IncidentEntity = await this.findIncidentByIDOrCry(createIncidentInteractionRequestDTO.incidentId);
     const incidentInteractionDb: incident_interaction = await this.repository.createIncidentInteraction(createIncidentInteractionRequestDTO);
+
+    if (incidentDb.status === IncidentStatusEnum.OPEN) {
+      await this.repository.setIncidentToPending(incidentDb);
+    }
 
     return IncidentInteractionEntity.fromRepository(incidentInteractionDb);
   }
@@ -172,6 +178,14 @@ export class IncidentService {
 
     const item: ItemEntity = await this.itemService.createItem(createItemRequestDTO);
     createIncidentRequestDTO.itemId = item.id;
+  }
+
+  public async closeIncident(user: UserEntity, incidentId: number): Promise<IncidentEntity> {
+    
+
+    //const incidentDb: incident = await this.repository.createIncident(createIncidentRequestDTO);
+
+    return IncidentEntity.fromRepository(null);
   }
 
 }
