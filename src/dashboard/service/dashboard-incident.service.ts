@@ -25,8 +25,8 @@ export class DashboardIncidentService {
     return await this.incidentService.findIncidents();
   }
 
-  public async findPersonalIncidents(user: UserEntity): Promise<IncidentEntity[]> {
-    return await this.incidentService.findIncidents();
+  public async findUserIncidents(user: UserEntity): Promise<IncidentEntity[]> {
+    return await this.incidentService.findUserIncidents(user);
   }
 
   public async findIncidentTypes(): Promise<IncidentTypeEntity[]> {
@@ -55,10 +55,14 @@ export class DashboardIncidentService {
     await this.incidentService.createIncident(createIncidentRequestDTO); 
   }
 
-  public async createIncidentInteraction(createIncidentInteractionRequestDTO: CreateIncidentInteractionRequestDTO): Promise<void> {
+  public async createIncidentInteraction(user: UserEntity, createIncidentInteractionRequestDTO: CreateIncidentInteractionRequestDTO): Promise<void> {
     await validateOrReject(createIncidentInteractionRequestDTO);
 
-    await this.incidentService.createIncidentInteraction(createIncidentInteractionRequestDTO); 
+    await this.incidentService.createIncidentInteraction(user, createIncidentInteractionRequestDTO); 
+  }
+
+  public async assignIncidentToAdmin(userAdmin: UserEntity, incidentId: number): Promise<IncidentEntity> {
+    return await this.incidentService.assignIncidentToAdmin(userAdmin, incidentId); 
   }
 
   public async closeIncident(user: UserEntity, incidentId: number): Promise<IncidentEntity> {

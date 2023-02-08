@@ -1,4 +1,5 @@
 import { incident, incident_interaction, incident_type } from "@prisma/client";
+import { RoleEnum } from "src/app/enum/role.enum";
 import { IncidentStatusEnum } from "src/app/enum/status.enum";
 import { DatabaseService } from "src/database/database.service";
 import { UserEntity } from "src/user/entity/user.entity";
@@ -28,10 +29,20 @@ export class IncidentRepository {
   }
 
   public async findUserIncidents(user: UserEntity): Promise<incident[]> {
-    return await this.connection.incident.findMany({
-      where: {
+    let where: any = {};
+
+    if (user.role === RoleEnum.ADMIN) {
+      where = {
+        admin_id: user.id,
+      };
+    } else {
+      where = {
         user_id: user.id,
-      },
+      };
+    }
+    
+    return await this.connection.incident.findMany({
+      where: where,
       orderBy: [
         {
           id: 'asc',
@@ -93,10 +104,11 @@ export class IncidentRepository {
     });
   }
 
-  public async setIncidentToPending(incident: IncidentEntity): Promise<incident | null> {
+  public async assignIncidentToAdmin(userAdmin: UserEntity, incident: IncidentEntity): Promise<incident | null> {
     return await this.connection.incident.update({ 
       where: { id: incident.id },
       data: {
+        admin_id: userAdmin.id,
         status: IncidentStatusEnum.PENDING,
       },
     });

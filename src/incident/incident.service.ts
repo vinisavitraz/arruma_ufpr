@@ -1,5 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { incident, incident_interaction, incident_type } from '@prisma/client';
+import { RoleEnum } from 'src/app/enum/role.enum';
 import { IncidentStatusEnum } from 'src/app/enum/status.enum';
 import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-codes';
 import { HttpOperationException } from 'src/app/exception/http-operation.exception';
@@ -42,7 +43,7 @@ export class IncidentService {
   }
 
   public async findUserIncidents(user: UserEntity): Promise<IncidentEntity[]> {
-    const incidentDb: incident[] = await this.repository.findIncidents();
+    const incidentDb: incident[] = await this.repository.findUserIncidents(user);
 
     return incidentDb.map((incident: incident) => {
       return IncidentEntity.fromRepository(incident);
@@ -115,12 +116,12 @@ export class IncidentService {
     await this.repository.deleteIncidentType(incidentType);
   }
 
-  public async createIncidentInteraction(createIncidentInteractionRequestDTO: CreateIncidentInteractionRequestDTO): Promise<IncidentInteractionEntity> {
+  public async createIncidentInteraction(user: UserEntity, createIncidentInteractionRequestDTO: CreateIncidentInteractionRequestDTO): Promise<IncidentInteractionEntity> {
     const incidentDb: IncidentEntity = await this.findIncidentByIDOrCry(createIncidentInteractionRequestDTO.incidentId);
     const incidentInteractionDb: incident_interaction = await this.repository.createIncidentInteraction(createIncidentInteractionRequestDTO);
 
-    if (incidentDb.status === IncidentStatusEnum.OPEN) {
-      await this.repository.setIncidentToPending(incidentDb);
+    if ( incidentDb.status === IncidentStatusEnum.OPEN && user.role === RoleEnum.ADMIN) {
+      await this.repository.assignIncidentToAdmin(user, incidentDb);
     }
 
     return IncidentInteractionEntity.fromRepository(incidentInteractionDb);
@@ -180,12 +181,30 @@ export class IncidentService {
     createIncidentRequestDTO.itemId = item.id;
   }
 
+  public async assignIncidentToAdmin(userAdmin: UserEntity, incidentId: number): Promise<IncidentEntity> {
+    const incidentDb: IncidentEntity = await this.findIncidentByIDOrCry(incidentId);
+    const assignedIncident: incident = await this.repository.assignIncidentToAdmin(userAdmin, incidentDb);
+
+    return IncidentEntity.fromRepository(assignedIncident);
+  }
+
   public async closeIncident(user: UserEntity, incidentId: number): Promise<IncidentEntity> {
+    const incidentDb: IncidentEntity = await this.findIncidentByIDOrCry(incidentId);
     
+    if (incidentDb.adminId === user.id || incidentDb.userId === user.id) {
+      const closedIncident: incident = await this.repository.setIncidentToClosed(incidentDb);
 
-    //const incidentDb: incident = await this.repository.createIncident(createIncidentRequestDTO);
+      return IncidentEntity.fromRepository(closedIncident);
+    }
 
-    return IncidentEntity.fromRepository(null);
+    console.log(incidentDb);
+    console.log(user);
+
+    throw new HttpOperationException(
+      HttpStatus.FORBIDDEN, 
+      'Only the creator user or assigned admin can close the incident.', 
+      HttpOperationErrorCodes.INVALID_ASSIGNED_ADMIN_CLOSE_INCIDENT,
+    );
   }
 
 }

@@ -21,6 +21,10 @@ export class IncidentEntity {
   readonly locationId: number;
   @ApiProperty({example: 1})
   readonly itemId: number;
+  @ApiProperty({example: 1})
+  readonly userId: number;
+  @ApiProperty({example: 1})
+  readonly adminId: number | null;
 
   constructor(
     id: number,
@@ -32,6 +36,8 @@ export class IncidentEntity {
     incidentTypeId: number,
     locationId: number,
     itemId: number,
+    userId: number,
+    adminId: number | null,
   ) {
     this.id = id;
     this.title = title;
@@ -42,6 +48,8 @@ export class IncidentEntity {
     this.incidentTypeId = incidentTypeId;
     this.locationId = locationId;
     this.itemId = itemId;
+    this.userId = userId;
+    this.adminId = adminId;
   }
 
   public static fromRepository(incident: incident): IncidentEntity {
@@ -55,6 +63,8 @@ export class IncidentEntity {
       incident.type_id,
       incident.location_id,
       incident.item_id,
+      incident.user_id,
+      incident.admin_id,
     );
   }
 

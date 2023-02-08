@@ -60,9 +60,16 @@
       <br>
       <br>
       <div class="row mx-3 d-flex justify-content-center">
-        <div class="col-4">
-          <a class="btn btn-danger" href="/dashboard/incident/close/{{ incident.id }}" role="button">Finalizar incidente</a>
-        </div>          
+        {{#if showButtonAssign }}
+          <div class="col-2">
+            <a class="btn btn-success" href="/dashboard/incident/assign/{{ incident.id }}" role="button">Atender incidente</a>
+          </div>   
+        {{/if}}
+        {{#if showButtonClose }}
+          <div class="col-2">
+            <a class="btn btn-danger" href="/dashboard/incident/close/{{ incident.id }}" role="button">Finalizar incidente</a>
+          </div> 
+        {{/if}}
       </div>
       <br>
       <hr class="bg-dark border-1 border-top border-dark mx-5">
@@ -72,36 +79,39 @@
       </div>
       <br>
       {{#if showContent }}
-        <div id="buttonNewMessage" class="d-block">
-          <div class="row mx-5 d-flex justify-content-center">
-            <div class="col-3 d-flex justify-content-center">
-              <a class="btn btn-success" id="showFormNewMessage">Nova mensagem</a>
-            </div>
-          </div>
-        </div>
-        <div id="formNewMessage" class="d-none">
-          <div class="col mx-5 d-flex justify-content-center">
-            <label for="description" class="d-flex justify-content-center">Nova mensagem: </label>
-          </div>
-          <form method="POST" action="/dashboard/incident/interaction" class="needs-validation" novalidate="" autocomplete="off">
-            <input type="hidden" id="incidentId" name="incidentId" value="{{incident.id}}">
+        {{#if showButtonNewMessage }}
+          <div id="buttonNewMessage" class="d-block">
             <div class="row mx-5 d-flex justify-content-center">
-              <div class="col-8 mx-2">
-                  <textarea type="text" rows="3" class="form-control" id="description" name="description"></textarea>
-                <br>
-              </div>
-              <div class="col-4 mx-5">
-                <div class="row mx-6">
-                  <button type="submit" class="btn btn-success">Enviar mensagem</a>
-                </div>
-                <br>
-                <div class="row mx-6">
-                  <a class="btn btn-danger" id="hideFormNewMessage">Cancelar</a>
-                </div>
+              <div class="col-3 d-flex justify-content-center">
+                <a class="btn btn-success" id="showFormNewMessage">Nova mensagem</a>
               </div>
             </div>
-          </form>
-        </div>
+          </div>
+          <div id="formNewMessage" class="d-none">
+            <div class="col mx-5 d-flex justify-content-center">
+              <label for="description" class="d-flex justify-content-center">Nova mensagem: </label>
+            </div>
+            <form method="POST" action="/dashboard/incident/interaction" class="needs-validation" novalidate="" autocomplete="off">
+              <input type="hidden" id="incidentId" name="incidentId" value="{{incident.id}}">
+              <div class="row mx-5 d-flex justify-content-center">
+                <div class="col-8 mx-2">
+                    <textarea type="text" rows="3" class="form-control" id="description" name="description"></textarea>
+                  <br>
+                </div>
+                <div class="col-4 mx-5">
+                  <div class="row mx-6">
+                    <button type="submit" class="btn btn-success">Enviar mensagem</a>
+                  </div>
+                  <br>
+                  <div class="row mx-6">
+                    <a class="btn btn-danger" id="hideFormNewMessage">Cancelar</a>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        {{/if}}
+        
         <section>
           <div class="container py-5">
             <div class="main-timeline">
@@ -135,40 +145,44 @@
       {{else}}
         <div class="row mx-5 d-flex justify-content-center">
           <div class="col-3 d-flex justify-content-center">
-            <h5>Incidente ainda não possui mensagens.</h5>
+            <h5>Incidente não possui mensagens.</h5>
           </div>
         </div>
         <br>
-        <div id="buttonNewMessage" class="d-block">
-          <div class="row mx-5 d-flex justify-content-center">
-            <div class="col-3 d-flex justify-content-center">
-              <a class="btn btn-success" id="showFormNewMessage">Nova mensagem</a>
-            </div>
-          </div>
-        </div>
-        <div id="formNewMessage" class="d-none">
-          <div class="col mx-5 d-flex justify-content-center">
-            <label for="description" class="d-flex justify-content-center">Nova mensagem: </label>
-          </div>
-          <form method="POST" action="/dashboard/incident/interaction" class="needs-validation" novalidate="" autocomplete="off">
-            <input type="hidden" id="incidentId" name="incidentId" value="{{incident.id}}">
+        {{#if showButtonNewMessage }}
+          <div id="buttonNewMessage" class="d-block">
             <div class="row mx-5 d-flex justify-content-center">
-              <div class="col-8 mx-2">
-                  <textarea type="text" rows="3" class="form-control" id="description" name="description"></textarea>
-                <br>
-              </div>
-              <div class="col-4 mx-5">
-                <div class="row mx-6">
-                  <button type="submit" class="btn btn-success">Enviar mensagem</a>
-                </div>
-                <br>
-                <div class="row mx-6">
-                  <a class="btn btn-danger" id="hideFormNewMessage">Cancelar</a>
-                </div>
+              <div class="col-3 d-flex justify-content-center">
+                <a class="btn btn-success" id="showFormNewMessage">Nova mensagem</a>
               </div>
             </div>
-          </form>
-        </div>
+          </div>
+          <div id="formNewMessage" class="d-none">
+            <div class="col mx-5 d-flex justify-content-center">
+              <label for="description" class="d-flex justify-content-center">Nova mensagem: </label>
+            </div>
+            <form method="POST" action="/dashboard/incident/interaction" class="needs-validation" novalidate="" autocomplete="off">
+              <input type="hidden" id="incidentId" name="incidentId" value="{{incident.id}}">
+              <div class="row mx-5 d-flex justify-content-center">
+                <div class="col-8 mx-2">
+                    <textarea type="text" rows="3" class="form-control" id="description" name="description"></textarea>
+                  <br>
+                </div>
+                <div class="col-4 mx-5">
+                  <div class="row mx-6">
+                    <button type="submit" class="btn btn-success">Enviar mensagem</a>
+                  </div>
+                  <br>
+                  <div class="row mx-6">
+                    <a class="btn btn-danger" id="hideFormNewMessage">Cancelar</a>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+
+        {{/if}}
+        
       {{/if}}
       
       <br>
