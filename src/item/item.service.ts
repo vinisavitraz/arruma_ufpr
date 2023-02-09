@@ -67,4 +67,8 @@ export class ItemService {
     await this.repository.deleteItem(item);
   }
 
+  public async findTotalItems(): Promise<number> {
+    return await this.repository.findTotalItems();
+  }
+
 }

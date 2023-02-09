@@ -26,5 +26,9 @@ export class UserRepository {
   public async findUserByID(id: number): Promise<user | null> {
     return await this.connection.user.findUnique({ where: { id: id } })
   }
+
+  public async findTotalUsers(): Promise<number> {
+    return await this.connection.user.count();
+  }
   
 }

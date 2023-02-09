@@ -48,5 +48,9 @@ export class LocationRepository {
   public async deleteLocation(location: LocationEntity): Promise<void> {
     await this.connection.location.delete({where: { id: location.id }});
   }
+
+  public async findTotalLocations(): Promise<number> {
+    return await this.connection.location.count();
+  }
   
 }

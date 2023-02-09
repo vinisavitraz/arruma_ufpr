@@ -51,4 +51,8 @@ export class UserService {
     return UserEntity.fromRepository(userDb);
   }
 
+  public async findTotalUsers(): Promise<number> {
+    return await this.repository.findTotalUsers();
+  }
+
 }

@@ -148,5 +148,17 @@ export class IncidentRepository {
       },
     });
   }
+
+  public async findTotalIncidentsByStatus(status: string | undefined): Promise<number> {
+    return await this.connection.incident.count({
+      where: {
+        status: status,
+      },
+    });
+  }
+
+  public async findTotalIncidentTypes(): Promise<number> {
+    return await this.connection.incident_type.count();
+  }
   
 }

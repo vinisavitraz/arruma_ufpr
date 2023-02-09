@@ -7,6 +7,7 @@ import { AuthenticatedGuard } from 'src/auth/guard/authenticated.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { DashboardResponseRender } from '../render/dashboard-response-render';
 import { ApiExcludeController } from '@nestjs/swagger';
+import { HomePageResponseDTO } from '../dto/response/home-page-response.dto';
 
 @Controller('dashboard')
 @ApiExcludeController()
@@ -48,11 +49,16 @@ export class DashboardController {
   @UseGuards(AuthenticatedGuard)
   @Get()
   public async getHomePage(@Request() req, @Res() res: Response): Promise<void> {
+    const homePage: HomePageResponseDTO = await this.dashboardService.getHomePageData();
+
     return DashboardResponseRender.renderForAuthenticatedUser(
       res,
       'home/home',
       req.user,
       'home',
+      {
+        homePage: homePage,
+      },
     );
   }
 

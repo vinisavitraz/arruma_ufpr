@@ -63,5 +63,9 @@ export class ItemRepository {
   public async deleteItem(item: ItemEntity): Promise<void> {
     await this.connection.item.delete({where: { id: item.id }});
   }
+
+  public async findTotalItems(): Promise<number> {
+    return await this.connection.item.count();
+  }
   
 }

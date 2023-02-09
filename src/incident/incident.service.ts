@@ -135,6 +135,18 @@ export class IncidentService {
     });
   }
 
+  public async findTotalIncidentsByStatus(status: string): Promise<number> {
+    if (status === '') {
+      return await this.repository.findTotalIncidentsByStatus(undefined);
+    }
+
+    return await this.repository.findTotalIncidentsByStatus(status);
+  }
+
+  public async findTotalIncidentTypes(): Promise<number> {
+    return await this.repository.findTotalIncidentTypes();
+  }
+
   private async findOrCreateIncidentType(createIncidentRequestDTO: CreateIncidentRequestDTO): Promise<void> {
     if (createIncidentRequestDTO.incidentTypeId > 0) {
       const incidentType: IncidentTypeEntity = await this.findIncidentTypeByIDOrCry(createIncidentRequestDTO.incidentTypeId);

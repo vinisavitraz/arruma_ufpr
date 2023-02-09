@@ -59,4 +59,8 @@ export class LocationService {
     await this.repository.deleteLocation(location);
   }
 
+  public async findTotalLocations(): Promise<number> {
+    return await this.repository.findTotalLocations();
+  }
+
 }
