@@ -51,16 +51,19 @@ export class DashboardIncidentController {
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(AuthenticatedGuard)
   public async getUserIncidentsPage(@Request() req, @Res() res: Response): Promise<void> { 
-    const incidents: IncidentEntity[] = await this.service.findUserIncidents(req.user);
-
+    const status: string = req.query.status ?? '';
+    const incidents: IncidentEntity[] = await this.service.findUserIncidentsByStatus(req.user, status);
+    
     return DashboardResponseRender.renderForAuthenticatedUser(
       res,
       'incident/my-incidents',
       req.user,
       'myIncident',
       {
+        activeTab: status,
         incidents: incidents,
         showContent: incidents.length > 0,
+        cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}, {filePath: '/styles/incident-detail.css'}],
       }
     );
   }

@@ -1,0 +1,7 @@
+.nav-tabs {
+  display: flex;
+  flex-direction: row;
+}
+.nav-tabs-active {
+  color: #000000;
+}

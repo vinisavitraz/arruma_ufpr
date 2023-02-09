@@ -6,7 +6,7 @@ import { resolve } from 'path';
 import * as session from 'express-session';
 import * as passport from 'passport';
 import * as flash from 'connect-flash';
-import { formatDate, formatDateTime, select, formatMilliseconds, labelStatusIncident, textStatusIncident, setInteractionSide, formatInteractionDate, isAdmin } from './dashboard/helpers/helpers';
+import { formatDate, formatDateTime, select, formatMilliseconds, labelStatusIncident, textStatusIncident, setInteractionSide, formatInteractionDate, isAdmin, formatIncidentDate, setActiveTab } from './dashboard/helpers/helpers';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder, SwaggerDocumentOptions } from '@nestjs/swagger';
 
@@ -63,7 +63,9 @@ async function registerHBSHelpers() {
   hbs.registerHelper('text_status_incident', textStatusIncident);
   hbs.registerHelper('set_interaction_side', setInteractionSide);
   hbs.registerHelper('format_interaction_date', formatInteractionDate);
+  hbs.registerHelper('format_incident_date', formatIncidentDate);
   hbs.registerHelper('is_admin', isAdmin);
+  hbs.registerHelper('set_active_tab', setActiveTab);
 }
 
 bootstrap();

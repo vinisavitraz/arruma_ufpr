@@ -25,8 +25,8 @@ export class DashboardIncidentService {
     return await this.incidentService.findIncidents();
   }
 
-  public async findUserIncidents(user: UserEntity): Promise<IncidentEntity[]> {
-    return await this.incidentService.findUserIncidents(user);
+  public async findUserIncidentsByStatus(user: UserEntity, status: string): Promise<IncidentEntity[]> {
+    return await this.incidentService.findUserIncidentsByStatus(user, status);
   }
 
   public async findIncidentTypes(): Promise<IncidentTypeEntity[]> {

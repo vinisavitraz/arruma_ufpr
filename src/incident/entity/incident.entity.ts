@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { incident } from "@prisma/client";
+import { incident, incident_interaction, user } from "@prisma/client";
 
 export class IncidentEntity {
 
@@ -23,8 +23,14 @@ export class IncidentEntity {
   readonly itemId: number;
   @ApiProperty({example: 1})
   readonly userId: number;
+  @ApiProperty({example: 'John Doe'})
+  readonly userName: string;
   @ApiProperty({example: 1})
   readonly adminId: number | null;
+  @ApiProperty({example: 'John Doe'})
+  readonly adminName: string | null;
+  @ApiProperty({example: 1})
+  readonly totalInteractions: number;
 
   constructor(
     id: number,
@@ -37,7 +43,10 @@ export class IncidentEntity {
     locationId: number,
     itemId: number,
     userId: number,
+    userName: string,
     adminId: number | null,
+    adminName: string | null,
+    totalInteractions: number,
   ) {
     this.id = id;
     this.title = title;
@@ -49,10 +58,13 @@ export class IncidentEntity {
     this.locationId = locationId;
     this.itemId = itemId;
     this.userId = userId;
+    this.userName = userName;
     this.adminId = adminId;
+    this.adminName = adminName;
+    this.totalInteractions = totalInteractions;
   }
 
-  public static fromRepository(incident: incident): IncidentEntity {
+  public static fromRepository(incident: incident & {interactions: incident_interaction[], admin: user | null, user: user}): IncidentEntity {
     return new IncidentEntity(
       incident.id,
       incident.title,
@@ -64,7 +76,10 @@ export class IncidentEntity {
       incident.location_id,
       incident.item_id,
       incident.user_id,
+      incident.user.name,
       incident.admin_id,
+      incident.admin ? incident.admin.name : null,
+      incident.interactions.length,
     );
   }
 

@@ -79,3 +79,16 @@ export function isAdmin(role: number) {
 export function formatInteractionDate(interactionDate: Date) { 
   return DateFormatter.formatDateToStringDashboardWithTime(interactionDate);
 }
+
+export function formatIncidentDate(incidentDate: Date) { 
+  return DateFormatter.formatIncidentDateToString(incidentDate);
+}
+
+export function setActiveTab(tabName: string, status: string) { 
+  if (tabName === status) {
+    return 'nav-tabs-active';
+  }
+
+  return '';
+  
+}
