@@ -39,7 +39,7 @@
       <div class="row mx-3">
         <label for="description" class="col-sm-2 col-form-label d-flex justify-content-end">Descrição: </label>
         <div class="col-sm-4">
-          <input type="text" readonly class="form-control" id="description" value="{{ incident.description }}">
+          <textarea type="text" readonly rows="5" class="form-control" id="description" name="description">{{ incident.description }}</textarea>
         </div>
       </div>
       <br>
@@ -54,6 +54,20 @@
         <label for="endDate" class="col-sm-2 col-form-label d-flex justify-content-end">Data de fechamento: </label>
         <div class="col-sm-4">
           <input type="text" readonly class="form-control" id="endDate" value="{{format_datetime incident.endDate }}">
+        </div>
+      </div>
+      <br>
+      <div class="row mx-3">
+        <label for="userName" class="col-sm-2 col-form-label d-flex justify-content-end">Usuário: </label>
+        <div class="col-sm-4">
+          <input type="text" readonly class="form-control" id="userName" value="{{ incident.userName }}">
+        </div>
+      </div>
+      <br>
+      <div class="row mx-3">
+        <label for="adminName" class="col-sm-2 col-form-label d-flex justify-content-end">Administrador responsável: </label>
+        <div class="col-sm-4">
+          <input type="text" readonly class="form-control" id="adminName" value="{{ incident.adminName }}">
         </div>
       </div>
       <br>
@@ -116,24 +130,29 @@
           <div class="container py-5">
             <div class="main-timeline">
               {{#each incidentInteractions}}
-                {{#if admin }}
+                {{#if (is_admin ../user.role)}}
                   <div class="timeline {{set_interaction_side this "admin"}}">
                     <div class="card">
                       <div class="card-body p-4">
-                        <h5>{{format_interaction_date this.sentDate }}</h5>
+                        <p class="mb-0">Admin: {{ this.adminName }}</p>
+                        <h6>{{format_interaction_date this.sentDate }}</h6>
+                        <br>
+                        <br>
                         <p class="mb-0">{{ this.description }}</p>
+                        <br>
                       </div>
                     </div>
                   </div>
                 {{else}}
-                  <div class="timeline {{set_interaction_side this "admin"}}">
+                  <div class="timeline {{set_interaction_side this "user"}}">
                     <div class="card">
                       <div class="card-body p-4">
-                        <h5>{{format_interaction_date this.sentDate }}</h5>
+                        <p class="mb-0">Usuário: {{ this.userName }}</p>
+                        <h6>{{format_interaction_date this.sentDate }}</h6>
+                        <br>
                         <br>
                         <p class="mb-0">{{ this.description }}</p>
                         <br>
-                        <p class="mb-0">Usuário: {{ this.userName }}</p>
                       </div>
                     </div>
                   </div>

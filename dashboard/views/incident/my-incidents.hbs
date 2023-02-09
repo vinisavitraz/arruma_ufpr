@@ -7,9 +7,12 @@
       <div class="col-8">
         <h1>Meus incidentes</h1>
       </div>
-      <div class="col-2">
-        <a class="btn btn-primary" href="/dashboard/incident/create" role="button">Novo incidente</a>
-      </div>
+      {{#if (is_admin user.role)}}
+      {{else}}
+        <div class="col-2">
+          <a class="btn btn-primary" href="/dashboard/incident/create" role="button">Novo incidente</a>
+        </div>
+      {{/if}}
     </div>
     <br>
     <br>

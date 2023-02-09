@@ -57,19 +57,26 @@ export function textStatusIncident(status: string) {
   }
 }
 
-export function setInteractionSide(interaction: IncidentInteractionEntity, role: string) { 
+export function setInteractionSide(interaction: IncidentInteractionEntity, role: string) {
   const admin: boolean = role === 'admin';
-  let direction = 'left';
 
-  if (interaction.origin === RoleEnum.ADMIN && admin) {
-    direction = 'right';
+  if (admin && interaction.origin === RoleEnum.ADMIN) {
+    return 'left';
   }
 
-  if (interaction.origin === RoleEnum.USER && !admin) {
-    direction = 'right';
+  if (admin && interaction.origin === RoleEnum.USER) {
+    return 'right';
   }
 
-  return direction;
+  if (!admin && interaction.origin !== RoleEnum.ADMIN) {
+    return 'left';
+  }
+
+  if (!admin && interaction.origin === RoleEnum.ADMIN) {
+    return 'right';
+  }
+  
+  return 'left';
 }
 
 export function isAdmin(role: number) { 
@@ -77,7 +84,7 @@ export function isAdmin(role: number) {
 }
 
 export function formatInteractionDate(interactionDate: Date) { 
-  return DateFormatter.formatDateToStringDashboardWithTime(interactionDate);
+  return DateFormatter.formatIncidentDateToString(interactionDate);
 }
 
 export function formatIncidentDate(incidentDate: Date) { 
