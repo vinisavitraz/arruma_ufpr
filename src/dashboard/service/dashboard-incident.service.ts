@@ -1,5 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { validateOrReject } from 'class-validator';
+import { RoleEnum } from 'src/app/enum/role.enum';
+import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-codes';
+import { HttpOperationException } from 'src/app/exception/http-operation.exception';
 import { CreateIncidentInteractionRequestDTO } from 'src/incident/dto/request/create-incident-interaction-request.dto';
 import { CreateIncidentRequestDTO } from 'src/incident/dto/request/create-incident-request.dto';
 import { IncidentInteractionEntity } from 'src/incident/entity/incident-interaction.entity';
@@ -45,8 +48,18 @@ export class DashboardIncidentService {
     return await this.itemService.findItemsByLocationID(locationId);
   }
 
-  public async findIncidentByIDOrCry(id: number): Promise<IncidentEntity> {
-    return await this.incidentService.findIncidentByIDOrCry(id);
+  public async findUserIncidentByIDOrCry(user: UserEntity, id: number): Promise<IncidentEntity> {
+    const incident: IncidentEntity = await this.incidentService.findIncidentByIDOrCry(id);
+
+    if (user.role === RoleEnum.USER && incident.userId !== user.id) {
+      throw new HttpOperationException(
+        HttpStatus.UNAUTHORIZED, 
+        'Incident with ID ' + id + ' not visible for this user', 
+        HttpOperationErrorCodes.INCIDENT_NOT_VISIBLE,
+      );
+    }
+    
+    return incident;
   }
 
   public async createIncident(createIncidentRequestDTO: CreateIncidentRequestDTO): Promise<void> {

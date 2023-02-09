@@ -22,7 +22,7 @@ export class IncidentRepository {
     return await this.connection.incident.findMany({
       orderBy: [
         {
-          id: 'asc',
+          id: 'desc',
         },
       ],
       include: {
@@ -52,7 +52,7 @@ export class IncidentRepository {
       where: where,
       orderBy: [
         {
-          id: 'asc',
+          id: 'desc',
         },
       ],
       include: {

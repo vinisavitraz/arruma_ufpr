@@ -4,6 +4,7 @@ import { Response } from 'express';
 import { RoleEnum } from "src/app/enum/role.enum";
 import { DashboardExceptionFilter } from "src/app/exception/filter/dashboard-exception-filter";
 import { AuthenticatedGuard } from "src/auth/guard/authenticated.guard";
+import { RolesGuard } from "src/auth/guard/roles.guard";
 import { Roles } from "src/auth/roles/require-roles.decorator";
 import { CreateLocationRequestDTO } from "src/location/dto/request/create-location-request.dto";
 import { UpdateLocationRequestDTO } from "src/location/dto/request/update-location-request.dto";
@@ -58,8 +59,8 @@ export class DashboardUserController {
   // }
 
   @Get()
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getUsersPage(@Request() req, @Res() res: Response): Promise<void> {    
     const users: UserEntity[] = await this.service.findUsers();
 

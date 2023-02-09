@@ -4,6 +4,7 @@ import { Response } from 'express';
 import { RoleEnum } from "src/app/enum/role.enum";
 import { DashboardExceptionFilter } from "src/app/exception/filter/dashboard-exception-filter";
 import { AuthenticatedGuard } from "src/auth/guard/authenticated.guard";
+import { RolesGuard } from "src/auth/guard/roles.guard";
 import { Roles } from "src/auth/roles/require-roles.decorator";
 import { CreateLocationRequestDTO } from "src/location/dto/request/create-location-request.dto";
 import { UpdateLocationRequestDTO } from "src/location/dto/request/update-location-request.dto";
@@ -20,8 +21,8 @@ export class DashboardLocationController {
   constructor(private readonly service: DashboardLocationService) {}
 
   @Get('create')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getCreateLocationPage(@Request() req, @Res() res: Response): Promise<void> {    
     return DashboardResponseRender.renderForAuthenticatedUser(
       res,
@@ -36,8 +37,8 @@ export class DashboardLocationController {
   }
 
   @Get(':id')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getLocationPage(@Param('id', ParseIntPipe) locationId: number, @Request() req, @Res() res: Response): Promise<void> {    
     const location: LocationEntity = await this.service.findLocationByIDOrCry(locationId);
 
@@ -54,8 +55,8 @@ export class DashboardLocationController {
   }
 
   @Get()
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getLocationsPage(@Request() req, @Res() res: Response): Promise<void> {    
     const locations: LocationEntity[] = await this.service.findLocations();
 
@@ -72,8 +73,8 @@ export class DashboardLocationController {
   }
 
   @Post('create')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async createLocation(@Request() req, @Res() res: Response): Promise<void> { 
     const createLocationRequestDto: CreateLocationRequestDTO = CreateLocationRequestDTO.fromDashboard(req.body);
     
@@ -96,8 +97,8 @@ export class DashboardLocationController {
   }
 
   @Post('update')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async updateLocation(@Request() req, @Res() res: Response): Promise<void> { 
     const updateLocationRequestDTO: UpdateLocationRequestDTO = UpdateLocationRequestDTO.fromDashboard(req.body);
     
@@ -120,8 +121,8 @@ export class DashboardLocationController {
   }
 
   @Get('delete/:id')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async deleteLocation(@Param('id', ParseIntPipe) locationId: number, @Request() req, @Res() res: Response): Promise<void> {     
     await this.service.deleteLocation(locationId);
 

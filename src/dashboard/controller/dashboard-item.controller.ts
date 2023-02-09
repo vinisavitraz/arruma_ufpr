@@ -13,6 +13,7 @@ import { UpdateItemRequestDTO } from "src/item/dto/request/update-item-request.d
 import { Roles } from "src/auth/roles/require-roles.decorator";
 import { RoleEnum } from "src/app/enum/role.enum";
 import { ListItemsResponseDTO } from "src/item/dto/response/list-items-response.dto";
+import { RolesGuard } from "src/auth/guard/roles.guard";
 
 @Controller('dashboard/item')
 @ApiExcludeController()
@@ -22,8 +23,8 @@ export class DashboardItemController {
   constructor(private readonly service: DashboardItemService) {}
 
   @Get('create')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getCreateItemPage(@Request() req, @Res() res: Response): Promise<void> {  
     const locations: LocationEntity[] = await this.service.findLocations();
     
@@ -41,8 +42,8 @@ export class DashboardItemController {
   }
 
   @Get(':id')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getItemPage(@Param('id', ParseIntPipe) itemId: number, @Request() req, @Res() res: Response): Promise<void> {    
     const locations: LocationEntity[] = await this.service.findLocations();
     const item: ItemEntity = await this.service.findItemByIDOrCry(itemId);
@@ -61,8 +62,8 @@ export class DashboardItemController {
   }
 
   @Get()
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getItemsPage(@Request() req, @Res() res: Response): Promise<void> {
     const items: ItemEntity[] = await this.service.findItems();
     
@@ -79,8 +80,8 @@ export class DashboardItemController {
   }
 
   @Post('create')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async createItem(@Request() req, @Res() res: Response): Promise<void> { 
     const createItemRequestDTO: CreateItemRequestDTO = CreateItemRequestDTO.fromDashboard(req.body);
     
@@ -107,8 +108,8 @@ export class DashboardItemController {
   }
 
   @Post('update')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async updateItem(@Request() req, @Res() res: Response): Promise<void> { 
     const updateItemRequestDTO: UpdateItemRequestDTO = UpdateItemRequestDTO.fromDashboard(req.body);
 
@@ -135,8 +136,8 @@ export class DashboardItemController {
   }
 
   @Get('delete/:id')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async deleteItem(@Param('id', ParseIntPipe) itemId: number, @Request() req, @Res() res: Response): Promise<void> {     
     await this.service.deleteItem(itemId);
 

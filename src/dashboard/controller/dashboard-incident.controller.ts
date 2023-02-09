@@ -17,6 +17,7 @@ import { IncidentInteractionEntity } from "src/incident/entity/incident-interact
 import { CreateIncidentInteractionRequestDTO } from "src/incident/dto/request/create-incident-interaction-request.dto";
 import { IncidentStatusEnum } from "src/app/enum/status.enum";
 import { UserEntity } from "src/user/entity/user.entity";
+import { RolesGuard } from "src/auth/guard/roles.guard";
 
 @Controller('dashboard/incident')
 @ApiExcludeController()
@@ -27,7 +28,7 @@ export class DashboardIncidentController {
 
   @Get('create')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getCreateIncidentPage(@Request() req, @Res() res: Response): Promise<void> {    
     const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
     const locations: LocationEntity[] = await this.service.findLocations();
@@ -49,7 +50,7 @@ export class DashboardIncidentController {
 
   @Get('user')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getUserIncidentsPage(@Request() req, @Res() res: Response): Promise<void> { 
     const status: string = req.query.status ?? '';
     const incidents: IncidentEntity[] = await this.service.findUserIncidentsByStatus(req.user, status);
@@ -70,7 +71,7 @@ export class DashboardIncidentController {
 
   @Get('assign/:id')
   @Roles(RoleEnum.ADMIN)
-  @UseGuards(AuthenticatedGuard)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async assignIncidentToAdmin(@Param('id', ParseIntPipe) incidentId: number, @Request() req, @Res() res: Response): Promise<void> { 
     await this.service.assignIncidentToAdmin(req.user, incidentId);
     
@@ -79,7 +80,7 @@ export class DashboardIncidentController {
 
   @Get('close/:id')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async closeIncident(@Param('id', ParseIntPipe) incidentId: number, @Request() req, @Res() res: Response): Promise<void> { 
     await this.service.closeIncident(req.user, incidentId);
     
@@ -88,10 +89,10 @@ export class DashboardIncidentController {
 
   @Get(':id')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getIncidentPage(@Param('id', ParseIntPipe) incidentId: number, @Request() req, @Res() res: Response): Promise<void> {  
     const user: UserEntity = req.user; 
-    const incident: IncidentEntity = await this.service.findIncidentByIDOrCry(incidentId);
+    const incident: IncidentEntity = await this.service.findUserIncidentByIDOrCry(user, incidentId);
     const incidentInteractions: IncidentInteractionEntity[] = await this.service.findIncidentInteractions(incident.id);
     
     return DashboardResponseRender.renderForAuthenticatedUser(
@@ -115,11 +116,12 @@ export class DashboardIncidentController {
 
   @Get('edit/:id')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getEditIncidentPage(@Param('id', ParseIntPipe) incidentId: number, @Request() req, @Res() res: Response): Promise<void> {   
+    const user: UserEntity = req.user; 
+    const incident: IncidentEntity = await this.service.findUserIncidentByIDOrCry(user, incidentId);
     const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
     const locations: LocationEntity[] = await this.service.findLocations(); 
-    const incident: IncidentEntity = await this.service.findIncidentByIDOrCry(incidentId);
     const items: ItemEntity[] = await this.service.findItemsByLocationID(incident.locationId);
 
     return DashboardResponseRender.renderForAuthenticatedUser(
@@ -140,7 +142,7 @@ export class DashboardIncidentController {
 
   @Post('create')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async createIncident(@Request() req, @Res() res: Response): Promise<void> { 
     const createIncidentRequestDTO: CreateIncidentRequestDTO = CreateIncidentRequestDTO.fromDashboard(req.body, req.user);
 
@@ -164,7 +166,7 @@ export class DashboardIncidentController {
 
   @Post('interaction')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async addInteractionToIncident(@Request() req, @Res() res: Response): Promise<void> { 
     const createIncidentInteractionRequestDTO: CreateIncidentInteractionRequestDTO = CreateIncidentInteractionRequestDTO.fromDashboard(req.body, req.user);
 
@@ -178,8 +180,8 @@ export class DashboardIncidentController {
   }
 
   @Get()
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getIncidentsPage(@Request() req, @Res() res: Response): Promise<void> { 
     const incidents: IncidentEntity[] = await this.service.findIncidents();
 

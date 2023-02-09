@@ -11,6 +11,7 @@ import { UpdateIncidentTypeRequestDTO } from "src/incident/dto/request/update-in
 import { Roles } from "src/auth/roles/require-roles.decorator";
 import { RoleEnum } from "src/app/enum/role.enum";
 import { DashboardIncidentTypeService } from "../service/dashboard-incident-type.service";
+import { RolesGuard } from "src/auth/guard/roles.guard";
 
 @Controller('dashboard/incident-type')
 @ApiExcludeController()
@@ -20,8 +21,8 @@ export class DashboardIncidentTypeController {
   constructor(private readonly service: DashboardIncidentTypeService) {}
 
   @Get()
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getIncidentTypesPage(@Request() req, @Res() res: Response): Promise<void> {   
     const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
 
@@ -38,8 +39,8 @@ export class DashboardIncidentTypeController {
   }
   
   @Get('create')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getCreateIncidentTypePage(@Request() req, @Res() res: Response): Promise<void> {    
     return DashboardResponseRender.renderForAuthenticatedUser(
       res,
@@ -54,8 +55,8 @@ export class DashboardIncidentTypeController {
   }
 
   @Get(':id')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getIncidentTypePage(@Param('id', ParseIntPipe) incidentTypeId: number, @Request() req, @Res() res: Response): Promise<void> {    
     const incidentType: IncidentTypeEntity = await this.service.findIncidentTypeByIDOrCry(incidentTypeId);
 
@@ -72,19 +73,17 @@ export class DashboardIncidentTypeController {
   }
 
   @Get('delete/:id')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async deleteIncidentType(@Param('id', ParseIntPipe) locationId: number, @Request() req, @Res() res: Response): Promise<void> {     
     await this.service.deleteIncidentType(locationId);
 
     return res.redirect('/dashboard/incident-type');
   }
 
-  
-
   @Post('create')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async createIncidentType(@Request() req, @Res() res: Response): Promise<void> { 
     const createIncidentTypeRequestDTO: CreateIncidentTypeRequestDTO = CreateIncidentTypeRequestDTO.fromDashboard(req.body);
     
@@ -107,8 +106,8 @@ export class DashboardIncidentTypeController {
   }
 
   @Post('update')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard)
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
   public async updateIncidentType(@Request() req, @Res() res: Response): Promise<void> { 
     const updateIncidentTypeRequestDTO: UpdateIncidentTypeRequestDTO = UpdateIncidentTypeRequestDTO.fromDashboard(req.body);
     
