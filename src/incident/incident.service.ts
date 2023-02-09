@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { incident, incident_interaction, incident_type } from '@prisma/client';
+import { incident, incident_interaction, incident_type, user } from '@prisma/client';
 import { RoleEnum } from 'src/app/enum/role.enum';
 import { IncidentStatusEnum } from 'src/app/enum/status.enum';
 import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-codes';
@@ -118,7 +118,7 @@ export class IncidentService {
 
   public async createIncidentInteraction(user: UserEntity, createIncidentInteractionRequestDTO: CreateIncidentInteractionRequestDTO): Promise<IncidentInteractionEntity> {
     const incidentDb: IncidentEntity = await this.findIncidentByIDOrCry(createIncidentInteractionRequestDTO.incidentId);
-    const incidentInteractionDb: incident_interaction = await this.repository.createIncidentInteraction(createIncidentInteractionRequestDTO);
+    const incidentInteractionDb: incident_interaction & {user: user} | null = await this.repository.createIncidentInteraction(createIncidentInteractionRequestDTO);
 
     if ( incidentDb.status === IncidentStatusEnum.OPEN && user.role === RoleEnum.ADMIN) {
       await this.repository.assignIncidentToAdmin(user, incidentDb);
@@ -128,9 +128,17 @@ export class IncidentService {
   }
 
   public async findIncidentInteractions(incidentId: number): Promise<IncidentInteractionEntity[]> {
-    const incidentInteractionsDb: incident_interaction[] = await this.repository.findIncidentInteractions(incidentId);
+    const incidentInteractionsDb: (incident_interaction & { user: user })[] = await this.repository.findIncidentInteractions(incidentId);
 
-    return incidentInteractionsDb.map((incidentInteraction: incident_interaction) => {
+    return incidentInteractionsDb.map((incidentInteraction: incident_interaction & { user: user }) => {
+      return IncidentInteractionEntity.fromRepository(incidentInteraction);
+    });
+  }
+
+  public async findIncidentInteractionsWithUsers(incidentId: number): Promise<IncidentInteractionEntity[]> {
+    const incidentInteractionsDb: (incident_interaction & { user: user })[] = await this.repository.findIncidentInteractions(incidentId);
+
+    return incidentInteractionsDb.map((incidentInteraction: incident_interaction & { user: user }) => {
       return IncidentInteractionEntity.fromRepository(incidentInteraction);
     });
   }

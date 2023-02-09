@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { incident_interaction } from "@prisma/client";
+import { incident_interaction, user } from "@prisma/client";
 
 export class IncidentInteractionEntity {
 
@@ -13,6 +13,8 @@ export class IncidentInteractionEntity {
   readonly origin: number;
   @ApiProperty({example: 1})
   readonly userId: number;
+  @ApiProperty({example: 'John Doe'})
+  readonly userName: string;
   @ApiProperty({example: 1})
   readonly incidentId: number;
 
@@ -22,6 +24,7 @@ export class IncidentInteractionEntity {
     sentDate: Date,
     origin: number,
     userId: number,
+    userName: string,
     incidentId: number,
   ) {
     this.id = id;
@@ -29,16 +32,18 @@ export class IncidentInteractionEntity {
     this.sentDate = sentDate;
     this.origin = origin;
     this.userId = userId;
+    this.userName = userName;
     this.incidentId = incidentId;
   }
 
-  public static fromRepository(incidentInteraction: incident_interaction): IncidentInteractionEntity {
+  public static fromRepository(incidentInteraction: incident_interaction & {user: user}): IncidentInteractionEntity {
     return new IncidentInteractionEntity(
       incidentInteraction.id,
       incidentInteraction.description,
       incidentInteraction.sent_date,
       incidentInteraction.origin,
       incidentInteraction.user_id,
+      incidentInteraction.user.name,
       incidentInteraction.incident_id,
     );
   }

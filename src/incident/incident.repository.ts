@@ -1,4 +1,4 @@
-import { incident, incident_interaction, incident_type } from "@prisma/client";
+import { incident, incident_interaction, incident_type, user } from "@prisma/client";
 import { RoleEnum } from "src/app/enum/role.enum";
 import { IncidentStatusEnum } from "src/app/enum/status.enum";
 import { DatabaseService } from "src/database/database.service";
@@ -61,7 +61,7 @@ export class IncidentRepository {
     });
   }
 
-  public async findIncidentInteractions(incidentId: number): Promise<incident_interaction[]> {
+  public async findIncidentInteractions(incidentId: number): Promise<(incident_interaction & { user: user })[]> {
     return await this.connection.incident_interaction.findMany({
       where: { incident_id: incidentId, },
       orderBy: [
@@ -69,6 +69,9 @@ export class IncidentRepository {
           id: 'desc',
         },
       ],
+      include: {
+        user: true,
+      },
     });
   }
 
@@ -138,13 +141,16 @@ export class IncidentRepository {
     await this.connection.incident_type.delete({where: { id: incidentType.id }});
   }
 
-  public async createIncidentInteraction(createIncidentInteractionRequestDTO: CreateIncidentInteractionRequestDTO): Promise<incident_interaction | null> {
+  public async createIncidentInteraction(createIncidentInteractionRequestDTO: CreateIncidentInteractionRequestDTO): Promise<incident_interaction & {user: user} | null> {
     return await this.connection.incident_interaction.create({ 
       data: {
         description: createIncidentInteractionRequestDTO.description,
         incident_id: createIncidentInteractionRequestDTO.incidentId,
         user_id: createIncidentInteractionRequestDTO.userId,
         origin: createIncidentInteractionRequestDTO.origin,
+      },
+      include: {
+        user: true,
       },
     });
   }

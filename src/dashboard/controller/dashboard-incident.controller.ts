@@ -90,7 +90,7 @@ export class DashboardIncidentController {
     const user: UserEntity = req.user; 
     const incident: IncidentEntity = await this.service.findIncidentByIDOrCry(incidentId);
     const incidentInteractions: IncidentInteractionEntity[] = await this.service.findIncidentInteractions(incident.id);
-
+    
     return DashboardResponseRender.renderForAuthenticatedUser(
       res,
       'incident/incident-detail',
