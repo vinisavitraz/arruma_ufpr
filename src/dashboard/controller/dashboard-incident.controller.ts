@@ -73,18 +73,20 @@ export class DashboardIncidentController {
   @Roles(RoleEnum.ADMIN)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async assignIncidentToAdmin(@Param('id', ParseIntPipe) incidentId: number, @Request() req, @Res() res: Response): Promise<void> { 
+    const origin: string = req.query.origin ?? '';
     await this.service.assignIncidentToAdmin(req.user, incidentId);
     
-    return res.redirect('/dashboard/incident/' + incidentId);
+    return res.redirect('/dashboard/incident/' + incidentId + '?origin=' + origin);
   }
 
   @Get('close/:id')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async closeIncident(@Param('id', ParseIntPipe) incidentId: number, @Request() req, @Res() res: Response): Promise<void> { 
+    const origin: string = req.query.origin ?? '';
     await this.service.closeIncident(req.user, incidentId);
     
-    return res.redirect('/dashboard/incident/' + incidentId);
+    return res.redirect('/dashboard/incident/' + incidentId + '?origin=' + origin);
   }
 
   @Get(':id')
@@ -110,6 +112,7 @@ export class DashboardIncidentController {
       user,
       view,
       {
+        origin: origin,
         backUrl: backUrl,
         admin: user.role === RoleEnum.ADMIN,
         incident: incident,
@@ -159,19 +162,26 @@ export class DashboardIncidentController {
     try {
       await this.service.createIncident(createIncidentRequestDTO);
     } catch (errors) {
+      const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
+      const locations: LocationEntity[] = await this.service.findLocations(); 
+      const items: ItemEntity[] = await this.service.findItemsByLocationID(createIncidentRequestDTO.locationId);
+
       return DashboardResponseRender.renderForAuthenticatedUser(
         res,
         'incident/create-incident',
         req.user,
         'incident',
         {
+          incidentTypes: incidentTypes,
+          locations: locations,
+          items: items,
           incident: createIncidentRequestDTO,
           ...DashboardErrorMapper.map(errors)
         }
       );
     }  
 
-    return res.redirect('/dashboard/incident');
+    return res.redirect('/dashboard/incident/user');
   }
 
   @Post('interaction')

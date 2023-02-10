@@ -1,5 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { incident, incident_interaction, incident_type, user } from '@prisma/client';
+import { validateOrReject } from 'class-validator';
 import { RoleEnum } from 'src/app/enum/role.enum';
 import { IncidentStatusEnum } from 'src/app/enum/status.enum';
 import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-codes';
@@ -167,6 +168,8 @@ export class IncidentService {
     createIncidentTypeRequestDTO.name = createIncidentRequestDTO.incidentTypeName;
     createIncidentTypeRequestDTO.description = createIncidentRequestDTO.incidentTypeDescription;
 
+    await validateOrReject(createIncidentTypeRequestDTO);
+
     const incidentType: IncidentTypeEntity = await this.createIncidentType(createIncidentTypeRequestDTO);
     createIncidentRequestDTO.incidentTypeId = incidentType.id;
   }
@@ -181,6 +184,8 @@ export class IncidentService {
     const createLocationRequestDTO: CreateLocationRequestDTO = new CreateLocationRequestDTO();
     createLocationRequestDTO.name = createIncidentRequestDTO.locationName;
     createLocationRequestDTO.description = createIncidentRequestDTO.locationDescription;
+
+    await validateOrReject(createLocationRequestDTO);
 
     const location: LocationEntity = await this.locationService.createLocation(createLocationRequestDTO);
     createIncidentRequestDTO.locationId = location.id;
@@ -198,6 +203,8 @@ export class IncidentService {
     createItemRequestDTO.description = createIncidentRequestDTO.itemDescription;
     createItemRequestDTO.locationId = createIncidentRequestDTO.locationId;
 
+    await validateOrReject(createItemRequestDTO);
+
     const item: ItemEntity = await this.itemService.createItem(createItemRequestDTO);
     createIncidentRequestDTO.itemId = item.id;
   }
@@ -212,18 +219,18 @@ export class IncidentService {
   public async closeIncident(user: UserEntity, incidentId: number): Promise<IncidentEntity> {
     const incidentDb: IncidentEntity = await this.findIncidentByIDOrCry(incidentId);
     
-    if (incidentDb.adminId === user.id || incidentDb.userId === user.id) {
+    if (user.role === RoleEnum.ADMIN || (incidentDb.userId === user.id)) {
       const closedIncident: incident & {interactions: incident_interaction[], admin: user | null, user: user} = await this.repository.setIncidentToClosed(incidentDb);
 
       return IncidentEntity.fromRepository(closedIncident);
     }
-
+    
     console.log(incidentDb);
     console.log(user);
 
     throw new HttpOperationException(
       HttpStatus.FORBIDDEN, 
-      'Only the creator user or assigned admin can close the incident.', 
+      'Only the user creator or an admin can close the incident.', 
       HttpOperationErrorCodes.INVALID_ASSIGNED_ADMIN_CLOSE_INCIDENT,
     );
   }
