@@ -14,6 +14,7 @@ import { ItemService } from 'src/item/item.service';
 import { LocationEntity } from 'src/location/entity/location.entity';
 import { LocationService } from 'src/location/location.service';
 import { UserEntity } from 'src/user/entity/user.entity';
+import { SearchIncidentsRequestDTO } from '../dto/request/search-incidents-request.dto';
 
 @Injectable()
 export class DashboardIncidentService {
@@ -80,6 +81,10 @@ export class DashboardIncidentService {
 
   public async closeIncident(user: UserEntity, incidentId: number): Promise<IncidentEntity> {
     return await this.incidentService.closeIncident(user, incidentId); 
+  }
+
+  public async searchIncidents(searchIncidentsRequestDTOa: SearchIncidentsRequestDTO): Promise<IncidentEntity[]> {
+    return await this.incidentService.searchIncidents(searchIncidentsRequestDTOa); 
   }
 
 }

@@ -3,6 +3,14 @@ import { IncidentStatusEnum } from "src/app/enum/status.enum";
 import { DateFormatter } from "src/app/util/date.formatter";
 import { IncidentInteractionEntity } from "src/incident/entity/incident-interaction.entity";
 
+export function formatObjectDateTime(date: Date | undefined) { 
+  if (!date) {
+    return '';
+  }
+  
+  return DateFormatter.formatDateToStringWithTime(date);
+}
+
 export function formatDate(date: string | null) { 
     if (!date) {
       return '';

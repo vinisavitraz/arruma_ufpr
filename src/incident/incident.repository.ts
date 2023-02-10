@@ -1,6 +1,7 @@
 import { incident, incident_interaction, incident_type, user } from "@prisma/client";
 import { RoleEnum } from "src/app/enum/role.enum";
 import { IncidentStatusEnum } from "src/app/enum/status.enum";
+import { SearchIncidentsRequestDTO } from "src/dashboard/dto/request/search-incidents-request.dto";
 import { DatabaseService } from "src/database/database.service";
 import { UserEntity } from "src/user/entity/user.entity";
 import { CreateIncidentInteractionRequestDTO } from "./dto/request/create-incident-interaction-request.dto";
@@ -66,6 +67,53 @@ export class IncidentRepository {
     });
   }
 
+  public async searchIncidents(searchIncidentsRequestDTO: SearchIncidentsRequestDTO): Promise<(incident & {interactions: incident_interaction[], admin: user | null, user: user})[]> {
+    return await this.connection.incident.findMany({
+      where: {
+        title: {
+          contains: searchIncidentsRequestDTO.incidentTitle,
+          mode: 'insensitive',
+        },
+        start_date: {
+          gte: searchIncidentsRequestDTO.incidentOpenDate,
+        },
+        end_date: {
+          lte: searchIncidentsRequestDTO.incidentEndDate,
+        },
+        user: {
+          name: {
+            contains: searchIncidentsRequestDTO.incidentUserName,
+            mode: 'insensitive',
+          },
+          email: {
+            contains: searchIncidentsRequestDTO.incidentUserEmail,
+            mode: 'insensitive',
+          },
+        },
+        status: searchIncidentsRequestDTO.incidentStatus,
+        incident_type: {
+          id: searchIncidentsRequestDTO.incidentTypeId,
+        },
+        location: {
+          id: searchIncidentsRequestDTO.locationId,
+        },
+        item: {
+          id: searchIncidentsRequestDTO.itemId,
+        },
+      },
+      orderBy: [
+        {
+          id: 'desc',
+        },
+      ],
+      include: {
+        interactions: true,
+        admin: true,
+        user: true,
+      },
+    });
+  }
+
   public async findIncidentTypes(): Promise<incident_type[]> {
     return await this.connection.incident_type.findMany({
       orderBy: [
@@ -93,6 +141,20 @@ export class IncidentRepository {
   public async findIncidentByID(id: number): Promise<incident & {interactions: incident_interaction[], admin: user | null, user: user} | null> {
     return await this.connection.incident.findUnique({ 
       where: { id: id },
+      include: {
+        interactions: true,
+        admin: true,
+        user: true,
+      },
+    });
+  }
+
+  public async findIncidentByIDAndStatus(id: number, status: string | undefined): Promise<incident & {interactions: incident_interaction[], admin: user | null, user: user} | null> {
+    return await this.connection.incident.findFirst({ 
+      where: { 
+        id: id,
+        status: status,
+      },
       include: {
         interactions: true,
         admin: true,

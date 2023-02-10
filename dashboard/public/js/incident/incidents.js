@@ -1,13 +1,8 @@
 $(function () {
   const showSearchFormButton = document.querySelector('#showSearchFormButton');
-  const hideSearchForm = document.querySelector('#hideSearchForm');
 
   showSearchFormButton.addEventListener('click', () => {
     changeInputType('searchButton', 'searchForm');
-  });
-
-  hideSearchForm.addEventListener('click', () => {
-    changeInputType('searchForm', 'searchButton');
   });
 
   function changeInputType(toHide, toShow) {

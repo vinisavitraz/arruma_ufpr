@@ -1,4 +1,4 @@
-import { Controller, Get, UseFilters, UseGuards, Request, Res, Param, ParseIntPipe, Post } from "@nestjs/common";
+import { Controller, Get, UseFilters, UseGuards, Request, Res, Param, ParseIntPipe, Post, ConsoleLogger } from "@nestjs/common";
 import { Response } from 'express';
 import { DashboardExceptionFilter } from "src/app/exception/filter/dashboard-exception-filter";
 import { AuthenticatedGuard } from "src/auth/guard/authenticated.guard";
@@ -18,6 +18,7 @@ import { CreateIncidentInteractionRequestDTO } from "src/incident/dto/request/cr
 import { IncidentStatusEnum } from "src/app/enum/status.enum";
 import { UserEntity } from "src/user/entity/user.entity";
 import { RolesGuard } from "src/auth/guard/roles.guard";
+import { SearchIncidentsRequestDTO } from "../dto/request/search-incidents-request.dto";
 
 @Controller('dashboard/incident')
 @ApiExcludeController()
@@ -55,7 +56,16 @@ export class DashboardIncidentController {
     const status: string = req.query.status ?? '';
     const incidents: IncidentEntity[] = await this.service.findUserIncidentsByStatus(req.user, status);
     
-    return this.renderIncidentsPage(res, req.user, status, incidents, 'userIncident', '/dashboard/incident/user');
+    return this.renderIncidentsPage(
+      res, 
+      req.user, 
+      status, 
+      incidents, 
+      'userIncident', 
+      '/dashboard/incident/user', 
+      SearchIncidentsRequestDTO.fromEmptySearch(status, 'userIncident'),
+      false,
+    );
   }
 
   @Get('assign/:id')
@@ -188,6 +198,25 @@ export class DashboardIncidentController {
     return res.redirect('/dashboard/incident/' + createIncidentInteractionRequestDTO.incidentId);
   }
 
+  @Post('search')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
+  public async searchIncidents(@Request() req, @Res() res: Response): Promise<void> { 
+    const searchIncidentsRequestDTO: SearchIncidentsRequestDTO = SearchIncidentsRequestDTO.fromDashboard(req.body, req.user);
+    const incidents: IncidentEntity[] = await this.service.searchIncidents(searchIncidentsRequestDTO);
+    
+    return this.renderIncidentsPage(
+      res, 
+      req.user, 
+      searchIncidentsRequestDTO.incidentStatus, 
+      incidents, 
+      searchIncidentsRequestDTO.origin, 
+      searchIncidentsRequestDTO.origin === 'incident' ? '/dashboard/incident' : '/dashboard/incident/user', 
+      searchIncidentsRequestDTO,
+      true,
+    );
+  }
+
   @Get()
   @Roles(RoleEnum.ADMIN)
   @UseGuards(AuthenticatedGuard, RolesGuard)
@@ -195,19 +224,15 @@ export class DashboardIncidentController {
     const status: string = req.query.status ?? ''; 
     const incidents: IncidentEntity[] = await this.service.findIncidentsByStatus(status);
     
-    //return this.renderIncidentsPage(res, req.user, status, incidents);
-    return DashboardResponseRender.renderForAuthenticatedUser(
-      res,
-      'incident/incidents',
-      req.user,
-      'incident',
-      {
-        activeTab: status,
-        incidents: incidents,
-        showContent: incidents.length > 0,
-        cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}, {filePath: '/styles/incidents.css'}],
-        jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/incidents.js'}],
-      }
+    return this.renderIncidentsPage(
+      res, 
+      req.user, 
+      status, 
+      incidents, 
+      'incident', 
+      '/dashboard/incident', 
+      SearchIncidentsRequestDTO.fromEmptySearch(status, 'incident'),
+      false,
     );
   }
 
@@ -218,20 +243,30 @@ export class DashboardIncidentController {
     incidents: IncidentEntity[],
     view: string,
     uri: string,
+    searchInput: SearchIncidentsRequestDTO,
+    searching: boolean,
   ): Promise<void> {
     const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
     const locations: LocationEntity[] = await this.service.findLocations();
+    const items: ItemEntity[] = await this.service.findItemsByLocationID(searchInput.locationId ?? 0);
+    const pageTitle: string = view === 'incident' ? 'Incidentes' : 'Meus incidentes';
     
     return DashboardResponseRender.renderForAuthenticatedUser(
       res,
-      'incident/user-incidents',
+      'incident/incidents',
       user,
       view,
       {
+        classSearchForm: searching ? 'd-block' : 'd-none',
+        classSearchButton: searching ? 'd-none' : 'd-block',
+        searchInput: searchInput,
+        showCreateIncidentButton: user.role === RoleEnum.USER && view === 'userIncident',
+        pageTitle: pageTitle,
         origin: view,
         uri: uri,
         incidentTypes: incidentTypes,
         locations: locations,
+        items: items,
         activeTab: status,
         incidents: incidents,
         showContent: incidents.length > 0,

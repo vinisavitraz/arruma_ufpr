@@ -5,6 +5,7 @@ import { RoleEnum } from 'src/app/enum/role.enum';
 import { IncidentStatusEnum } from 'src/app/enum/status.enum';
 import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-codes';
 import { HttpOperationException } from 'src/app/exception/http-operation.exception';
+import { SearchIncidentsRequestDTO } from 'src/dashboard/dto/request/search-incidents-request.dto';
 import { DatabaseService } from 'src/database/database.service';
 import { CreateItemRequestDTO } from 'src/item/dto/request/create-item-request.dto';
 import { ItemEntity } from 'src/item/entity/item.entity';
@@ -70,6 +71,16 @@ export class IncidentService {
         'Incident with ID ' + id + ' not found on database.', 
         HttpOperationErrorCodes.INCIDENT_NOT_FOUND,
       );
+    }
+
+    return IncidentEntity.fromRepository(incidentDb);
+  }
+
+  public async findIncidentByIDAndStatus(id: number, status: string | undefined): Promise<IncidentEntity> {
+    const incidentDb: incident & {interactions: incident_interaction[], admin: user | null, user: user} | null = await this.repository.findIncidentByIDAndStatus(id, status);
+
+    if (!incidentDb) {
+      return null;
     }
 
     return IncidentEntity.fromRepository(incidentDb);
@@ -224,15 +235,34 @@ export class IncidentService {
 
       return IncidentEntity.fromRepository(closedIncident);
     }
-    
-    console.log(incidentDb);
-    console.log(user);
 
     throw new HttpOperationException(
       HttpStatus.FORBIDDEN, 
       'Only the user creator or an admin can close the incident.', 
       HttpOperationErrorCodes.INVALID_ASSIGNED_ADMIN_CLOSE_INCIDENT,
     );
+  }
+
+  public async searchIncidents(searchIncidentsRequestDTO: SearchIncidentsRequestDTO): Promise<IncidentEntity[]> {
+    const incidents: IncidentEntity[] = [];
+
+    if (searchIncidentsRequestDTO.incidentId && searchIncidentsRequestDTO.incidentId > 0) {
+      const incident: IncidentEntity | null = await this.findIncidentByIDAndStatus(
+        searchIncidentsRequestDTO.incidentId, 
+        searchIncidentsRequestDTO.incidentStatus !== '' ? searchIncidentsRequestDTO.incidentStatus : undefined, 
+      );
+
+      if (incident) {
+        incidents.push(incident);
+      }
+      
+      return incidents;
+    }
+    const incidentsDb: (incident & {interactions: incident_interaction[], admin: user | null, user: user})[] = await this.repository.searchIncidents(searchIncidentsRequestDTO);
+
+    return incidentsDb.map((incident: incident & {interactions: incident_interaction[], admin: user | null, user: user}) => {
+      return IncidentEntity.fromRepository(incident);
+    });
   }
 
 }
