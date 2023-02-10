@@ -4,18 +4,19 @@
     <div class="container-fluid">
       <br>
       <div class="row mx-5">
-          <h1>Dashboard</h1>
+          <h1>ArrumaUFPR</h1>
       </div>
-      <hr class="bg-dark border-1 border-top border-dark">
+      <br>
       <br>
       <div class="row mx-5">
           <h3>Incidentes</h3>
       </div>
+      <hr class="bg-dark border-1 border-top border-dark">
       <br>
       <div class="row mx-5">
           <div class="col-2">
-              <div class="card text-dark bg-light mb-3">
-                  <div class="card-header">Incidentes abertos</div>
+              <div class="card text-dark bg-white mb-3">
+                  <div class="card-header bg-primary text-white">Incidentes abertos</div>
                   <div class="card-body">
                       <h5 class="card-title">{{ homePage.totalOpenIncidents }}</h5>
                       <p class="card-text">Total de incidentes abertos</p>
@@ -23,8 +24,8 @@
               </div>
           </div>
           <div class="col-2">
-              <div class="card text-dark bg-light mb-3">
-                  <div class="card-header">Incidentes em atendimento</div>
+              <div class="card text-dark bg-white mb-3">
+                <div class="card-header bg-primary text-white">Incidentes em atendimento</div>
                   <div class="card-body">
                       <h5 class="card-title">{{ homePage.totalPendingIncidents }}</h5>
                       <p class="card-text">Total de incidentes em atendimento</p>
@@ -32,8 +33,8 @@
               </div>
           </div>
           <div class="col-2">
-              <div class="card text-dark bg-light mb-3">
-                  <div class="card-header">Incidentes finalizados</div>
+              <div class="card text-dark bg-white mb-3">
+                <div class="card-header bg-primary text-white">Incidentes finalizados</div>
                   <div class="card-body">
                       <h5 class="card-title">{{ homePage.totalClosedIncidents }}</h5>
                       <p class="card-text">Total de incidentes finalizados</p>
@@ -41,8 +42,8 @@
               </div>
           </div>
           <div class="col-2">
-              <div class="card text-dark bg-light mb-3">
-                  <div class="card-header">Incidentes</div>
+              <div class="card text-dark bg-white mb-3">
+                <div class="card-header bg-primary text-white">Incidentes</div>
                   <div class="card-body">
                       <h5 class="card-title">{{ homePage.totalIncidents }}</h5>
                       <p class="card-text">Total de incidentes</p>
@@ -51,48 +52,53 @@
           </div>
       </div>
       <br>
-      <div class="row mx-5">
+      <br>
+      {{#if (is_admin user.role)}}
+        <div class="row mx-5">
           <h3>Geral</h3>
+        </div>
+        <hr class="bg-dark border-1 border-top border-dark">
+        <br>
+        <div class="row mx-5">
+            <div class="col-2">
+                <div class="card text-dark bg-white mb-3">
+                  <div class="card-header bg-primary text-white">Tipos de incidente</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ homePage.totalIncidentTypes }}</h5>
+                        <p class="card-text">Total de tipos de incidente</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="card text-dark bg-white mb-3">
+                  <div class="card-header bg-primary text-white">Locais</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ homePage.totalLocations }}</h5>
+                        <p class="card-text">Total de locais cadastrados</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="card text-dark bg-white mb-3">
+                  <div class="card-header bg-primary text-white">Itens</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ homePage.totalItems }}</h5>
+                        <p class="card-text">Total itens cadastrados</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="card text-dark bg-white mb-3">
+                    <div class="card-header bg-primary text-white">Usuários</div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ homePage.totalUsers }}</h5>
+                        <p class="card-text">Total de usuários cadastrados</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
       </div>
-      <br>
-      <div class="row mx-5">
-          <div class="col-2">
-              <div class="card text-dark bg-light mb-3">
-                  <div class="card-header">Tipos de incidente</div>
-                  <div class="card-body">
-                      <h5 class="card-title">{{ homePage.totalIncidentTypes }}</h5>
-                      <p class="card-text">Total de tipos de incidente</p>
-                  </div>
-              </div>
-          </div>
-          <div class="col-2">
-              <div class="card text-dark bg-light mb-3">
-                  <div class="card-header">Locais</div>
-                  <div class="card-body">
-                      <h5 class="card-title">{{ homePage.totalLocations }}</h5>
-                      <p class="card-text">Total de locais cadastrados</p>
-                  </div>
-              </div>
-          </div>
-          <div class="col-2">
-              <div class="card text-dark bg-light mb-3">
-                  <div class="card-header">Itens</div>
-                  <div class="card-body">
-                      <h5 class="card-title">{{ homePage.totalItems }}</h5>
-                      <p class="card-text">Total itens cadastrados</p>
-                  </div>
-              </div>
-          </div>
-          <div class="col-2">
-              <div class="card text-dark bg-light mb-3">
-                  <div class="card-header">Usuários</div>
-                  <div class="card-body">
-                      <h5 class="card-title">{{ homePage.totalUsers }}</h5>
-                      <p class="card-text">Total de usuários cadastrados</p>
-                  </div>
-              </div>
-          </div>
-      </div>
-      <br>
-    </div>
+      
+      {{/if}}
 </body>

@@ -1,52 +1,36 @@
 <body id="body-pd">
   {{>header}}
-  <div class="container-fluid">
-    <br>
-    <div class="col-2 d-flex">
-      <a class="btn btn-primary btn-lg" href="/dashboard/incident-type" role="button">Voltar</a>
-    </div>
-    <br>
-    <div class="border bg-light">
+  <a class="btn btn-primary btn-lg" href="/dashboard/incident-type" role="button">Voltar</a>
+  <div class="container">
+  <main>
+    <div class="py-5 text-justify">
+      <h2>Tipo de incidente</h2>
       <br>
-      <div class="row ms-3">
-        <h3>Novo tipo de incidente</h3>
+      <p class="lead">Tipo de incidente é a classificação do incidente, como `Manutenção` ou `Troca`.</p>
+    </div>
+    <div class="row g-5">
+      <div class="col-md-12 col-lg-10">
+        <h4 class="mb-3">Dados</h4>
+        <form method="POST" action="{{ uri }}" class="needs-validation" novalidate="" autocomplete="off">
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <label for="name" class="form-label">Nome</label>
+              <input type="text" class="form-control" id="name" name="name" value="{{ incidentType.name }}">
+            </div>
+
+            <div class="col-sm-6">
+              <label for="lastName" class="form-label">Descrição</label>
+              <input type="text" class="form-control" id="description" name="description" value="{{ incidentType.description }}">
+            </div>
+          </div>
+
+          <hr class="my-4">
+
+          <button class="w-100 btn btn-primary btn-lg" type="submit">Salvar</button>
+        </form>
       </div>
-      <hr class="bg-dark border-1 border-top border-dark mx-5">
-      <br>
-      <form method="POST" action="{{ uri }}" class="needs-validation" novalidate="" autocomplete="off">
-        <input type="hidden" id="id" name="id" value="{{incidentType.id}}">
-        <div class="row mx-3">
-          <label for="name" class="col-sm-2 col-form-label d-flex justify-content-end">Nome: </label>
-          <div class="col-sm-4">
-            <input type="text" class="form-control" id="name" name="name" value="{{ incidentType.name }}">
-          </div>
-        </div>
-        <br>
-        <div class="row mx-3">
-          <label for="description" class="col-sm-2 col-form-label d-flex justify-content-end">Descrição: </label>
-          <div class="col-sm-4">
-            <input type="text" class="form-control" id="description" name="description" value="{{ incidentType.description }}">
-          </div>
-        </div>
-        <br>
-        <br>
-        {{#if showError }}
-          {{#each errors}}
-            <div class="row mx-3">
-              <div class="col-sm-4">
-                <p class="text-danger">ERRO: {{this}}</p>
-              </div>
-            </div>
-          {{/each}}
-        {{/if}}
-        <div class="row mx-3 d-flex justify-content-end">
-            <div class="col-2 ">
-              <button type="submit" class="btn btn-success ms-auto btn-lg">Salvar</button>
-            </div>
-        </div>
-      </form>
-      <br>
-      <br>
     </div>
-  </div>
+  </main>
+  <br>
+  <br>
 </body>

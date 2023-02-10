@@ -8,7 +8,7 @@
         <h1>Usuários</h1>
       </div>
       <div class="col-2">
-        <a class="btn btn-success" href="/dashboard/item/create" role="button">Novo item</a>
+        <a class="btn btn-primary" href="/dashboard/item/create" role="button">Novo usuário</a>
       </div>
     </div>
     <hr class="bg-dark border-1 border-top border-dark">
@@ -74,11 +74,11 @@
     {{#if showContent }}
       <div class="row mx-5">
         <div class="table-responsive">
-          <table class="table table-bordered table-hover table-striped">
+          <table class="table table-light table-bordered table-hover">
             <thead>
             <tr>
-                <th>Nome</th>
                 <th>ID</th>
+                <th>Nome</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -86,9 +86,9 @@
             <tbody>
             {{#each users}}
                 <tr>
-                    <td>{{this.name}}</td>
                     <td>{{this.id}}</td>
-                    <td><a class="btn btn-success" href="/dashboard/item/{{this.id}}">Visualizar</a></td>
+                    <td>{{this.name}}</td>  
+                    <td><a class="btn btn-primary" href="/dashboard/item/{{this.id}}">Visualizar</a></td>
                     <td><a href="/dashboard/item/delete/{{this.id}}" onclick="return confirm('Tem certeza que deseja excluir esse registro?')" class="btn btn-danger">Remover</a></td>
                 </tr>
             {{/each}}

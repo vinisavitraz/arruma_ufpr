@@ -64,7 +64,7 @@ export class DashboardIncidentController {
         activeTab: status,
         incidents: incidents,
         showContent: incidents.length > 0,
-        cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}, {filePath: '/styles/incident-detail.css'}],
+        cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}, {filePath: '/styles/incidents.css'}],
       }
     );
   }
@@ -183,7 +183,8 @@ export class DashboardIncidentController {
   @Roles(RoleEnum.ADMIN)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getIncidentsPage(@Request() req, @Res() res: Response): Promise<void> { 
-    const incidents: IncidentEntity[] = await this.service.findIncidents();
+    const status: string = req.query.status ?? '';
+    const incidents: IncidentEntity[] = await this.service.findIncidentsByStatus(status);
 
     return DashboardResponseRender.renderForAuthenticatedUser(
       res,
@@ -191,8 +192,10 @@ export class DashboardIncidentController {
       req.user,
       'incident',
       {
+        activeTab: status,
         incidents: incidents,
         showContent: incidents.length > 0,
+        cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}, {filePath: '/styles/incidents.css'}],
       }
     );
   }

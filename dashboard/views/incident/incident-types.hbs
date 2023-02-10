@@ -8,7 +8,7 @@
         <h1>Tipos de incidente</h1>
       </div>
       <div class="col-2">
-        <a class="btn btn-success" href="/dashboard/incident-type/create" role="button">Novo tipo de incidente</a>
+        <a class="btn btn-primary" href="/dashboard/incident-type/create" role="button">Novo tipo de incidente</a>
       </div>
     </div>
     <hr class="bg-dark border-1 border-top border-dark">
@@ -74,7 +74,7 @@
     {{#if showContent }}
       <div class="row mx-5">
         <div class="table-responsive">
-          <table class="table table-bordered table-hover table-striped">
+          <table class="table table-light table-bordered table-hover">
             <thead>
             <tr>
                 <th>ID</th>
@@ -90,7 +90,7 @@
                     <td>{{this.id}}</td>
                     <td>{{this.name}}</td>
                     <td>{{this.description}}</td>
-                    <td><a class="btn btn-success" href="/dashboard/incident-type/{{this.id}}">Visualizar</a></td>
+                    <td><a class="btn btn-primary" href="/dashboard/incident-type/{{this.id}}">Visualizar</a></td>
                     <td><a href="/dashboard/incident-type/delete/{{this.id}}" onclick="return confirm('Tem certeza que deseja excluir esse registro?')" class="btn btn-danger">Remover</a></td>
                 </tr>
             {{/each}}

@@ -34,8 +34,9 @@ export class IncidentService {
     this.repository = new IncidentRepository(this.databaseService);
   }
 
-  public async findIncidents(): Promise<IncidentEntity[]> {
-    const incidentDb: (incident & {interactions: incident_interaction[], admin: user | null, user: user})[] = await this.repository.findIncidents();
+  public async findIncidentsByStatus(status: string): Promise<IncidentEntity[]> {
+    const incidentStatus: string | undefined = status !== '' ? status : undefined;
+    const incidentDb: (incident & {interactions: incident_interaction[], admin: user | null, user: user})[] = await this.repository.findIncidentsByStatus(incidentStatus);
 
     return incidentDb.map((incident: incident & {interactions: incident_interaction[], admin: user | null, user: user}) => {
       return IncidentEntity.fromRepository(incident);
@@ -144,12 +145,11 @@ export class IncidentService {
     });
   }
 
-  public async findTotalIncidentsByStatus(status: string): Promise<number> {
-    if (status === '') {
-      return await this.repository.findTotalIncidentsByStatus(undefined);
-    }
+  public async findTotalIncidentsByStatus(incidentStatus: string, userId: number): Promise<number> {
+    const status: string | undefined = incidentStatus !== '' ? incidentStatus : undefined;
+    const id: number | undefined = userId > 0 ? userId : undefined;
 
-    return await this.repository.findTotalIncidentsByStatus(status);
+    return await this.repository.findTotalIncidentsByStatus(status, id);
   }
 
   public async findTotalIncidentTypes(): Promise<number> {

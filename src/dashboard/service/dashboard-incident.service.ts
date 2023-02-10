@@ -24,8 +24,8 @@ export class DashboardIncidentService {
     private readonly itemService: ItemService,
   ) {}
 
-  public async findIncidents(): Promise<IncidentEntity[]> {
-    return await this.incidentService.findIncidents();
+  public async findIncidentsByStatus(status: string): Promise<IncidentEntity[]> {
+    return await this.incidentService.findIncidentsByStatus(status);
   }
 
   public async findUserIncidentsByStatus(user: UserEntity, status: string): Promise<IncidentEntity[]> {

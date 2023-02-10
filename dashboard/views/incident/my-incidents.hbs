@@ -17,16 +17,16 @@
     <br>
     <br>
     <div class="row">
-        <div class="col-4 rounded">
-          <nav class="nav-tabs">
-            <a class="nav-link {{ set_active_tab "aberto" activeTab}}" href="/dashboard/incident/user?status=aberto">Abertos</a>
-            <a class="nav-link {{ set_active_tab "pendente" activeTab}}" href="/dashboard/incident/user?status=pendente">Em atendimento</a>
-            <a class="nav-link {{ set_active_tab "fechado" activeTab}}" href="/dashboard/incident/user?status=fechado">Finalizados</a>
-            <a class="nav-link {{ set_active_tab "" activeTab}}" href="/dashboard/incident/user">Todos</a>
-          </nav>
-        </div>
+      <div class="col-4 rounded">
+        <nav class="nav-tabs">
+          <a class="nav-link {{ set_active_tab "aberto" activeTab}}" href="/dashboard/incident/user?status=aberto">Abertos</a>
+          <a class="nav-link {{ set_active_tab "pendente" activeTab}}" href="/dashboard/incident/user?status=pendente">Em atendimento</a>
+          <a class="nav-link {{ set_active_tab "fechado" activeTab}}" href="/dashboard/incident/user?status=fechado">Finalizados</a>
+          <a class="nav-link {{ set_active_tab "" activeTab}}" href="/dashboard/incident/user">Todos</a>
+        </nav>
       </div>
-      <br>
+    </div>
+    <br>
     {{#if showContent }}
       {{#each incidents}}
         <div class="col-10 rounded bg-white">

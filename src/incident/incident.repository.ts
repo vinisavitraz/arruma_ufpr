@@ -18,8 +18,11 @@ export class IncidentRepository {
     this.connection = databaseService;
   }
 
-  public async findIncidents(): Promise<(incident & {interactions: incident_interaction[], admin: user | null, user: user})[]> {
+  public async findIncidentsByStatus(status: string | undefined): Promise<(incident & {interactions: incident_interaction[], admin: user | null, user: user})[]> {
     return await this.connection.incident.findMany({
+      where: {
+        status: status,
+      },
       orderBy: [
         {
           id: 'desc',
@@ -189,10 +192,11 @@ export class IncidentRepository {
     });
   }
 
-  public async findTotalIncidentsByStatus(status: string | undefined): Promise<number> {
+  public async findTotalIncidentsByStatus(status: string | undefined, userId: number | undefined ): Promise<number> {
     return await this.connection.incident.count({
       where: {
         status: status,
+        user_id: userId,
       },
     });
   }
