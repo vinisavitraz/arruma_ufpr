@@ -112,7 +112,7 @@ export class DashboardItemController {
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async updateItem(@Request() req, @Res() res: Response): Promise<void> { 
     const updateItemRequestDTO: UpdateItemRequestDTO = UpdateItemRequestDTO.fromDashboard(req.body);
-
+    
     try {
       await this.service.updateItem(updateItemRequestDTO);
     } catch (errors) {

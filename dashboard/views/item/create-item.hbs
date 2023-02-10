@@ -1,38 +1,42 @@
 <body id="body-pd">
   {{>header}}
-  <div class="container-fluid">
-    <br>
-    <div class="col-2 d-flex">
-      <a class="btn btn-primary btn-lg" href="/dashboard/item" role="button">Voltar</a>
+  <a class="btn btn-primary btn-lg" href="/dashboard/item" role="button">Voltar</a>
+  <div class="container">
+  <main>
+    <div class="py-5 text-justify">
+      <h2>Item</h2>
+      <br>
+      <p class="lead">Item é o objeto do incidente, como `Projetor` ou `Janela`.</p>
     </div>
-    <br>
-    <div class="border bg-light">
-      <br>
-      <div class="row ms-3">
-        <h3>Novo item</h3>
-      </div>
-      <hr class="bg-dark border-1 border-top border-dark mx-5">
-      <br>
-      <form method="POST" action="{{ uri }}" class="needs-validation" novalidate="" autocomplete="off">
-        <input type="hidden" id="id" name="id" value="{{item.id}}">
+    {{#if showError }}
+      {{#each errors}}
         <div class="row mx-3">
-          <label for="name" class="col-sm-2 col-form-label d-flex justify-content-end">Nome: </label>
           <div class="col-sm-4">
-            <input type="text" class="form-control" id="name" name="name" value="{{ item.name }}">
+            <p class="text-danger">ERRO: {{this}}</p>
           </div>
         </div>
-        <br>
-        <div class="row mx-3">
-          <label for="description" class="col-sm-2 col-form-label d-flex justify-content-end">Descrição: </label>
-          <div class="col-sm-4">
-            <input type="text" class="form-control" id="description" name="description" value="{{ item.description }}">
+      {{/each}}
+    {{/if}}
+    <div class="row g-5">
+      <div class="col-md-12 col-lg-10">
+        <h4 class="mb-3">Dados</h4>
+        <form method="POST" action="{{ uri }}" class="needs-validation" novalidate="" autocomplete="off">
+          <input type="hidden" id="id" name="id" value="{{item.id}}">
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <label for="name" class="form-label">Nome</label>
+              <input type="text" class="form-control" id="name" name="name" value="{{ item.name }}">
+            </div>
+
+            <div class="col-sm-6">
+              <label for="lastName" class="form-label">Descrição</label>
+              <input type="text" class="form-control" id="description" name="description" value="{{ item.description }}">
+            </div>
           </div>
-        </div>
-        <br>
-        <div class="row mx-3">
-          <label for="locationId" class="col-sm-2 col-form-label d-flex justify-content-end">Local: </label>
-          <div class="col-sm-4">
-            <select class="form-select form-control" name="locationId" id="locationId">
+
+          <div class="col-md-12">
+            <label for="locationId" class="form-label">Local</label>
+            <select class="form-select form-control" id="locationId" name="locationId">
               {{#select item.locationId}}
                 <option disabled selected value></option>
                 {{#each locations}}
@@ -41,26 +45,13 @@
               {{/select}}
             </select>
           </div>
-        </div>
-        <br>
-        <br>
-        {{#if showError }}
-          {{#each errors}}
-            <div class="row mx-3">
-              <div class="col-sm-4">
-                <p class="text-danger">ERRO: {{this}}</p>
-              </div>
-            </div>
-          {{/each}}
-        {{/if}}
-        <div class="row mx-3 d-flex justify-content-end">
-            <div class="col-2 ">
-              <button type="submit" class="btn btn-success ms-auto btn-lg">Salvar</button>
-            </div>
-        </div>
-      </form>
-      <br>
-      <br>
+          <hr class="my-4">
+
+          <button class="w-100 btn btn-primary btn-lg" type="submit">Salvar</button>
+        </form>
+      </div>
     </div>
-  </div>
+  </main>
+  <br>
+  <br>
 </body>

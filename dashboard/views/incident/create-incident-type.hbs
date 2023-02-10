@@ -8,10 +8,20 @@
       <br>
       <p class="lead">Tipo de incidente é a classificação do incidente, como `Manutenção` ou `Troca`.</p>
     </div>
+    {{#if showError }}
+      {{#each errors}}
+        <div class="row mx-3">
+          <div class="col-sm-4">
+            <p class="text-danger">ERRO: {{this}}</p>
+          </div>
+        </div>
+      {{/each}}
+    {{/if}}
     <div class="row g-5">
       <div class="col-md-12 col-lg-10">
         <h4 class="mb-3">Dados</h4>
         <form method="POST" action="{{ uri }}" class="needs-validation" novalidate="" autocomplete="off">
+          <input type="hidden" id="id" name="id" value="{{incidentType.id}}">
           <div class="row g-3">
             <div class="col-sm-6">
               <label for="name" class="form-label">Nome</label>
