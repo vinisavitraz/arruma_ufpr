@@ -28,7 +28,7 @@
               <label for="locationId" class="form-label">Tipo do incidente</label>
               <select class="form-select form-control" id="incidentTypeId" name="incidentTypeId">
                 {{#select incident.incidentTypeId}}
-                  <option disabled selected value></option>
+                  <option value="0">Selecionar...</option>
                   {{#each incidentTypes}}
                     <option value="{{ this.id }}">{{ this.name }}</option>
                   {{/each}}
@@ -65,7 +65,7 @@
               <label for="locationId" class="form-label">Local do incidente</label>
               <select class="form-select form-control" id="locationId" name="locationId">
                 {{#select incident.locationId}}
-                  <option disabled selected value></option>
+                  <option value="0">Selecionar...</option>
                   {{#each locations}}
                     <option value="{{ this.id }}">{{ this.name }}</option>
                   {{/each}}
@@ -102,7 +102,7 @@
               <label for="itemId" class="form-label">Item do incidente</label>
               <select class="form-select form-control" id="itemId" name="itemId">
                 {{#select incident.itemId}}
-                  <option disabled selected value></option>
+                  <option value="0">Selecionar...</option>
                   {{#each items}}
                     <option value="{{ this.id }}">{{ this.name }}</option>
                   {{/each}}

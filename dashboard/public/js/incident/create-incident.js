@@ -47,7 +47,7 @@ $(function () {
     $("#itemId option").each(function() {
         $(this).remove();
     });
-    $('#itemId').prepend('<option disabled selected value></option>');
+    $('#itemId').prepend('<option value="0">Selecionar...</option>');
 
     const selected = $(this).find('option:selected').val();
 
