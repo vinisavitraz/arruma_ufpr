@@ -1,7 +1,1 @@
-.nav-tabs {
-  display: flex;
-  flex-direction: row;
-}
-.nav-tabs-active {
-  color: #000000;
-}
+.nav_link{color: #ada8a8}.nav_link:hover{color: #4c90f7}.active{color: #4c90f7}.active::before{content: '';position: absolute;left: 0;width: 2px;height: 16px;background-color: var(--accent-color)}
