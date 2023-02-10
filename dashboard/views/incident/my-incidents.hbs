@@ -42,46 +42,23 @@
     <br>
     {{#if showContent }}
       {{#each incidents}}
-        <div class="col-10 rounded bg-white">
-          <br>
-          <div class="row mx-4">
-            <div class="col-3 d-flex justify-content-start">
-              <h4>{{this.title}}</h4>
-            </div>
-            <div class="col-2 d-flex justify-content-start">
-              <h6>{{this.userName}}</h6>
-            </div>
-            <div class="col-7 d-flex justify-content-end">
-              <h4>{{format_incident_date this.startDate}}</h4>
-            </div>
+        <div class="card">
+          <h5 class="card-header bg-primary text-white">{{this.userName}} - {{format_incident_date this.startDate}}</h5>
+          <div class="card-body">
+            <p><span class="badge bg-{{label_status_incident this.status}}">{{text_status_incident this.status }}</span></p>
+            <h5 class="card-title">{{this.title}}</h5>
+            <p class="card-text">{{this.description}}</p>
+            <p><i class='bx bx-message nav_icon'></i> {{ this.totalInteractions }}</p>
+            <a href="/dashboard/incident/{{this.id}}?origin=incidents" class="btn btn-primary">Acessar incidente</a>
           </div>
-          <br>
-          <div class="row mx-5">
-            <div class="col-12 d-flex justify-content-center">
-              <p>{{this.description}}</p>
-            </div>
-          </div>
-          <br>
-          <div class="row mx-5">
-            <div class="col-1">
-              <span class="badge bg-{{label_status_incident this.status}}">{{text_status_incident this.status }}</span>
-            </div>
-            <div class="col-1">
-               <i class='bx bx-message nav_icon'></i> {{ this.totalInteractions }}
-            </div>
-            <div class="col-10 d-flex justify-content-end">
-              <a class="btn btn-primary" href="/dashboard/incident/{{this.id}}?origin=userIncidents">Acessar incidente</a>
-            </div>
-          </div>
-          <br>
         </div>
         <br>
       {{/each}}
       <br>
     {{else}}
       <br>
-      <div class="row mx-5 d-flex">
-        <div class="col-3 justify-content-center">
+      <div class="row mx-5 d-flex justify-content-center">
+        <div class="col-3 d-flex justify-content-center">
           <h5>Nenhum incidente encontrado</h5>
         </div>
       </div>
