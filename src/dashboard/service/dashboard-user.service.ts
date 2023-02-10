@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { validateOrReject } from 'class-validator';
-import { CreateLocationRequestDTO } from 'src/location/dto/request/create-location-request.dto';
-import { UpdateLocationRequestDTO } from 'src/location/dto/request/update-location-request.dto';
-import { LocationEntity } from 'src/location/entity/location.entity';
-import { LocationService } from 'src/location/location.service';
+import { CreateUserRequestDTO } from 'src/user/dto/request/create-user-request.dto';
+import { UpdateUserRequestDTO } from 'src/user/dto/request/update-user-request.dto';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { UserService } from 'src/user/user.service';
 
@@ -16,24 +14,24 @@ export class DashboardUserService {
     return await this.userService.findUsers();
   }
 
-  // public async findLocationByIDOrCry(id: number): Promise<LocationEntity> {
-  //   return await this.locationService.findLocationByIDOrCry(id);
-  // }
+  public async findUserByIDOrCry(id: number): Promise<UserEntity> {
+    return await this.userService.findUserByIDOrCry(id);
+  }
 
-  // public async createLocation(createLocationRequestDto: CreateLocationRequestDTO): Promise<void> {
-  //   await validateOrReject(createLocationRequestDto);
+  public async createUser(createUserRequestDTO: CreateUserRequestDTO): Promise<void> {
+    await validateOrReject(createUserRequestDTO);
 
-  //   await this.locationService.createLocation(createLocationRequestDto); 
-  // }
+    await this.userService.createUser(createUserRequestDTO); 
+  }
 
-  // public async updateLocation(updateLocationRequestDTO: UpdateLocationRequestDTO): Promise<void> {
-  //   await validateOrReject(updateLocationRequestDTO);
+  public async updateUser(updateUserRequestDTO: UpdateUserRequestDTO): Promise<void> {
+    await validateOrReject(updateUserRequestDTO);
 
-  //   await this.locationService.updateLocation(updateLocationRequestDTO); 
-  // }
+    await this.userService.updateUser(updateUserRequestDTO); 
+  }
 
-  // public async deleteLocation(locationId: number): Promise<void> {
-  //   await this.locationService.deleteLocation(locationId); 
-  // }
+  public async deleteUser(userId: number): Promise<void> {
+    await this.userService.deleteUser(userId); 
+  }
 
 }

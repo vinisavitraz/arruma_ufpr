@@ -8,7 +8,7 @@
         <h1>Usuários</h1>
       </div>
       <div class="col-2">
-        <a class="btn btn-primary" href="/dashboard/item/create" role="button">Novo usuário</a>
+        <a class="btn btn-primary" href="/dashboard/user/create" role="button">Novo usuário</a>
       </div>
     </div>
     <hr class="bg-dark border-1 border-top border-dark">
@@ -88,8 +88,8 @@
                 <tr>
                     <td>{{this.id}}</td>
                     <td>{{this.name}}</td>  
-                    <td><a class="btn btn-primary" href="/dashboard/item/{{this.id}}">Visualizar</a></td>
-                    <td><a href="/dashboard/item/delete/{{this.id}}" onclick="return confirm('Tem certeza que deseja excluir esse registro?')" class="btn btn-danger">Remover</a></td>
+                    <td><a class="btn btn-primary" href="/dashboard/user/{{this.id}}">Visualizar</a></td>
+                    <td><a href="/dashboard/user/delete/{{this.id}}" onclick="return confirm('Tem certeza que deseja excluir esse registro?')" class="btn btn-danger">Remover</a></td>
                 </tr>
             {{/each}}
             </tbody>

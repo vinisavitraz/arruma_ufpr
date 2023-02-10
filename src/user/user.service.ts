@@ -3,6 +3,8 @@ import { user } from '@prisma/client';
 import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-codes';
 import { HttpOperationException } from 'src/app/exception/http-operation.exception';
 import { DatabaseService } from 'src/database/database.service';
+import { CreateUserRequestDTO } from './dto/request/create-user-request.dto';
+import { UpdateUserRequestDTO } from './dto/request/update-user-request.dto';
 import { UserEntity } from './entity/user.entity';
 import { UserRepository } from './user.repository';
 
@@ -49,6 +51,27 @@ export class UserService {
     }
 
     return UserEntity.fromRepository(userDb);
+  }
+
+  public async createUser(createUserRequestDTO: CreateUserRequestDTO): Promise<UserEntity> {
+    const password: string = '';
+    const userDb: user = await this.repository.createUser(createUserRequestDTO, password);
+
+    return UserEntity.fromRepository(userDb);
+  }
+
+  public async updateUser(updateUserRequestDTO: UpdateUserRequestDTO): Promise<UserEntity> {
+    await this.findUserByIDOrCry(updateUserRequestDTO.id);
+
+    const userDb: user = await this.repository.updateUser(updateUserRequestDTO);
+
+    return UserEntity.fromRepository(userDb);
+  }
+
+  public async deleteUser(userId: number): Promise<void> {
+    const user: UserEntity = await this.findUserByIDOrCry(userId);
+
+    await this.repository.deleteUser(user);
   }
 
   public async findTotalUsers(): Promise<number> {

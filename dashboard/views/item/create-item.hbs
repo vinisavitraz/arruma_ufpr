@@ -6,7 +6,7 @@
     <div class="py-5 text-justify">
       <h2>Item</h2>
       <br>
-      <p class="lead">Item é o objeto do incidente, como `Projetor` ou `Janela`.</p>
+      <p class="lead">Item ou objeto do incidente, como `Projetor` ou `Janela`.</p>
     </div>
     {{#if showError }}
       {{#each errors}}
@@ -29,7 +29,7 @@
             </div>
 
             <div class="col-sm-6">
-              <label for="lastName" class="form-label">Descrição</label>
+              <label for="description" class="form-label">Descrição</label>
               <input type="text" class="form-control" id="description" name="description" value="{{ item.description }}">
             </div>
           </div>

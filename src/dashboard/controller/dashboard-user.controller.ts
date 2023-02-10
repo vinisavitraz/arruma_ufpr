@@ -6,13 +6,11 @@ import { DashboardExceptionFilter } from "src/app/exception/filter/dashboard-exc
 import { AuthenticatedGuard } from "src/auth/guard/authenticated.guard";
 import { RolesGuard } from "src/auth/guard/roles.guard";
 import { Roles } from "src/auth/roles/require-roles.decorator";
-import { CreateLocationRequestDTO } from "src/location/dto/request/create-location-request.dto";
-import { UpdateLocationRequestDTO } from "src/location/dto/request/update-location-request.dto";
-import { LocationEntity } from "src/location/entity/location.entity";
+import { CreateUserRequestDTO } from "src/user/dto/request/create-user-request.dto";
+import { UpdateUserRequestDTO } from "src/user/dto/request/update-user-request.dto";
 import { UserEntity } from "src/user/entity/user.entity";
 import { DashboardErrorMapper } from "../render/dashboard-error-mapper";
 import { DashboardResponseRender } from "../render/dashboard-response-render";
-import { DashboardLocationService } from "../service/dashboard-location.service";
 import { DashboardUserService } from "../service/dashboard-user.service";
 
 @Controller('dashboard/user')
@@ -22,41 +20,39 @@ export class DashboardUserController {
   
   constructor(private readonly service: DashboardUserService) {}
 
-  // @UseGuards(
-  //   AuthenticatedGuard,
-  //   PermissionGuard(PermissionEnum.CREATE_LOCATION_PAGE),
-  // )
-  // @Get('create')
-  // public async getCreateLocationPage(@Request() req, @Res() res: Response): Promise<void> {    
-  //   return DashboardResponseRender.renderForAuthenticatedUser(
-  //     res,
-  //     'location/create-location',
-  //     req.user,
-  //     {
-  //       location: new CreateLocationRequestDTO(),
-  //       uri: '/dashboard/location/create',
-  //     },
-  //   );
-  // }
+  @Get('create')
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
+  public async getCreateUserPage(@Request() req, @Res() res: Response): Promise<void> {    
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'user/create-user',
+      req.user,
+      'user',
+      {
+        userForm: new CreateUserRequestDTO(),
+        uri: '/dashboard/user/create',
+      },
+    );
+  }
 
-  // @UseGuards(
-  //   AuthenticatedGuard,
-  //   PermissionGuard(PermissionEnum.LOCATIONS_PAGE),
-  // )
-  // @Get(':id')
-  // public async getLocationPage(@Param('id', ParseIntPipe) locationId: number, @Request() req, @Res() res: Response): Promise<void> {    
-  //   const location: LocationEntity = await this.service.findLocationByIDOrCry(locationId);
+  @Get(':id')
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
+  public async getUserPage(@Param('id', ParseIntPipe) userId: number, @Request() req, @Res() res: Response): Promise<void> {    
+    const user: UserEntity = await this.service.findUserByIDOrCry(userId);
 
-  //   return DashboardResponseRender.renderForAuthenticatedUser(
-  //     res,
-  //     'location/create-location',
-  //     req.user,
-  //     {
-  //       location: CreateLocationRequestDTO.fromEntity(location),
-  //       uri: '/dashboard/location/update',
-  //     }
-  //   );
-  // }
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'user/create-user',
+      req.user,
+      'user',
+      {
+        userForm: CreateUserRequestDTO.fromEntity(user),
+        uri: '/dashboard/user/update',
+      }
+    );
+  }
 
   @Get()
   @Roles(RoleEnum.ADMIN)
@@ -76,65 +72,61 @@ export class DashboardUserController {
     );
   }
 
-  // @UseGuards(
-  //   AuthenticatedGuard,
-  //   PermissionGuard(PermissionEnum.CREATE_LOCATION_PAGE),
-  // )
-  // @Post('create')
-  // public async createLocation(@Request() req, @Res() res: Response): Promise<void> { 
-  //   const createLocationRequestDto: CreateLocationRequestDTO = CreateLocationRequestDTO.fromDashboard(req.body);
+  @Post('create')
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
+  public async createUser(@Request() req, @Res() res: Response): Promise<void> { 
+    const createUserRequestDTO: CreateUserRequestDTO = CreateUserRequestDTO.fromDashboard(req.body);
     
-  //   try {
-  //     await this.service.createLocation(createLocationRequestDto);
-  //   } catch (errors) {
-  //     return DashboardResponseRender.renderForAuthenticatedUser(
-  //       res,
-  //       'location/create-location',
-  //       req.user,
-  //       {
-  //         location: createLocationRequestDto,
-  //         ...DashboardErrorMapper.map(errors)
-  //       }
-  //     );
-  //   }  
+    try {
+      await this.service.createUser(createUserRequestDTO);
+    } catch (errors) {
+      return DashboardResponseRender.renderForAuthenticatedUser(
+        res,
+        'user/create-user',
+        req.user,
+        'user',
+        {
+          user: createUserRequestDTO,
+          ...DashboardErrorMapper.map(errors)
+        }
+      );
+    }  
 
-  //   return res.redirect('/dashboard/location');
-  // }
+    return res.redirect('/dashboard/user');
+  }
 
-  // @UseGuards(
-  //   AuthenticatedGuard,
-  //   PermissionGuard(PermissionEnum.UPDATE_LOCATION_PAGE),
-  // )
-  // @Post('update')
-  // public async updateLocation(@Request() req, @Res() res: Response): Promise<void> { 
-  //   const updateLocationRequestDTO: UpdateLocationRequestDTO = UpdateLocationRequestDTO.fromDashboard(req.body);
+  @Post('update')
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
+  public async updateUser(@Request() req, @Res() res: Response): Promise<void> { 
+    const updateUserRequestDTO: UpdateUserRequestDTO = UpdateUserRequestDTO.fromDashboard(req.body);
     
-  //   try {
-  //     await this.service.updateLocation(updateLocationRequestDTO);
-  //   } catch (errors) {
-  //     return DashboardResponseRender.renderForAuthenticatedUser(
-  //       res,
-  //       'location/create-location',
-  //       req.user,
-  //       {
-  //         location: updateLocationRequestDTO,
-  //         ...DashboardErrorMapper.map(errors)
-  //       }
-  //     );
-  //   }  
+    try {
+      await this.service.updateUser(updateUserRequestDTO);
+    } catch (errors) {
+      return DashboardResponseRender.renderForAuthenticatedUser(
+        res,
+        'user/create-user',
+        req.user,
+        'user',
+        {
+          user: updateUserRequestDTO,
+          ...DashboardErrorMapper.map(errors)
+        }
+      );
+    }  
 
-  //   return res.redirect('/dashboard/location');
-  // }
+    return res.redirect('/dashboard/user');
+  }
 
-  // @UseGuards(
-  //   AuthenticatedGuard,
-  //   PermissionGuard(PermissionEnum.DELETE_LOCATION_PAGE),
-  // )
-  // @Get('delete/:id')
-  // public async deleteLocation(@Param('id', ParseIntPipe) locationId: number, @Request() req, @Res() res: Response): Promise<void> {     
-  //   await this.service.deleteLocation(locationId);
+  @Get('delete/:id')
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
+  public async deleteUser(@Param('id', ParseIntPipe) userId: number, @Request() req, @Res() res: Response): Promise<void> {     
+    await this.service.deleteUser(userId);
 
-  //   return res.redirect('/dashboard/location');
-  // }
+    return res.redirect('/dashboard/user');
+  }
 
 }
