@@ -2,7 +2,7 @@ export class HeaderActiveResponseDTO {
 
   readonly home: string;
   readonly incident: string;
-  readonly myIncident: string;
+  readonly userIncident: string;
   readonly incidentType: string;
   readonly location: string;
   readonly item: string;
@@ -11,7 +11,7 @@ export class HeaderActiveResponseDTO {
   constructor(
     home: string,
     incident: string,
-    myIncident: string,
+    userIncident: string,
     incidentType: string,
     location: string,
     item: string,
@@ -19,7 +19,7 @@ export class HeaderActiveResponseDTO {
   ) {
     this.home = home;
     this.incident = incident;
-    this.myIncident = myIncident;
+    this.userIncident = userIncident;
     this.incidentType = incidentType;
     this.location = location;
     this.item = item;

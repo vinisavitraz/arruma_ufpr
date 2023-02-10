@@ -32,7 +32,7 @@ export class DashboardResponseRender {
 
   private static buildHeaderPermissionsByUser(user: UserEntity): HeaderPermissionsResponseDTO {
     let showMenuIncidents: boolean = user.role === RoleEnum.ADMIN;
-    let showMenuMyIncidents: boolean = (user.role === RoleEnum.USER) || (user.role === RoleEnum.ADMIN);
+    let showMenuUserIncidents: boolean = (user.role === RoleEnum.USER) || (user.role === RoleEnum.ADMIN);
     let showMenuIncidentTypes: boolean = user.role === RoleEnum.ADMIN;
     let showMenuLocations: boolean = user.role === RoleEnum.ADMIN;
     let showMenuItems: boolean = user.role === RoleEnum.ADMIN;
@@ -40,7 +40,7 @@ export class DashboardResponseRender {
 
     return new HeaderPermissionsResponseDTO(
       showMenuIncidents,
-      showMenuMyIncidents,
+      showMenuUserIncidents,
       showMenuIncidentTypes,
       showMenuLocations,
       showMenuItems,
@@ -51,7 +51,7 @@ export class DashboardResponseRender {
   private static buildHeaderActiveByModule(module: string): HeaderActiveResponseDTO {
     let home: string = module === 'home' ? 'active' : '';
     let incident: string = module === 'incident' ? 'active' : '';
-    let myIncident: string = module === 'myIncident' ? 'active' : '';
+    let userIncident: string = module === 'userIncident' ? 'active' : '';
     let incidentType: string = module === 'incidentType' ? 'active' : '';
     let location: string = module === 'location' ? 'active' : '';
     let item: string = module === 'item' ? 'active' : '';
@@ -60,7 +60,7 @@ export class DashboardResponseRender {
     return new HeaderActiveResponseDTO(
       home,
       incident,
-      myIncident,
+      userIncident,
       incidentType,
       location,
       item,

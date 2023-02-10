@@ -54,24 +54,8 @@ export class DashboardIncidentController {
   public async getUserIncidentsPage(@Request() req, @Res() res: Response): Promise<void> { 
     const status: string = req.query.status ?? '';
     const incidents: IncidentEntity[] = await this.service.findUserIncidentsByStatus(req.user, status);
-    const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
-    const locations: LocationEntity[] = await this.service.findLocations();
     
-    return DashboardResponseRender.renderForAuthenticatedUser(
-      res,
-      'incident/my-incidents',
-      req.user,
-      'myIncident',
-      {
-        incidentTypes: incidentTypes,
-        locations: locations,
-        activeTab: status,
-        incidents: incidents,
-        showContent: incidents.length > 0,
-        cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}, {filePath: '/styles/incidents.css'}],
-        jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/incidents.js'}],
-      }
-    );
+    return this.renderIncidentsPage(res, req.user, status, incidents, 'userIncident', '/dashboard/incident/user');
   }
 
   @Get('assign/:id')
@@ -104,7 +88,7 @@ export class DashboardIncidentController {
 
     if (origin === 'userIncidents') {
       backUrl = '/dashboard/incident/user';
-      view = 'myIncident';
+      view = 'userIncident';
     }
 
     const user: UserEntity = req.user; 
@@ -211,12 +195,43 @@ export class DashboardIncidentController {
     const status: string = req.query.status ?? ''; 
     const incidents: IncidentEntity[] = await this.service.findIncidentsByStatus(status);
     
+    //return this.renderIncidentsPage(res, req.user, status, incidents);
     return DashboardResponseRender.renderForAuthenticatedUser(
       res,
       'incident/incidents',
       req.user,
       'incident',
       {
+        activeTab: status,
+        incidents: incidents,
+        showContent: incidents.length > 0,
+        cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}, {filePath: '/styles/incidents.css'}],
+        jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/incidents.js'}],
+      }
+    );
+  }
+
+  private async renderIncidentsPage(
+    @Res() res: Response, 
+    user: UserEntity, 
+    status: string, 
+    incidents: IncidentEntity[],
+    view: string,
+    uri: string,
+  ): Promise<void> {
+    const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
+    const locations: LocationEntity[] = await this.service.findLocations();
+    
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'incident/user-incidents',
+      user,
+      view,
+      {
+        origin: view,
+        uri: uri,
+        incidentTypes: incidentTypes,
+        locations: locations,
         activeTab: status,
         incidents: incidents,
         showContent: incidents.length > 0,

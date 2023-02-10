@@ -18,8 +18,8 @@
                     {{#if headerPermissions.showMenuIncidents}}
                       <a href="/dashboard/incident" class="nav_link {{ headerActive.incident }}"> <i class='bx bx-error-alt nav_icon'></i> <span class="nav_name">Incidentes</span> </a>
                     {{/if}}
-                    {{#if headerPermissions.showMenuMyIncidents}}
-                      <a href="/dashboard/incident/user" class="nav_link {{ headerActive.myIncident }}"> <i class='bx bx-error-alt nav_icon'></i> <span class="nav_name">Meus incidentes</span> </a>
+                    {{#if headerPermissions.showMenuUserIncidents}}
+                      <a href="/dashboard/incident/user" class="nav_link {{ headerActive.userIncident }}"> <i class='bx bx-error-alt nav_icon'></i> <span class="nav_name">Meus incidentes</span> </a>
                     {{/if}}
                     {{#if headerPermissions.showMenuIncidentTypes}}
                       <a href="/dashboard/incident-type" class="nav_link {{ headerActive.incidentType }}"> <i class='bx bx-category nav_icon'></i> <span class="nav_name">Tipos de Incidente</span> </a>
