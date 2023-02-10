@@ -92,10 +92,13 @@ export function formatIncidentDate(incidentDate: Date) {
 }
 
 export function setActiveTab(tabName: string, status: string) { 
-  if (tabName === status) {
-    return 'nav-tabs-active';
+  if (status && tabName === status) {
+    return 'active';
+  }
+
+  if (!status && tabName === '') {
+    return 'active';
   }
 
   return '';
-  
 }

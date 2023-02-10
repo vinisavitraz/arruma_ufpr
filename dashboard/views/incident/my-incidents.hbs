@@ -16,16 +16,29 @@
     </div>
     <br>
     <br>
-    <div class="row">
-      <div class="col-4 rounded">
-        <nav class="nav-tabs">
-          <a class="nav-link {{ set_active_tab "aberto" activeTab}}" href="/dashboard/incident/user?status=aberto">Abertos</a>
-          <a class="nav-link {{ set_active_tab "pendente" activeTab}}" href="/dashboard/incident/user?status=pendente">Em atendimento</a>
-          <a class="nav-link {{ set_active_tab "fechado" activeTab}}" href="/dashboard/incident/user?status=fechado">Finalizados</a>
-          <a class="nav-link {{ set_active_tab "" activeTab}}" href="/dashboard/incident/user">Todos</a>
-        </nav>
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link {{ set_active_tab "aberto" activeTab}}" href="/dashboard/incident/user?status=aberto">Abertos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {{ set_active_tab "pendente" activeTab}}" href="/dashboard/incident/user?status=pendente">Em atendimento</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {{ set_active_tab "fechado" activeTab}}" href="/dashboard/incident/user?status=fechado">Finalizados</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {{ set_active_tab "" activeTab}}" href="/dashboard/incident/user">Todos</a>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
+    </nav>
     <br>
     {{#if showContent }}
       {{#each incidents}}

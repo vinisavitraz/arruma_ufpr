@@ -203,9 +203,9 @@ export class DashboardIncidentController {
   @Roles(RoleEnum.ADMIN)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getIncidentsPage(@Request() req, @Res() res: Response): Promise<void> { 
-    const status: string = req.query.status ?? '';
+    const status: string = req.query.status ?? ''; 
     const incidents: IncidentEntity[] = await this.service.findIncidentsByStatus(status);
-
+    
     return DashboardResponseRender.renderForAuthenticatedUser(
       res,
       'incident/incidents',
