@@ -91,6 +91,15 @@ export class DashboardIncidentController {
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getIncidentPage(@Param('id', ParseIntPipe) incidentId: number, @Request() req, @Res() res: Response): Promise<void> {  
+    const origin: string = req.query.origin ?? '';
+    let backUrl: string = '/dashboard/incident';
+    let view: string = 'incident';
+
+    if (origin === 'userIncidents') {
+      backUrl = '/dashboard/incident/user';
+      view = 'myIncident';
+    }
+
     const user: UserEntity = req.user; 
     const incident: IncidentEntity = await this.service.findUserIncidentByIDOrCry(user, incidentId);
     const incidentInteractions: IncidentInteractionEntity[] = await this.service.findIncidentInteractions(incident.id);
@@ -99,8 +108,9 @@ export class DashboardIncidentController {
       res,
       'incident/incident-detail',
       user,
-      'incident',
+      view,
       {
+        backUrl: backUrl,
         admin: user.role === RoleEnum.ADMIN,
         incident: incident,
         incidentInteractions: incidentInteractions,
