@@ -4,67 +4,61 @@
     <div class="container-fluid">
       <br>
       <br>
-      <div class="row mx-4">
-        <div class="col-8">
+      <div class="row mx-5">
+        <div class="col-4 d-flex justify-content-center">
           <h1>ArrumaUFPR</h1>
         </div>
       </div>
       <br>
-      <br>
-      <div class="row mx-5">
-          <h3>Incidentes</h3>
-      </div>
-      <hr class="bg-dark border-1 border-top border-dark">
-      <br>
-      <div class="row mx-5">
-          <div class="col-2">
-              <div class="card text-dark bg-white mb-3">
-                  <div class="card-header bg-primary text-white">Incidentes abertos</div>
-                  <div class="card-body">
-                      <h5 class="card-title">{{ homePage.totalOpenIncidents }}</h5>
-                      <p class="card-text">Total de incidentes abertos</p>
-                  </div>
+      <div class="container px-4 py-5" id="featured-3">
+        <h2 class="pb-2 border-bottom">Incidentes</h2>
+        <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+          <div class="feature col">
+            <div class="card text-dark bg-white mb-3">
+              <div class="card-header bg-primary text-white">Incidentes abertos</div>
+              <div class="card-body">
+                <h5 class="card-title">{{ homePage.totalOpenIncidents }}</h5>
+                <p class="card-text">Total de incidentes abertos</p>
               </div>
+            </div>
           </div>
-          <div class="col-2">
-              <div class="card text-dark bg-white mb-3">
-                <div class="card-header bg-primary text-white">Incidentes em atendimento</div>
-                  <div class="card-body">
-                      <h5 class="card-title">{{ homePage.totalPendingIncidents }}</h5>
-                      <p class="card-text">Total de incidentes em atendimento</p>
-                  </div>
+          <div class="feature col">
+            <div class="card text-dark bg-white mb-3">
+              <div class="card-header bg-primary text-white">Incidentes em atendimento</div>
+              <div class="card-body">
+                <h5 class="card-title">{{ homePage.totalPendingIncidents }}</h5>
+                <p class="card-text">Total de incidentes em atendimento</p>
               </div>
+            </div>
           </div>
-          <div class="col-2">
-              <div class="card text-dark bg-white mb-3">
-                <div class="card-header bg-primary text-white">Incidentes finalizados</div>
-                  <div class="card-body">
-                      <h5 class="card-title">{{ homePage.totalClosedIncidents }}</h5>
-                      <p class="card-text">Total de incidentes finalizados</p>
-                  </div>
+          <div class="feature col">
+            <div class="card text-dark bg-white mb-3">
+              <div class="card-header bg-primary text-white">Incidentes finalizados</div>
+              <div class="card-body">
+                <h5 class="card-title">{{ homePage.totalClosedIncidents }}</h5>
+                <p class="card-text">Total de incidentes finalizados</p>
               </div>
+            </div>
           </div>
-          <div class="col-2">
-              <div class="card text-dark bg-white mb-3">
-                <div class="card-header bg-primary text-white">Incidentes</div>
-                  <div class="card-body">
-                      <h5 class="card-title">{{ homePage.totalIncidents }}</h5>
-                      <p class="card-text">Total de incidentes</p>
-                  </div>
+          <div class="feature col">
+            <div class="card text-dark bg-white mb-3">
+              <div class="card-header bg-primary text-white">Incidentes</div>
+              <div class="card-body">
+                <h5 class="card-title">{{ homePage.totalIncidents }}</h5>
+                <p class="card-text">Total de incidentes</p>
               </div>
+            </div>
           </div>
+        </div>
       </div>
       <br>
       <br>
       {{#if (is_admin user.role)}}
-        <div class="row mx-5">
-          <h3>Geral</h3>
-        </div>
-        <hr class="bg-dark border-1 border-top border-dark">
-        <br>
-        <div class="row mx-5">
-            <div class="col-2">
-                <div class="card text-dark bg-white mb-3">
+        <div class="container px-4 py-5" id="featured-3">
+          <h2 class="pb-2 border-bottom">Geral</h2>
+          <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+            <div class="feature col">
+              <div class="card text-dark bg-white mb-3">
                   <div class="card-header bg-primary text-white">Tipos de incidente</div>
                     <div class="card-body">
                         <h5 class="card-title">{{ homePage.totalIncidentTypes }}</h5>
@@ -72,8 +66,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-2">
-                <div class="card text-dark bg-white mb-3">
+            <div class="feature col">
+              <div class="card text-dark bg-white mb-3">
                   <div class="card-header bg-primary text-white">Locais</div>
                     <div class="card-body">
                         <h5 class="card-title">{{ homePage.totalLocations }}</h5>
@@ -81,8 +75,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-2">
-                <div class="card text-dark bg-white mb-3">
+            <div class="feature col">
+              <div class="card text-dark bg-white mb-3">
                   <div class="card-header bg-primary text-white">Itens</div>
                     <div class="card-body">
                         <h5 class="card-title">{{ homePage.totalItems }}</h5>
@@ -90,8 +84,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-2">
-                <div class="card text-dark bg-white mb-3">
+            <div class="feature col">
+              <div class="card text-dark bg-white mb-3">
                     <div class="card-header bg-primary text-white">Usuários</div>
                     <div class="card-body">
                         <h5 class="card-title">{{ homePage.totalUsers }}</h5>
@@ -99,6 +93,7 @@
                     </div>
                 </div>
             </div>
+          </div>
         </div>
         <br>
       </div>
