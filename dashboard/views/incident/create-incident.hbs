@@ -39,26 +39,23 @@
             <div class="col-sm-4">
               <a class="btn btn-primary" id="showIncidentTypeForm">Não encontrei na lista</a>
             </div>
-            </div>
           </div>
           <div id="incidentTypeForm" class="d-none">
             <div class="col-md-12">
               <div class="row g-3">
                 <div class="col-sm-6">
                   <label for="incidentTypeName" class="form-label">Nome do tipo de incidente</label>
-                  <input type="text" class="form-control" id="incidentTypeName" name="incidentTypeName">
+                  <input type="text" class="form-control" id="incidentTypeName" name="incidentTypeName" placeholder="Ex: Manutenção">
                 </div>
-
                 <div class="col-sm-6">
                   <label for="incidentTypeDescription" class="form-label">Descrição do tipo de incidente</label>
-                  <input type="text" class="form-control" id="incidentTypeDescription" name="incidentTypeDescription">
+                  <input type="text" class="form-control" id="incidentTypeDescription" name="incidentTypeDescription" placeholder="Ex: Item necessita de reparo">
                 </div>
               </div>  
             </div>
             <br>
             <div class="col-sm-4">
               <a class="btn btn-primary" id="hideIncidentTypeForm">Procurar na lista</a>
-            </div>
             </div>
           </div>
           <hr class="my-4">
@@ -79,25 +76,23 @@
             <div class="col-sm-4">
               <a class="btn btn-primary" id="showLocationForm">Não encontrei na lista</a>
             </div>
-            </div>
           </div>
           <div id="locationForm" class="d-none">
             <div class="col-md-12">
               <div class="row g-3">
                 <div class="col-sm-6">
                   <label for="locationName" class="form-label">Nome do local</label>
-                  <input type="text" class="form-control" id="locationName" name="locationName">
+                  <input type="text" class="form-control" id="locationName" name="locationName" placeholder="Ex: Sala A12 Sept">
                 </div>
                 <div class="col-sm-6">
                   <label for="locationDescription" class="form-label">Descrição do local</label>
-                  <input type="text" class="form-control" id="locationDescription" name="locationDescription">
+                  <input type="text" class="form-control" id="locationDescription" name="locationDescription" placeholder="Ex: 1 sala do corredor">
                 </div>
               </div>  
             </div>
             <br>
             <div class="col-sm-4">
               <a class="btn btn-primary" id="hideLocationForm">Procurar na lista</a>
-            </div>
             </div>
           </div>
           <hr class="my-4">
@@ -124,12 +119,12 @@
               <div class="row g-3">
                 <div class="col-sm-6">
                   <label for="itemName" class="form-label">Nome do item</label>
-                  <input type="text" class="form-control" id="itemName" name="itemName">
+                  <input type="text" class="form-control" id="itemName" name="itemName" placeholder="Ex: Projetor">
                 </div>
 
                 <div class="col-sm-6">
                   <label for="itemDescription" class="form-label">Descrição do item</label>
-                  <input type="text" class="form-control" id="itemDescription" name="itemDescription">
+                  <input type="text" class="form-control" id="itemDescription" name="itemDescription" placeholder="Ex: Projetor amarelo">
                 </div>
               </div>  
             </div>
@@ -148,7 +143,7 @@
           <br>
           <div class="col-12">
             <label for="description" class="form-label">Descrição</label>
-            <textarea type="text" rows="5" class="form-control" id="description" name="description">{{ incident.description }}</textarea>
+            <textarea type="text" rows="5" class="form-control" id="description" name="description" placeholder="Detalhes do incidente">{{ incident.description }}</textarea>
           </div>
           <br>
           <hr class="my-4">
