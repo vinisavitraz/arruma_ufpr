@@ -16,7 +16,6 @@ import { LocationService } from 'src/location/location.service';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { IncidentsPageContent } from '../content/incidents-page.content';
 import { SearchIncidentsRequestDTO } from '../dto/request/search-incidents-request.dto';
-import { DashboardPagination } from '../pagination/dashboard-pagination';
 
 @Injectable()
 export class DashboardIncidentService {
@@ -31,21 +30,15 @@ export class DashboardIncidentService {
     return await this.incidentService.findTotalIncidentsByStatusAndUser(incidentStatus, userId);
   }
 
-  public async findIncidentsByStatus(
-    status: string, 
-    skip: number,
-    take: number,
-  ): Promise<IncidentEntity[]> {
-    return await this.incidentService.findIncidentsByStatus(status, skip, take);
+  public async findIncidentsByStatus(incidentPageContent: IncidentsPageContent): Promise<IncidentEntity[]> {
+    return await this.incidentService.findIncidentsByStatus(SearchIncidentsRequestDTO.fromPageContent(incidentPageContent));
   }
 
   public async findUserIncidentsByStatus(
     user: UserEntity, 
-    status: string,
-    skip: number,
-    take: number,
+    incidentPageContent: IncidentsPageContent,
   ): Promise<IncidentEntity[]> {
-    return await this.incidentService.findUserIncidentsByStatus(user, status, skip, take);
+    return await this.incidentService.findUserIncidentsByStatus(user, SearchIncidentsRequestDTO.fromPageContent(incidentPageContent));
   }
 
   public async findIncidentTypes(): Promise<IncidentTypeEntity[]> {

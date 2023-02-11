@@ -2,7 +2,6 @@ import { incident, incident_interaction, incident_type, user } from "@prisma/cli
 import { RoleEnum } from "src/app/enum/role.enum";
 import { IncidentStatusEnum } from "src/app/enum/status.enum";
 import { SearchIncidentsRequestDTO } from "src/dashboard/dto/request/search-incidents-request.dto";
-import { DashboardPagination } from "src/dashboard/pagination/dashboard-pagination";
 import { DatabaseService } from "src/database/database.service";
 import { UserEntity } from "src/user/entity/user.entity";
 import { CreateIncidentInteractionRequestDTO } from "./dto/request/create-incident-interaction-request.dto";
@@ -81,8 +80,13 @@ export class IncidentRepository {
     });
   }
 
-  public async searchIncidents(searchIncidentsRequestDTO: SearchIncidentsRequestDTO): Promise<(incident & {interactions: incident_interaction[], admin: user | null, user: user})[]> {
+  public async searchIncidents(
+    searchIncidentsRequestDTO: SearchIncidentsRequestDTO,
+    user: UserEntity | null,
+  ): Promise<(incident & {interactions: incident_interaction[], admin: user | null, user: user})[]> {
     return await this.connection.incident.findMany({
+      skip: searchIncidentsRequestDTO.skip,
+      take: searchIncidentsRequestDTO.maxPerPage,
       where: {
         title: {
           contains: searchIncidentsRequestDTO.incidentTitle,
@@ -114,6 +118,8 @@ export class IncidentRepository {
         item: {
           id: searchIncidentsRequestDTO.itemId,
         },
+        user_id: user === null ? undefined : (user.role === RoleEnum.USER ? user.id : undefined),
+        admin_id: user === null ? undefined : (user.role === RoleEnum.ADMIN ? user.id : undefined),
       },
       orderBy: [
         {

@@ -1,6 +1,4 @@
-import { SearchInputMorpher } from "src/app/util/seach-input.morpher";
 import { IncidentsPageContent } from "src/dashboard/content/incidents-page.content";
-import { UserEntity } from "src/user/entity/user.entity";
 
 export class SearchIncidentsRequestDTO {
 
@@ -16,37 +14,27 @@ export class SearchIncidentsRequestDTO {
   incidentStatus: string;
   origin: string;
   skip: number | null;
-  limit: number | null;
+  maxPerPage: number | null;
 
-  public static fromDashboard(payload: any, user: UserEntity): SearchIncidentsRequestDTO {
+  public static fromPageContent(incidentPageContent: IncidentsPageContent): SearchIncidentsRequestDTO {
     const searchIncidentsRequestDTO: SearchIncidentsRequestDTO = new SearchIncidentsRequestDTO();
 
-    const incidentId: number = SearchInputMorpher.morphNumber(payload['incidentId']);
-    searchIncidentsRequestDTO.incidentId = incidentId > 0 ? incidentId : undefined;
-    searchIncidentsRequestDTO.incidentTitle = SearchInputMorpher.morphString(payload['incidentTitle']);
-    searchIncidentsRequestDTO.incidentOpenDate = SearchInputMorpher.morphDateString(payload['incidentOpenDate']);
-    searchIncidentsRequestDTO.incidentEndDate = SearchInputMorpher.morphDateString(payload['incidentEndDate']);
-    searchIncidentsRequestDTO.incidentUserName = SearchInputMorpher.morphString(payload['incidentUserName']);
-    searchIncidentsRequestDTO.incidentUserEmail = SearchInputMorpher.morphString(payload['incidentUserEmail']);
-    searchIncidentsRequestDTO.incidentTypeId = SearchInputMorpher.morphNumber(payload['incidentTypeId']);
-    searchIncidentsRequestDTO.locationId = SearchInputMorpher.morphNumber(payload['locationId']);
-    searchIncidentsRequestDTO.itemId = SearchInputMorpher.morphNumber(payload['itemId']);
-    searchIncidentsRequestDTO.incidentStatus = SearchInputMorpher.morphString(payload['incidentStatus']);
-    searchIncidentsRequestDTO.origin = SearchInputMorpher.morphString(payload['origin']) ?? '';
-    searchIncidentsRequestDTO.skip = SearchInputMorpher.morphNumber(payload['skip']);
-    searchIncidentsRequestDTO.limit = SearchInputMorpher.morphNumber(payload['limit']);
+    searchIncidentsRequestDTO.incidentId = incidentPageContent.incidentId;
+    searchIncidentsRequestDTO.incidentStatus = incidentPageContent.incidentStatus;
+    searchIncidentsRequestDTO.incidentTitle = incidentPageContent.incidentTitle;
+    searchIncidentsRequestDTO.incidentOpenDate = incidentPageContent.incidentOpenDate;
+    searchIncidentsRequestDTO.incidentEndDate = incidentPageContent.incidentEndDate;
+    searchIncidentsRequestDTO.incidentUserName = incidentPageContent.incidentUserName;
+    searchIncidentsRequestDTO.incidentUserEmail = incidentPageContent.incidentUserEmail;
+    searchIncidentsRequestDTO.incidentTypeId = incidentPageContent.incidentTypeId;
+    searchIncidentsRequestDTO.locationId = incidentPageContent.locationId;
+    searchIncidentsRequestDTO.itemId = incidentPageContent.itemId;
+    searchIncidentsRequestDTO.origin = incidentPageContent.origin;
+    searchIncidentsRequestDTO.skip = incidentPageContent.skip;
+    searchIncidentsRequestDTO.maxPerPage = incidentPageContent.maxPerPage;
 
     return searchIncidentsRequestDTO;
+
   }
-
-  // public static fromPageContent(incidentPageContent: IncidentsPageContent): SearchIncidentsRequestDTO {
-  //   const searchIncidentsRequestDTO: SearchIncidentsRequestDTO = new SearchIncidentsRequestDTO();
-
-  //   searchIncidentsRequestDTO.incidentStatus = incidentStatus;
-  //   searchIncidentsRequestDTO.origin = origin;
-
-  //   return searchIncidentsRequestDTO;
-
-  // }
 
 }

@@ -1,5 +1,3 @@
-import { InvalidArgumentException } from "../exception/invalid-argument.exception";
-
 export class SearchInputMorpher {
 
   public static morphString(argument: any): string | undefined {

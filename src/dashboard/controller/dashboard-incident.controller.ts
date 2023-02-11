@@ -56,12 +56,8 @@ export class DashboardIncidentController {
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getUserIncidentsPage(@Request() req, @Res() res: Response): Promise<void> { 
     const incidentPageContent: IncidentsPageContent = IncidentsPageContent.fromQueryParams('userIncident', req.query);
-    const incidents: IncidentEntity[] = await this.service.findUserIncidentsByStatus(
-      req.user, 
-      incidentPageContent.incidentStatus, 
-      incidentPageContent.skip,
-      incidentPageContent.maxPerPage, 
-    );
+    const incidents: IncidentEntity[] = await this.service.findUserIncidentsByStatus(req.user, incidentPageContent);
+
     incidentPageContent.total = await this.service.findTotalIncidentsByStatusAndUser(
       incidentPageContent.incidentStatus,
       req.user.id,
@@ -210,7 +206,7 @@ export class DashboardIncidentController {
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async searchIncidents(@Request() req, @Res() res: Response): Promise<void> { 
-    const incidentPageContent: IncidentsPageContent = IncidentsPageContent.fromQueryParams('incident', req.body);
+    const incidentPageContent: IncidentsPageContent = IncidentsPageContent.fromSearch(req.body);
     const uri: string = incidentPageContent.origin === 'incident' ? '/dashboard/incident' : '/dashboard/incident/user';
     const url: string = QueryStringBuilder.buildForIncidents(
       incidentPageContent, 
@@ -228,11 +224,7 @@ export class DashboardIncidentController {
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getIncidentsPage(@Request() req, @Res() res: Response): Promise<void> { 
     const incidentPageContent: IncidentsPageContent = IncidentsPageContent.fromQueryParams('incident', req.query);
-    const incidents: IncidentEntity[] = await this.service.findIncidentsByStatus(
-      incidentPageContent.incidentStatus,
-      incidentPageContent.skip,
-      incidentPageContent.maxPerPage,
-    );
+    const incidents: IncidentEntity[] = await this.service.findIncidentsByStatus(incidentPageContent);
     incidentPageContent.total = await this.service.findTotalIncidentsByStatusAndUser(
       incidentPageContent.incidentStatus,
       undefined,

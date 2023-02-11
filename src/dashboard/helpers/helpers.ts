@@ -120,10 +120,3 @@ export function buildIncidentsRegistersPerPageUrl(
 ) { 
   return QueryStringBuilder.buildForIncidents(content, Number(maxPerPage), uri, 0);
 }
-
-export function buildSearchIncidentsPageUrl(
-  content: IncidentsPageContent,
-) { 
-  console.log(content);
-  return 'tet';
-}
