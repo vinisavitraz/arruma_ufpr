@@ -27,10 +27,10 @@ export class DashboardService {
   }
 
   private async getHomePageForAdmin(): Promise<HomePageResponseDTO> {
-    const totalOpenIncidents: number = await this.incidentService.findTotalIncidentsByStatus(IncidentStatusEnum.OPEN, 0);
-    const totalPendingIncidents: number = await this.incidentService.findTotalIncidentsByStatus(IncidentStatusEnum.PENDING, 0);
-    const totalClosedIncidents: number = await this.incidentService.findTotalIncidentsByStatus(IncidentStatusEnum.CLOSED, 0);
-    const totalIncidents: number = await this.incidentService.findTotalIncidentsByStatus('', 0);
+    const totalOpenIncidents: number = await this.incidentService.findTotalIncidentsByStatusAndUser(IncidentStatusEnum.OPEN, 0);
+    const totalPendingIncidents: number = await this.incidentService.findTotalIncidentsByStatusAndUser(IncidentStatusEnum.PENDING, 0);
+    const totalClosedIncidents: number = await this.incidentService.findTotalIncidentsByStatusAndUser(IncidentStatusEnum.CLOSED, 0);
+    const totalIncidents: number = await this.incidentService.findTotalIncidentsByStatusAndUser('', 0);
     const totalIncidentTypes: number = await this.incidentService.findTotalIncidentTypes();
     const totalLocations: number = await this.locationService.findTotalLocations();
     const totalItems: number = await this.itemService.findTotalItems();
@@ -49,10 +49,10 @@ export class DashboardService {
   }
 
   private async getHomePageForUser(userId: number): Promise<HomePageResponseDTO> {
-    const totalOpenIncidents: number = await this.incidentService.findTotalIncidentsByStatus(IncidentStatusEnum.OPEN, userId);
-    const totalPendingIncidents: number = await this.incidentService.findTotalIncidentsByStatus(IncidentStatusEnum.PENDING, userId);
-    const totalClosedIncidents: number = await this.incidentService.findTotalIncidentsByStatus(IncidentStatusEnum.CLOSED, userId);
-    const totalIncidents: number = await this.incidentService.findTotalIncidentsByStatus('', userId);
+    const totalOpenIncidents: number = await this.incidentService.findTotalIncidentsByStatusAndUser(IncidentStatusEnum.OPEN, userId);
+    const totalPendingIncidents: number = await this.incidentService.findTotalIncidentsByStatusAndUser(IncidentStatusEnum.PENDING, userId);
+    const totalClosedIncidents: number = await this.incidentService.findTotalIncidentsByStatusAndUser(IncidentStatusEnum.CLOSED, userId);
+    const totalIncidents: number = await this.incidentService.findTotalIncidentsByStatusAndUser('', userId);
 
     return new HomePageResponseDTO(
       totalOpenIncidents,

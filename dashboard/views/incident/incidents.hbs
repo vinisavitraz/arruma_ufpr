@@ -9,7 +9,7 @@
       </div>
       {{#if showCreateIncidentButton}}
         <div class="col-4">
-          <a class="btn btn-primary btn-lg" href="/dashboard/incident/create?origin={{ origin }}" role="button">Novo incidente</a>
+          <a class="btn btn-primary btn-lg" href="/dashboard/incident/create?origin={{ content.origin }}" role="button">Novo incidente</a>
         </div>
       {{/if}}
     </div>
@@ -24,16 +24,16 @@
           <br>
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav_link {{ set_active_tab "aberto" activeTab}}" href="{{ uri }}?status=aberto">Abertos</a>
+              <a class="nav_link {{ set_active_tab "aberto" content.incidentStatus }}" href="{{ uri }}?incidentStatus=aberto">Abertos</a>
             </li>
             <li class="nav-item">
-              <a class="nav_link {{ set_active_tab "pendente" activeTab}}" href="{{ uri }}?status=pendente">Em atendimento</a>
+              <a class="nav_link {{ set_active_tab "pendente" content.incidentStatus }}" href="{{ uri }}?incidentStatus=pendente">Em atendimento</a>
             </li>
             <li class="nav-item">
-              <a class="nav_link {{ set_active_tab "fechado" activeTab}}" href="{{ uri }}?status=fechado">Finalizados</a>
+              <a class="nav_link {{ set_active_tab "fechado" content.incidentStatus }}" href="{{ uri }}?incidentStatus=fechado">Finalizados</a>
             </li>
             <li class="nav-item">
-              <a class="nav_link {{ set_active_tab "" activeTab}}" href="{{ uri }}">Todos</a>
+              <a class="nav_link {{ set_active_tab "" content.incidentStatus }}" href="{{ uri }}">Todos</a>
             </li>
           </ul>
         </div>
@@ -43,42 +43,42 @@
     <div id="searchForm" class="{{ classSearchForm }}">
       <div class="row g-5">
         <div class="col-md-12 col-lg-10">
-          <a href="{{ uri }}?status={{searchInput.incidentStatus}}" class="btn btn-danger border border-3">Cancelar pesquisa</a>
+          <a href="{{ uri }}?status={{content.incidentStatus}}" class="btn btn-danger border border-3">Cancelar pesquisa</a>
           <br>
           <br>
           <form method="POST" action="/dashboard/incident/search" class="needs-validation" novalidate="" autocomplete="off">
-            <input type="hidden" id="origin" name="origin" value="{{searchInput.origin}}">
-            <input type="hidden" id="incidentStatus" name="incidentStatus" value="{{searchInput.incidentStatus}}">
+            <input type="hidden" id="origin" name="origin" value="{{content.origin}}">
+            <input type="hidden" id="incidentStatus" name="incidentStatus" value="{{content.incidentStatus}}">
             <div class="row g-3">
               <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
                 <label for="incidentId" class="form-label">ID do incidente</label>
-                <input type="text" class="form-control" id="incidentId" name="incidentId" placeholder="Ex: 1234" value="{{ searchInput.incidentId }}">
+                <input type="text" class="form-control" id="incidentId" name="incidentId" placeholder="Ex: 1234" value="{{ content.incidentId }}">
               </div>
               <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
                 <label for="incidentTitle" class="form-label">Título</label>
-                <input type="text" class="form-control" id="incidentTitle" name="incidentTitle" placeholder="Ex: Projetor danificado" value="{{ searchInput.incidentTitle }}">
+                <input type="text" class="form-control" id="incidentTitle" name="incidentTitle" placeholder="Ex: Projetor danificado" value="{{ content.incidentTitle }}">
               </div>
               <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
                 <label for="incidentOpenDate" class="form-label">Data de abertura</label>
-                <input type="datetime-local" class="form-control" id="incidentOpenDate" name="incidentOpenDate" value="{{format_object_datetime searchInput.incidentOpenDate }}">
+                <input type="datetime-local" class="form-control" id="incidentOpenDate" name="incidentOpenDate" value="{{format_object_datetime content.incidentOpenDate }}">
               </div>
               <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
                 <label for="incidentEndDate" class="form-label">Data de fechamento</label>
-                <input type="datetime-local" class="form-control" id="incidentEndDate" name="incidentEndDate" value="{{format_object_datetime searchInput.incidentEndDate }}">
+                <input type="datetime-local" class="form-control" id="incidentEndDate" name="incidentEndDate" value="{{format_object_datetime content.incidentEndDate }}">
               </div>
               <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
                 <label for="incidentUserName" class="form-label">Nome do usuário</label>
-                <input type="text" class="form-control" id="incidentUserName" name="incidentUserName" placeholder="Ex: João Silva" value="{{ searchInput.incidentUserName }}">
+                <input type="text" class="form-control" id="incidentUserName" name="incidentUserName" placeholder="Ex: João Silva" value="{{ content.incidentUserName }}">
               </div>
               <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
                 <label for="incidentUserEmail" class="form-label">Email do usuário</label>
-                <input type="text" class="form-control" id="incidentUserEmail" name="incidentUserEmail" placeholder="Ex: joao.silva@mail.com" value="{{ searchInput.incidentUserEmail }}">
+                <input type="text" class="form-control" id="incidentUserEmail" name="incidentUserEmail" placeholder="Ex: joao.silva@mail.com" value="{{ content.incidentUserEmail }}">
               </div>
               
               <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
                 <label for="incidentTypeId" class="form-label">Tipo de incidente</label>
                 <select class="form-select form-control" id="incidentTypeId" name="incidentTypeId">
-                  {{#select searchInput.incidentTypeId}}
+                  {{#select content.incidentTypeId}}
                     <option value="0">Selecionar...</option>
                     {{#each incidentTypes}}
                       <option value="{{ this.id }}">{{ this.name }}</option>
@@ -89,7 +89,7 @@
               <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
                 <label for="locationId" class="form-label">Local</label>
                 <select class="form-select form-control" id="locationId" name="locationId">
-                  {{#select searchInput.locationId}}
+                  {{#select content.locationId}}
                     <option value="0">Selecionar...</option>
                     {{#each locations}}
                       <option value="{{ this.id }}">{{ this.name }}</option>
@@ -100,7 +100,7 @@
               <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
                 <label for="itemId" class="form-label">Item</label>
                 <select class="form-select form-control" id="itemId" name="itemId">
-                  {{#select searchInput.itemId}}
+                  {{#select content.itemId}}
                     <option value="0">Selecionar...</option>
                     {{#each items}}
                       <option value="{{ this.id }}">{{ this.name }}</option>
@@ -121,6 +121,35 @@
     </div>
     <br>
     <br>
+    <div class="row g-3 d-flex flex-row-reverse">
+      {{#if showContent }}
+        <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-2">
+          <nav aria-label="Páginas">
+            <ul class="pagination">
+              {{#each pagination.pages}}
+                <li class="page-item">
+                  <a class="page-link" href="{{ this.pageUrl }}">{{ this.pageNumber }}</a>
+                </li>
+              {{/each}}
+            </ul>
+          </nav>
+        </div>
+      {{/if}}
+      
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-2">
+        <select class="form-select" name="limit" id="registers-per-page">
+          {{#select content.maxPerPage}}
+            <option disabled selected value>Registros por página</option>
+            <option data-url="{{ incidents_registers_per_page_url "1" uri content }}" value="1">1 registro</option>
+            <option data-url="{{ incidents_registers_per_page_url "10" uri content }}" value="10">10 registros</option>
+            <option data-url="{{ incidents_registers_per_page_url "25" uri content }}" value="25">25 registros</option>
+            <option data-url="{{ incidents_registers_per_page_url "50" uri content }}" value="50">50 registros</option>
+            <option data-url="{{ incidents_registers_per_page_url "100" uri content }}" value="100">100 registros</option>
+          {{/select}}
+        </select>
+      </div>
+    </div>
+    <br>
     {{#if showContent }}
       {{#each incidents}}
         <div class="card">
@@ -130,7 +159,7 @@
             <h5 class="card-title">{{this.title}}</h5>
             <p class="card-text">{{this.description}}</p>
             <p><i class='bx bx-message nav_icon'></i> {{ this.totalInteractions }}</p>
-            <a href="/dashboard/incident/{{this.id}}?origin={{ ../origin }}" class="btn btn-primary">Acessar incidente</a>
+            <a href="/dashboard/incident/{{this.id}}?origin={{ ../content.origin }}" class="btn btn-primary">Acessar incidente</a>
           </div>
         </div>
         <br>

@@ -15,6 +15,10 @@ export class SearchInputMorpher {
       return undefined;
     }
 
+    if (argument === 'undefined') {
+      return undefined;
+    }
+
     return argument;
   }
 
@@ -30,6 +34,24 @@ export class SearchInputMorpher {
     }
 
     if (number <= 0) {
+      return undefined;
+    }
+
+    return number;
+  }
+
+  public static morphID(argument: any): number | undefined {
+    if (!argument) {
+      return undefined;
+    }
+
+    const number: number = Number(argument);
+
+    if (isNaN(number)) {
+      return undefined;
+    }
+
+    if (number === 0) {
       return undefined;
     }
 
@@ -56,14 +78,16 @@ export class SearchInputMorpher {
     return new Date(argument);
   }
 
-  public static validateDate(argument: Date, name: string): void {
+  public static morphBoolean(argument: any): boolean {
     if (!argument) {
-      throw new InvalidArgumentException('Invalid argument `' + name + '`');
+      return false;
     }
 
-    if (isNaN(argument.getTime()) == true) {
-      throw new InvalidArgumentException('Invalid argument date `' + name + '`');
-    }
+    if (typeof argument !== "boolean") {
+      return false;
+  }
+
+    return argument;
   }
 
 }

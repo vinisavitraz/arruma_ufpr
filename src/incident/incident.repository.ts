@@ -2,6 +2,7 @@ import { incident, incident_interaction, incident_type, user } from "@prisma/cli
 import { RoleEnum } from "src/app/enum/role.enum";
 import { IncidentStatusEnum } from "src/app/enum/status.enum";
 import { SearchIncidentsRequestDTO } from "src/dashboard/dto/request/search-incidents-request.dto";
+import { DashboardPagination } from "src/dashboard/pagination/dashboard-pagination";
 import { DatabaseService } from "src/database/database.service";
 import { UserEntity } from "src/user/entity/user.entity";
 import { CreateIncidentInteractionRequestDTO } from "./dto/request/create-incident-interaction-request.dto";
@@ -19,11 +20,17 @@ export class IncidentRepository {
     this.connection = databaseService;
   }
 
-  public async findIncidentsByStatus(status: string | undefined): Promise<(incident & {interactions: incident_interaction[], admin: user | null, user: user})[]> {
+  public async findIncidentsByStatus(
+    status: string | undefined,
+    skip: number,
+    take: number,
+  ): Promise<(incident & {interactions: incident_interaction[], admin: user | null, user: user})[]> {
     return await this.connection.incident.findMany({
       where: {
         status: status,
       },
+      skip: skip,
+      take: take,
       orderBy: [
         {
           id: 'desc',
@@ -37,7 +44,12 @@ export class IncidentRepository {
     });
   }
 
-  public async findUserIncidentsByStatus(user: UserEntity, status: string | undefined): Promise<(incident & {interactions: incident_interaction[], admin: user | null, user: user})[]> {
+  public async findUserIncidentsByStatus(
+    user: UserEntity, 
+    status: string | undefined,
+    skip: number,
+    take: number,
+  ): Promise<(incident & {interactions: incident_interaction[], admin: user | null, user: user})[]> {
     let where: any = {};
 
     if (user.role === RoleEnum.ADMIN) {
@@ -54,6 +66,8 @@ export class IncidentRepository {
     
     return await this.connection.incident.findMany({
       where: where,
+      skip: skip,
+      take: take,
       orderBy: [
         {
           id: 'desc',
@@ -254,7 +268,7 @@ export class IncidentRepository {
     });
   }
 
-  public async findTotalIncidentsByStatus(status: string | undefined, userId: number | undefined ): Promise<number> {
+  public async findTotalIncidentsByStatusForHomePage(status: string | undefined, userId: number | undefined ): Promise<number> {
     return await this.connection.incident.count({
       where: {
         status: status,

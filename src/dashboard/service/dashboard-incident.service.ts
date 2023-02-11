@@ -14,7 +14,9 @@ import { ItemService } from 'src/item/item.service';
 import { LocationEntity } from 'src/location/entity/location.entity';
 import { LocationService } from 'src/location/location.service';
 import { UserEntity } from 'src/user/entity/user.entity';
+import { IncidentsPageContent } from '../content/incidents-page.content';
 import { SearchIncidentsRequestDTO } from '../dto/request/search-incidents-request.dto';
+import { DashboardPagination } from '../pagination/dashboard-pagination';
 
 @Injectable()
 export class DashboardIncidentService {
@@ -25,12 +27,25 @@ export class DashboardIncidentService {
     private readonly itemService: ItemService,
   ) {}
 
-  public async findIncidentsByStatus(status: string): Promise<IncidentEntity[]> {
-    return await this.incidentService.findIncidentsByStatus(status);
+  public async findTotalIncidentsByStatusAndUser(incidentStatus: string | undefined, userId: number | undefined): Promise<number> {
+    return await this.incidentService.findTotalIncidentsByStatusAndUser(incidentStatus, userId);
   }
 
-  public async findUserIncidentsByStatus(user: UserEntity, status: string): Promise<IncidentEntity[]> {
-    return await this.incidentService.findUserIncidentsByStatus(user, status);
+  public async findIncidentsByStatus(
+    status: string, 
+    skip: number,
+    take: number,
+  ): Promise<IncidentEntity[]> {
+    return await this.incidentService.findIncidentsByStatus(status, skip, take);
+  }
+
+  public async findUserIncidentsByStatus(
+    user: UserEntity, 
+    status: string,
+    skip: number,
+    take: number,
+  ): Promise<IncidentEntity[]> {
+    return await this.incidentService.findUserIncidentsByStatus(user, status, skip, take);
   }
 
   public async findIncidentTypes(): Promise<IncidentTypeEntity[]> {
@@ -83,8 +98,8 @@ export class DashboardIncidentService {
     return await this.incidentService.closeIncident(user, incidentId); 
   }
 
-  public async searchIncidents(searchIncidentsRequestDTOa: SearchIncidentsRequestDTO): Promise<IncidentEntity[]> {
-    return await this.incidentService.searchIncidents(searchIncidentsRequestDTOa); 
-  }
+  // public async searchIncidents(incidentPageContent: IncidentsPageContent): Promise<IncidentEntity[]> {
+  //   return await this.incidentService.searchIncidents(searchIncidentsRequestDTOa); 
+  // }
 
 }

@@ -1,7 +1,9 @@
 import { RoleEnum } from "src/app/enum/role.enum";
 import { IncidentStatusEnum } from "src/app/enum/status.enum";
 import { DateFormatter } from "src/app/util/date.formatter";
+import { QueryStringBuilder } from "src/app/util/query-string.builder";
 import { IncidentInteractionEntity } from "src/incident/entity/incident-interaction.entity";
+import { IncidentsPageContent } from "../content/incidents-page.content";
 
 export function formatObjectDateTime(date: Date | undefined) { 
   if (!date) {
@@ -109,4 +111,12 @@ export function setActiveTab(tabName: string, status: string) {
   }
 
   return '';
+}
+
+export function buildIncidentsRegistersPerPageUrl(
+  maxPerPage: string, 
+  uri: string, 
+  content: IncidentsPageContent,
+) { 
+  return QueryStringBuilder.buildForIncidents(content, Number(maxPerPage), uri, 0);
 }

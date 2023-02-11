@@ -14,6 +14,8 @@ export class SearchIncidentsRequestDTO {
   itemId: number | undefined;
   incidentStatus: string;
   origin: string;
+  skip: number | null;
+  limit: number | null;
 
   public static fromDashboard(payload: any, user: UserEntity): SearchIncidentsRequestDTO {
     const searchIncidentsRequestDTO: SearchIncidentsRequestDTO = new SearchIncidentsRequestDTO();
@@ -30,6 +32,8 @@ export class SearchIncidentsRequestDTO {
     searchIncidentsRequestDTO.itemId = SearchInputMorpher.morphNumber(payload['itemId']);
     searchIncidentsRequestDTO.incidentStatus = SearchInputMorpher.morphString(payload['incidentStatus']);
     searchIncidentsRequestDTO.origin = SearchInputMorpher.morphString(payload['origin']) ?? '';
+    searchIncidentsRequestDTO.skip = SearchInputMorpher.morphNumber(payload['skip']);
+    searchIncidentsRequestDTO.limit = SearchInputMorpher.morphNumber(payload['limit']);
 
     return searchIncidentsRequestDTO;
   }

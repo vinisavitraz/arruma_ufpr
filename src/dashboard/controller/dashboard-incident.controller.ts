@@ -18,7 +18,8 @@ import { CreateIncidentInteractionRequestDTO } from "src/incident/dto/request/cr
 import { IncidentStatusEnum } from "src/app/enum/status.enum";
 import { UserEntity } from "src/user/entity/user.entity";
 import { RolesGuard } from "src/auth/guard/roles.guard";
-import { SearchIncidentsRequestDTO } from "../dto/request/search-incidents-request.dto";
+import { IncidentsPageContent } from "../content/incidents-page.content";
+import { DashboardPagination } from "../pagination/dashboard-pagination";
 
 @Controller('dashboard/incident')
 @ApiExcludeController()
@@ -53,18 +54,24 @@ export class DashboardIncidentController {
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getUserIncidentsPage(@Request() req, @Res() res: Response): Promise<void> { 
-    const status: string = req.query.status ?? '';
-    const incidents: IncidentEntity[] = await this.service.findUserIncidentsByStatus(req.user, status);
+    const incidentPageContent: IncidentsPageContent = IncidentsPageContent.fromQueryParams('userIncident', req.query);
+    const incidents: IncidentEntity[] = await this.service.findUserIncidentsByStatus(
+      req.user, 
+      incidentPageContent.incidentStatus, 
+      incidentPageContent.skip,
+      incidentPageContent.maxPerPage, 
+    );
+    incidentPageContent.total = await this.service.findTotalIncidentsByStatusAndUser(
+      incidentPageContent.incidentStatus,
+      req.user.id,
+    );
     
     return this.renderIncidentsPage(
       res, 
       req.user, 
-      status, 
-      incidents, 
-      'userIncident', 
+      incidents,  
       '/dashboard/incident/user', 
-      SearchIncidentsRequestDTO.fromEmptySearch(status, 'userIncident'),
-      false,
+      incidentPageContent,
     );
   }
 
@@ -198,80 +205,82 @@ export class DashboardIncidentController {
     return res.redirect('/dashboard/incident/' + createIncidentInteractionRequestDTO.incidentId);
   }
 
-  @Post('search')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(AuthenticatedGuard, RolesGuard)
-  public async searchIncidents(@Request() req, @Res() res: Response): Promise<void> { 
-    const searchIncidentsRequestDTO: SearchIncidentsRequestDTO = SearchIncidentsRequestDTO.fromDashboard(req.body, req.user);
-    const incidents: IncidentEntity[] = await this.service.searchIncidents(searchIncidentsRequestDTO);
+  // @Post('search')
+  // @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  // @UseGuards(AuthenticatedGuard, RolesGuard)
+  // public async searchIncidents(@Request() req, @Res() res: Response): Promise<void> { 
+  //   const incidentPageContent: IncidentsPageContent = IncidentsPageContent.fromQueryParams('incident', req.query);
+  //   const incidents: IncidentEntity[] = await this.service.searchIncidents(incidentPageContent);
     
-    return this.renderIncidentsPage(
-      res, 
-      req.user, 
-      searchIncidentsRequestDTO.incidentStatus, 
-      incidents, 
-      searchIncidentsRequestDTO.origin, 
-      searchIncidentsRequestDTO.origin === 'incident' ? '/dashboard/incident' : '/dashboard/incident/user', 
-      searchIncidentsRequestDTO,
-      true,
-    );
-  }
+  //   return this.renderIncidentsPage(
+  //     res, 
+  //     req.user, 
+  //     incidents, 
+  //     incidentPageContent.origin === 'incident' ? '/dashboard/incident' : '/dashboard/incident/user', 
+  //     incidentPageContent,
+  //   );
+  // }
 
   @Get()
   @Roles(RoleEnum.ADMIN)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getIncidentsPage(@Request() req, @Res() res: Response): Promise<void> { 
-    const status: string = req.query.status ?? ''; 
-    const incidents: IncidentEntity[] = await this.service.findIncidentsByStatus(status);
+    const incidentPageContent: IncidentsPageContent = IncidentsPageContent.fromQueryParams('incident', req.query);
+    const incidents: IncidentEntity[] = await this.service.findIncidentsByStatus(
+      incidentPageContent.incidentStatus,
+      incidentPageContent.skip,
+      incidentPageContent.maxPerPage,
+    );
+    incidentPageContent.total = await this.service.findTotalIncidentsByStatusAndUser(
+      incidentPageContent.incidentStatus,
+      undefined,
+    );
     
     return this.renderIncidentsPage(
       res, 
       req.user, 
-      status, 
       incidents, 
-      'incident', 
       '/dashboard/incident', 
-      SearchIncidentsRequestDTO.fromEmptySearch(status, 'incident'),
-      false,
+      incidentPageContent,
     );
   }
 
   private async renderIncidentsPage(
     @Res() res: Response, 
     user: UserEntity, 
-    status: string, 
     incidents: IncidentEntity[],
-    view: string,
     uri: string,
-    searchInput: SearchIncidentsRequestDTO,
-    searching: boolean,
+    incidentPageContent: IncidentsPageContent,
   ): Promise<void> {
     const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
     const locations: LocationEntity[] = await this.service.findLocations();
-    const items: ItemEntity[] = await this.service.findItemsByLocationID(searchInput.locationId ?? 0);
-    const pageTitle: string = view === 'incident' ? 'Incidentes' : 'Meus incidentes';
+    const items: ItemEntity[] = await this.service.findItemsByLocationID(incidentPageContent.locationId ?? 0);
+    const pageTitle: string = incidentPageContent.origin === 'incident' ? 'Incidentes' : 'Meus incidentes';
+    const pagination: DashboardPagination = DashboardPagination.build(
+      incidentPageContent, 
+      uri,
+    );
     
     return DashboardResponseRender.renderForAuthenticatedUser(
       res,
       'incident/incidents',
       user,
-      view,
+      incidentPageContent.origin,
       {
-        classSearchForm: searching ? 'd-block' : 'd-none',
-        classSearchButton: searching ? 'd-none' : 'd-block',
-        searchInput: searchInput,
-        showCreateIncidentButton: user.role === RoleEnum.USER && view === 'userIncident',
+        pagination: pagination,
+        classSearchForm: incidentPageContent.searching ? 'd-block' : 'd-none',
+        classSearchButton: incidentPageContent.searching ? 'd-none' : 'd-block',
+        content: incidentPageContent,
+        showCreateIncidentButton: user.role === RoleEnum.USER && incidentPageContent.origin === 'userIncident',
         pageTitle: pageTitle,
-        origin: view,
         uri: uri,
         incidentTypes: incidentTypes,
         locations: locations,
         items: items,
-        activeTab: status,
         incidents: incidents,
         showContent: incidents.length > 0,
         cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}, {filePath: '/styles/incidents.css'}],
-        jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/incidents.js'}],
+        jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/incidents.js'}, {filePath: '/js/filter-tables.js'}],
       }
     );
   }
