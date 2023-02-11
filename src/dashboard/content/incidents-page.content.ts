@@ -58,7 +58,7 @@ export class IncidentsPageContent {
     const maxPerPage: number = SearchInputMorpher.morphNumber(queryParams.maxPerPage) ?? DashboardPagination.MAX_PER_PAGE;
     const skip: number = SearchInputMorpher.morphNumber(queryParams.skip) ?? DashboardPagination.DEFAULT_SKIP;
     const total: number = 0;
-    const searching: boolean = SearchInputMorpher.morphBoolean(queryParams.searching);;
+    const searching: boolean = SearchInputMorpher.morphBoolean(queryParams.searching);
     const incidentId: number | undefined = SearchInputMorpher.morphID(queryParams.incidentId);
     const incidentStatus: string | undefined = SearchInputMorpher.morphString(queryParams.incidentStatus);
     const incidentTitle: string | undefined = SearchInputMorpher.morphString(queryParams.incidentTitle);

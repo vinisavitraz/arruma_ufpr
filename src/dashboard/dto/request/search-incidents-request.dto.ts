@@ -1,4 +1,5 @@
 import { SearchInputMorpher } from "src/app/util/seach-input.morpher";
+import { IncidentsPageContent } from "src/dashboard/content/incidents-page.content";
 import { UserEntity } from "src/user/entity/user.entity";
 
 export class SearchIncidentsRequestDTO {
@@ -38,14 +39,14 @@ export class SearchIncidentsRequestDTO {
     return searchIncidentsRequestDTO;
   }
 
-  public static fromEmptySearch(incidentStatus: string, origin: string): SearchIncidentsRequestDTO {
-    const searchIncidentsRequestDTO: SearchIncidentsRequestDTO = new SearchIncidentsRequestDTO();
+  // public static fromPageContent(incidentPageContent: IncidentsPageContent): SearchIncidentsRequestDTO {
+  //   const searchIncidentsRequestDTO: SearchIncidentsRequestDTO = new SearchIncidentsRequestDTO();
 
-    searchIncidentsRequestDTO.incidentStatus = incidentStatus;
-    searchIncidentsRequestDTO.origin = origin;
+  //   searchIncidentsRequestDTO.incidentStatus = incidentStatus;
+  //   searchIncidentsRequestDTO.origin = origin;
 
-    return searchIncidentsRequestDTO;
+  //   return searchIncidentsRequestDTO;
 
-  }
+  // }
 
 }

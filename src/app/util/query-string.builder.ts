@@ -1,6 +1,6 @@
 export class QueryStringBuilder {
     
-  public static buildForIncidents(content: any, maxPerPage: number, uri: string, skip: number | null = null): string {
+  public static buildForIncidents(content: any, maxPerPage: number, uri: string, skip: number | null = null, searching: boolean | null = null): string {
     const queryStringObject: string[] = [];
 
     for (let property in content) {
@@ -10,6 +10,9 @@ export class QueryStringBuilder {
         }
         if (property === 'skip' && skip !== null) {
           content[property] = skip;
+        }
+        if (property === 'searching' && searching !== null) {
+          content[property] = searching;
         }
 
         const queryItem: string = encodeURIComponent(property) + '=' + encodeURIComponent(content[property]);

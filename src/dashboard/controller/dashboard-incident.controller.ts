@@ -20,6 +20,7 @@ import { UserEntity } from "src/user/entity/user.entity";
 import { RolesGuard } from "src/auth/guard/roles.guard";
 import { IncidentsPageContent } from "../content/incidents-page.content";
 import { DashboardPagination } from "../pagination/dashboard-pagination";
+import { QueryStringBuilder } from "src/app/util/query-string.builder";
 
 @Controller('dashboard/incident')
 @ApiExcludeController()
@@ -205,21 +206,22 @@ export class DashboardIncidentController {
     return res.redirect('/dashboard/incident/' + createIncidentInteractionRequestDTO.incidentId);
   }
 
-  // @Post('search')
-  // @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  // @UseGuards(AuthenticatedGuard, RolesGuard)
-  // public async searchIncidents(@Request() req, @Res() res: Response): Promise<void> { 
-  //   const incidentPageContent: IncidentsPageContent = IncidentsPageContent.fromQueryParams('incident', req.query);
-  //   const incidents: IncidentEntity[] = await this.service.searchIncidents(incidentPageContent);
-    
-  //   return this.renderIncidentsPage(
-  //     res, 
-  //     req.user, 
-  //     incidents, 
-  //     incidentPageContent.origin === 'incident' ? '/dashboard/incident' : '/dashboard/incident/user', 
-  //     incidentPageContent,
-  //   );
-  // }
+  @Post('search')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
+  public async searchIncidents(@Request() req, @Res() res: Response): Promise<void> { 
+    const incidentPageContent: IncidentsPageContent = IncidentsPageContent.fromQueryParams('incident', req.body);
+    const uri: string = incidentPageContent.origin === 'incident' ? '/dashboard/incident' : '/dashboard/incident/user';
+    const url: string = QueryStringBuilder.buildForIncidents(
+      incidentPageContent, 
+      incidentPageContent.maxPerPage, 
+      uri,
+      0,
+      true
+    );
+
+    return res.redirect(url);
+  }
 
   @Get()
   @Roles(RoleEnum.ADMIN)

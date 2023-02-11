@@ -83,6 +83,15 @@ export class SearchInputMorpher {
       return false;
     }
 
+    if (typeof argument === 'string') {
+      if (argument === 'true') {
+        return true;
+      }
+      if (argument === 'false') {
+        return false;
+      }
+    }
+
     if (typeof argument !== "boolean") {
       return false;
   }

@@ -99,7 +99,7 @@ export class DashboardIncidentService {
   }
 
   // public async searchIncidents(incidentPageContent: IncidentsPageContent): Promise<IncidentEntity[]> {
-  //   return await this.incidentService.searchIncidents(searchIncidentsRequestDTOa); 
+  //   return await this.incidentService.searchIncidents(SearchIncidentsRequestDTO.fromPageContent(incidentPageContent)); 
   // }
 
 }
