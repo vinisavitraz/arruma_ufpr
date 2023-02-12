@@ -30,6 +30,7 @@ export class DashboardIncidentTypeController {
   public async getIncidentTypesPage(@Request() req, @Res() res: Response): Promise<void> {   
     const incidentTypePageContent: IncidentTypesPageContent = IncidentTypesPageContent.fromQueryParams(req.query);
     const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes(incidentTypePageContent);
+    incidentTypePageContent.total = await this.service.findTotalIncidentTypes();
 
     return this.renderIncidentTypesPage(
       res, 
@@ -154,7 +155,6 @@ export class DashboardIncidentTypeController {
     uri: string,
     incidentTypePageContent: IncidentTypesPageContent,
   ): Promise<void> {
-  
     const pagination: DashboardPagination = DashboardPagination.build(
       incidentTypePageContent, 
       uri,

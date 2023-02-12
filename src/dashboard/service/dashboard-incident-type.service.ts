@@ -14,6 +14,10 @@ export class DashboardIncidentTypeService {
     private readonly incidentService: IncidentService,
   ) {}
 
+  public async findTotalIncidentTypes(): Promise<number> {
+    return await this.incidentService.findTotalIncidentTypes();
+  }
+
   public async findIncidentTypes(
     incidentTypesPageContent: IncidentTypesPageContent,
   ): Promise<IncidentTypeEntity[]> {
