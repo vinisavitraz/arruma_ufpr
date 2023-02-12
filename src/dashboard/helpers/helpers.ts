@@ -67,26 +67,15 @@ export function textStatusIncident(status: string) {
   }
 }
 
-export function setInteractionSide(interaction: IncidentInteractionEntity, role: string) {
-  const admin: boolean = role === 'admin';
+export function formatInteraction(interaction: IncidentInteractionEntity) {
+  const color: string = interaction.origin === RoleEnum.ADMIN ? '323232' : '4c90f7';
+  const user: string = interaction.origin === RoleEnum.ADMIN ? 'Admin: ' + interaction.userName : 'Usuário: ' + interaction.userName;
+  const date: string = DateFormatter.formatIncidentDateToString(interaction.sentDate);
+  const content: string = interaction.description;
 
-  if (admin && interaction.origin === RoleEnum.ADMIN) {
-    return 'left';
-  }
-
-  if (admin && interaction.origin === RoleEnum.USER) {
-    return 'right';
-  }
-
-  if (!admin && interaction.origin !== RoleEnum.ADMIN) {
-    return 'left';
-  }
-
-  if (!admin && interaction.origin === RoleEnum.ADMIN) {
-    return 'right';
-  }
-  
-  return 'left';
+  return '<div class="d-flex text-muted pt-3"> <i class="bx bxs-user nav_icon" style="color:#' + color + 
+    '"></i> <p class="pb-3 mb-0 small lh-sm border-bottom mx-2"> <strong class="d-block text-gray-dark mx-2">' + user +
+    ' - ' + date + '</strong>' + content + '</p> </div>';
 }
 
 export function isAdmin(role: number) { 

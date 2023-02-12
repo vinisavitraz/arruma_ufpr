@@ -1,212 +1,120 @@
-<body>
+<body id="body-pd">
   {{>header}}
-
-  <div class="container-fluid">
-    <br>
-    <div class="col-2 d-flex">
-      <a class="btn btn-primary btn-lg" href="{{ backUrl }}" role="button">Voltar</a>
+  <a class="btn btn-primary btn-lg" href="{{ backUrl }}" role="button">Voltar</a>
+  <br>
+  <br>
+  <div class="container-fluid border rounded bg-white">
+    <div class="py-5 mx-3 text-justify">
+      <h3>Incidente #{{ incident.id }}</h3>
     </div>
-    <br>
-    <div class="border bg-white">
-      <br>
-      <div class="row ms-3">
-        <h3>Incidente #{{ incident.id }}</h3>
-      </div>
-      <hr class="bg-dark border-1 border-top border-dark mx-5">
-      <br>
-      <br>
-      <div class="row mx-3">
-        <label for="id" class="col-sm-2 col-form-label d-flex justify-content-end">ID: </label>
-        <div class="col-sm-4">
-          <input type="text" readonly class="form-control" id="id" value="{{ incident.id }}">
-        </div>
-      </div>
-      <br>
-      <div class="row mx-3">
-        <label for="status" class="col-sm-2 col-form-label d-flex justify-content-end">Status: </label>
-        <div class="col-sm-4">
-          <h5><span class="badge rounded-pill bg-{{label_status_incident incident.status}}">{{text_status_incident incident.status }}</span></h5>
-        </div>
-      </div>
-      <br>
-      <div class="row mx-3">
-        <label for="title" class="col-sm-2 col-form-label d-flex justify-content-end">Título: </label>
-        <div class="col-sm-4">
-          <input type="text" readonly class="form-control" id="title" value="{{ incident.title }}">
-        </div>
-      </div>
-      <br>
-      <div class="row mx-3">
-        <label for="description" class="col-sm-2 col-form-label d-flex justify-content-end">Descrição: </label>
-        <div class="col-sm-4">
-          <textarea type="text" readonly rows="5" class="form-control" id="description" name="description">{{ incident.description }}</textarea>
-        </div>
-      </div>
-      <br>
-      <div class="row mx-3">
-        <label for="startDate" class="col-sm-2 col-form-label d-flex justify-content-end">Data de abertura: </label>
-        <div class="col-sm-4">
-          <input type="text" readonly class="form-control" id="startDate" value="{{format_datetime incident.startDate }}">
-        </div>
-      </div>
-      <br>
-      <div class="row mx-3">
-        <label for="endDate" class="col-sm-2 col-form-label d-flex justify-content-end">Data de fechamento: </label>
-        <div class="col-sm-4">
-          <input type="text" readonly class="form-control" id="endDate" value="{{format_datetime incident.endDate }}">
-        </div>
-      </div>
-      <br>
-      <div class="row mx-3">
-        <label for="userName" class="col-sm-2 col-form-label d-flex justify-content-end">Usuário: </label>
-        <div class="col-sm-4">
-          <input type="text" readonly class="form-control" id="userName" value="{{ incident.userName }}">
-        </div>
-      </div>
-      <br>
-      <div class="row mx-3">
-        <label for="adminName" class="col-sm-2 col-form-label d-flex justify-content-end">Administrador responsável: </label>
-        <div class="col-sm-4">
-          <input type="text" readonly class="form-control" id="adminName" value="{{ incident.adminName }}">
-        </div>
-      </div>
-      <br>
-      <br>
-      <br>
-      <div class="row mx-3 d-flex justify-content-center">
-        {{#if showButtonAssign }}
-          <div class="col-2">
-            <a class="btn btn-success" href="/dashboard/incident/assign/{{ incident.id }}?origin={{ origin }}" role="button">Atender incidente</a>
-          </div>   
-        {{/if}}
-        {{#if showButtonClose }}
-          <div class="col-2">
-            <a class="btn btn-danger" href="/dashboard/incident/close/{{ incident.id }}?origin={{ origin }}" role="button">Finalizar incidente</a>
-          </div> 
-        {{/if}}
-      </div>
-      <br>
-      <hr class="bg-dark border-1 border-top border-dark mx-5">
-      <br>
-      <div class="row ms-3">
-        <h4>Mensagens</h4>
-      </div>
-      <br>
-      {{#if showContent }}
-        {{#if showButtonNewMessage }}
-          <div id="buttonNewMessage" class="d-block">
-            <div class="row mx-5 d-flex justify-content-center">
-              <div class="col-3 d-flex justify-content-center">
-                <a class="btn btn-success" id="showFormNewMessage">Nova mensagem</a>
-              </div>
-            </div>
+    <div class="row g-5">
+      <div class="col-md-12 col-lg-10">
+        <div class="row g-3">
+          <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+            <label for="title" class="form-label">Título</label>
+            <input type="text" readonly class="form-control" id="title" placeholder="Ex: Projetor danificado" name="title" value="{{ incident.title }}">
           </div>
-          <div id="formNewMessage" class="d-none">
-            <div class="col mx-5 d-flex justify-content-center">
-              <label for="description" class="d-flex justify-content-center">Nova mensagem: </label>
-            </div>
-            <form method="POST" action="/dashboard/incident/interaction" class="needs-validation" novalidate="" autocomplete="off">
-              <input type="hidden" id="incidentId" name="incidentId" value="{{incident.id}}">
-              <div class="row mx-5 d-flex justify-content-center">
-                <div class="col-8 mx-2">
-                    <textarea type="text" rows="3" class="form-control" id="description" name="description"></textarea>
-                  <br>
-                </div>
-                <div class="col-4 mx-5">
-                  <div class="row mx-6">
-                    <button type="submit" class="btn btn-success">Enviar mensagem</a>
-                  </div>
-                  <br>
-                  <div class="row mx-6">
-                    <a class="btn btn-danger" id="hideFormNewMessage">Cancelar</a>
-                  </div>
-                </div>
-              </div>
-            </form>
+          <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+            <label for="title" class="form-label">Data de abertura</label>
+            <input type="text" readonly class="form-control" id="startDate" value="{{format_datetime incident.startDate }}">
           </div>
-        {{/if}}
-        
-        <section>
-          <div class="container py-5">
-            <div class="main-timeline">
-              {{#each incidentInteractions}}
-                {{#if (is_admin ../user.role)}}
-                  <div class="timeline {{set_interaction_side this "admin"}}">
-                    <div class="card">
-                      <div class="card-body p-4">
-                        <p class="mb-0">Admin: {{ this.adminName }}</p>
-                        <h6>{{format_interaction_date this.sentDate }}</h6>
-                        <br>
-                        <br>
-                        <p class="mb-0">{{ this.description }}</p>
-                        <br>
-                      </div>
-                    </div>
-                  </div>
-                {{else}}
-                  <div class="timeline {{set_interaction_side this "user"}}">
-                    <div class="card">
-                      <div class="card-body p-4">
-                        <p class="mb-0">Usuário: {{ this.userName }}</p>
-                        <h6>{{format_interaction_date this.sentDate }}</h6>
-                        <br>
-                        <br>
-                        <p class="mb-0">{{ this.description }}</p>
-                        <br>
-                      </div>
-                    </div>
-                  </div>
-                {{/if}}
-              {{/each}}
-            </div>
+          <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+            <label for="title" class="form-label">Data de fechamento</label>
+            <input type="text" readonly class="form-control" id="endDate" value="{{format_datetime incident.endDate }}">
           </div>
-        </section>
-      {{else}}
-        <div class="row mx-5 d-flex justify-content-center">
-          <div class="col-3 d-flex justify-content-center">
-            <h5>Incidente não possui mensagens.</h5>
+          <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+            <label for="title" class="form-label">Status</label>
+            <h5><span class="badge rounded-pill bg-{{label_status_incident incident.status}}">{{text_status_incident incident.status }}</span></h5>
+          </div>
+          <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+            <label for="title" class="form-label">Usuário</label>
+            <input type="text" readonly class="form-control" id="userName" value="{{ incident.userName }}">
+          </div>
+          <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+            <label for="title" class="form-label">Administrador</label>
+            <input type="text" readonly class="form-control" id="adminName" value="{{ incident.adminName }}">
+          </div>
+          <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+            <label for="incidentTypeName" class="form-label">Tipo de incidente</label>
+            <input type="text" readonly class="form-control" id="incidentTypeName" value="{{ incident.incidentTypeName }}">
+          </div>
+          <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+            <label for="locationName" class="form-label">Local</label>
+            <input type="text" readonly class="form-control" id="locationName" value="{{ incident.locationName }}">
+          </div>
+          <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+            <label for="itemName" class="form-label">Item</label>
+            <input type="text" readonly class="form-control" id="itemName" value="{{ incident.itemName }}">
+          </div>
+          <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+            <label for="description" class="form-label">Descrição</label>
+            <textarea type="text" readonly rows="5" class="form-control" id="description" name="description" placeholder="Detalhes do incidente">{{ incident.description }}</textarea>
           </div>
         </div>
         <br>
-        {{#if showButtonNewMessage }}
-          <div id="buttonNewMessage" class="d-block">
-            <div class="row mx-5 d-flex justify-content-center">
-              <div class="col-3 d-flex justify-content-center">
-                <a class="btn btn-success" id="showFormNewMessage">Nova mensagem</a>
-              </div>
+        <br>
+        <div class="row g-3 d-flex justify-content-center">
+          {{#if showButtonAssign }}
+            <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+              <a class="btn btn-success" href="/dashboard/incident/assign/{{ incident.id }}?origin={{ origin }}" role="button">Atender incidente</a>
             </div>
-          </div>
-          <div id="formNewMessage" class="d-none">
-            <div class="col mx-5 d-flex justify-content-center">
-              <label for="description" class="d-flex justify-content-center">Nova mensagem: </label>
+          {{/if}}
+          {{#if showButtonClose }}
+            <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+              <a class="btn btn-danger" href="/dashboard/incident/close/{{ incident.id }}?origin={{ origin }}" role="button">Finalizar incidente</a>
             </div>
-            <form method="POST" action="/dashboard/incident/interaction" class="needs-validation" novalidate="" autocomplete="off">
+          {{/if}}
+        </div>
+      </div>
+      <div class="col-md-12 col-lg-10">
+        <hr class="my-4">
+      </div>
+      <br>
+      {{#if showButtonNewMessage }}
+        <div id="buttonNewMessage" class="d-block">
+          <div class="row g-3 mx-4 d-flex justify-content-start">
+            <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+              <a class="btn btn-success" id="showFormNewMessage">Nova mensagem</a>
+            </div>  
+          </div>  
+        </div>
+        <div id="formNewMessage" class="d-none">
+          <div class="row g-5">
+            <div class="col-md-12 col-lg-10">
+              <form method="POST" action="/dashboard/incident/interaction" class="needs-validation" novalidate="" autocomplete="off">
               <input type="hidden" id="incidentId" name="incidentId" value="{{incident.id}}">
-              <div class="row mx-5 d-flex justify-content-center">
-                <div class="col-8 mx-2">
-                    <textarea type="text" rows="3" class="form-control" id="description" name="description"></textarea>
-                  <br>
+                <div class="col-12 mx-1">
+                  <label for="description" class="form-label">Nova mensagem</label>
+                  <textarea type="text" rows="3" class="form-control" id="description" name="description" placeholder="Detalhes do incidente"></textarea>
                 </div>
-                <div class="col-4 mx-5">
-                  <div class="row mx-6">
+                <br>
+                <div class="row g-3 d-flex justify-content-center">
+                  <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
                     <button type="submit" class="btn btn-success">Enviar mensagem</a>
                   </div>
-                  <br>
-                  <div class="row mx-6">
+                  <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
                     <a class="btn btn-danger" id="hideFormNewMessage">Cancelar</a>
                   </div>
                 </div>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
-
-        {{/if}}
-        
+        </div>
       {{/if}}
-      
-      <br>
+      {{#if showContent }}
+        <div class="col-md-12 col-lg-10">
+          <div class="my-3 p-3 bg-body rounded shadow-sm">
+          <h6 class="border-bottom pb-2 mb-0">Mensagens</h6>
+          {{#each incidentInteractions}}
+            {{{format_interaction this }}}
+          {{/each}}
+        </div>
+      {{else}}
+        <div class="py-5 mx-3 text-justify">
+          <h5>Incidente não possui mensagens.</h5>
+        </div>
+      {{/if}}
       <br>
     </div>
-    <br>
   </div>
 </body>

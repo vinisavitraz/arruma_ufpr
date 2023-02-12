@@ -100,7 +100,7 @@ export class DashboardIncidentController {
     let backUrl: string = '/dashboard/incident';
     let view: string = 'incident';
 
-    if (origin === 'userIncidents') {
+    if (origin === 'userIncident') {
       backUrl = '/dashboard/incident/user';
       view = 'userIncident';
     }
