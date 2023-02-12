@@ -19,7 +19,7 @@ export class DashboardPagination {
     uri: string,
   ): DashboardPagination {
     if (content.maxPerPage >= content.total) {
-      return new DashboardPagination([new PageInfo(1, QueryStringBuilder.buildForIncidents(content, content.maxPerPage, uri))]);
+      return new DashboardPagination([new PageInfo(1, QueryStringBuilder.build(content, content.maxPerPage, uri))]);
     }
 
     let numberOfPages: number = content.total / content.maxPerPage;
@@ -33,7 +33,7 @@ export class DashboardPagination {
     let skip: number = 0;
 
     for (let i = 1; i <= numberOfPages; i++) {
-      pages.push(new PageInfo(i, QueryStringBuilder.buildForIncidents(content, content.maxPerPage, uri, skip)));
+      pages.push(new PageInfo(i, QueryStringBuilder.build(content, content.maxPerPage, uri, skip)));
       skip += content.maxPerPage;
     }
 

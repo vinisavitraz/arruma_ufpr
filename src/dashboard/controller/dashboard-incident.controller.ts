@@ -208,7 +208,7 @@ export class DashboardIncidentController {
   public async searchIncidents(@Request() req, @Res() res: Response): Promise<void> { 
     const incidentPageContent: IncidentsPageContent = IncidentsPageContent.fromSearch(req.body);
     const uri: string = incidentPageContent.origin === 'incident' ? '/dashboard/incident' : '/dashboard/incident/user';
-    const url: string = QueryStringBuilder.buildForIncidents(
+    const url: string = QueryStringBuilder.build(
       incidentPageContent, 
       incidentPageContent.maxPerPage, 
       uri,

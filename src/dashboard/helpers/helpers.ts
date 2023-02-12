@@ -107,5 +107,5 @@ export function buildIncidentsRegistersPerPageUrl(
   uri: string, 
   content: IncidentsPageContent,
 ) { 
-  return QueryStringBuilder.buildForIncidents(content, Number(maxPerPage), uri, 0);
+  return QueryStringBuilder.build(content, Number(maxPerPage), uri, 0);
 }

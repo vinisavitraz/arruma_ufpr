@@ -5,6 +5,7 @@ import { RoleEnum } from 'src/app/enum/role.enum';
 import { IncidentStatusEnum } from 'src/app/enum/status.enum';
 import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-codes';
 import { HttpOperationException } from 'src/app/exception/http-operation.exception';
+import { SearchIncidentTypesRequestDTO } from 'src/dashboard/dto/request/search-incident-types-request.dto';
 import { SearchIncidentsRequestDTO } from 'src/dashboard/dto/request/search-incidents-request.dto';
 import { DatabaseService } from 'src/database/database.service';
 import { CreateItemRequestDTO } from 'src/item/dto/request/create-item-request.dto';
@@ -62,6 +63,16 @@ export class IncidentService {
       }
     ) => {
       return IncidentEntity.fromRepository(incident);
+    });
+  }
+
+  public async searchIncidentTypes(searchIncidentTypesRequestDTO: SearchIncidentTypesRequestDTO): Promise<IncidentTypeEntity[]> {    
+    const incidentTypesDb: incident_type[] = await this.repository.searchIncidentTypes(
+      searchIncidentTypesRequestDTO
+    );
+
+    return incidentTypesDb.map((incidentType: incident_type) => {
+      return IncidentTypeEntity.fromRepository(incidentType);
     });
   }
 

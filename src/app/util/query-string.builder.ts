@@ -1,6 +1,6 @@
 export class QueryStringBuilder {
     
-  public static buildForIncidents(content: any, maxPerPage: number, uri: string, skip: number | null = null, searching: boolean | null = null): string {
+  public static build(content: any, maxPerPage: number, uri: string, skip: number | null = null, searching: boolean | null = null): string {
     const queryStringObject: string[] = [];
 
     for (let property in content) {

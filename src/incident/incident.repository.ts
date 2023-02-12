@@ -1,6 +1,7 @@
 import { incident, incident_interaction, incident_type, item, location, user } from "@prisma/client";
 import { RoleEnum } from "src/app/enum/role.enum";
 import { IncidentStatusEnum } from "src/app/enum/status.enum";
+import { SearchIncidentTypesRequestDTO } from "src/dashboard/dto/request/search-incident-types-request.dto";
 import { SearchIncidentsRequestDTO } from "src/dashboard/dto/request/search-incidents-request.dto";
 import { DatabaseService } from "src/database/database.service";
 import { UserEntity } from "src/user/entity/user.entity";
@@ -134,6 +135,29 @@ export class IncidentRepository {
         location: true,
         item: true,
       },
+    });
+  }
+
+  public async searchIncidentTypes(searchIncidentTypesRequestDTO: SearchIncidentTypesRequestDTO): Promise<incident_type[]> {
+    return await this.connection.incident_type.findMany({
+      skip: searchIncidentTypesRequestDTO.skip,
+      take: searchIncidentTypesRequestDTO.maxPerPage,
+      where: {
+        id: searchIncidentTypesRequestDTO.incidentTypeId,
+        name: {
+          contains: searchIncidentTypesRequestDTO.incidentTypeName,
+          mode: 'insensitive',
+        },
+        description: {
+          contains: searchIncidentTypesRequestDTO.incidentTypeDescription,
+          mode: 'insensitive',
+        },
+      },
+      orderBy: [
+        {
+          id: 'desc',
+        },
+      ],
     });
   }
 

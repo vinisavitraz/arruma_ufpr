@@ -12,6 +12,10 @@ import { Roles } from "src/auth/roles/require-roles.decorator";
 import { RoleEnum } from "src/app/enum/role.enum";
 import { DashboardIncidentTypeService } from "../service/dashboard-incident-type.service";
 import { RolesGuard } from "src/auth/guard/roles.guard";
+import { IncidentTypesPageContent } from "../content/incident-types-page.content";
+import { DashboardPagination } from "../pagination/dashboard-pagination";
+import { UserEntity } from "src/user/entity/user.entity";
+import { QueryStringBuilder } from "src/app/util/query-string.builder";
 
 @Controller('dashboard/incident-type')
 @ApiExcludeController()
@@ -24,17 +28,15 @@ export class DashboardIncidentTypeController {
   @Roles(RoleEnum.ADMIN)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getIncidentTypesPage(@Request() req, @Res() res: Response): Promise<void> {   
-    const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
+    const incidentTypePageContent: IncidentTypesPageContent = IncidentTypesPageContent.fromQueryParams(req.query);
+    const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes(incidentTypePageContent);
 
-    return DashboardResponseRender.renderForAuthenticatedUser(
-      res,
-      'incident/incident-types',
-      req.user,
-      'incidentType',
-      {
-        incidentTypes: incidentTypes,
-        showContent: incidentTypes.length > 0,
-      }
+    return this.renderIncidentTypesPage(
+      res, 
+      req.user, 
+      incidentTypes,  
+      '/dashboard/incident-type', 
+      incidentTypePageContent,
     );
   }
   
@@ -127,6 +129,54 @@ export class DashboardIncidentTypeController {
     }  
 
     return res.redirect('/dashboard/incident-type');
+  }
+
+  @Post('search')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
+  public async searchIncidents(@Request() req, @Res() res: Response): Promise<void> { 
+    const incidentTypesPageContent: IncidentTypesPageContent = IncidentTypesPageContent.fromSearch(req.body);
+    const url: string = QueryStringBuilder.build(
+      incidentTypesPageContent, 
+      incidentTypesPageContent.maxPerPage, 
+      '/dashboard/incident-type',
+      0,
+      true
+    );
+
+    return res.redirect(url);
+  }
+
+  private async renderIncidentTypesPage(
+    @Res() res: Response, 
+    user: UserEntity,
+    incidentTypes: IncidentTypeEntity[],
+    uri: string,
+    incidentTypePageContent: IncidentTypesPageContent,
+  ): Promise<void> {
+  
+    const pagination: DashboardPagination = DashboardPagination.build(
+      incidentTypePageContent, 
+      uri,
+    );
+    
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'incident/incident-types',
+      user,
+      'incidentType',
+      {
+        pagination: pagination,
+        classSearchForm: incidentTypePageContent.searching ? 'd-block' : 'd-none',
+        classSearchButton: incidentTypePageContent.searching ? 'd-none' : 'd-block',
+        content: incidentTypePageContent,
+        uri: uri,
+        incidentTypes: incidentTypes,
+        showContent: incidentTypes.length > 0,
+        cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}, {filePath: '/styles/incidents.css'}],
+        jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/incident-types.js'}, {filePath: '/js/filter-tables.js'}],
+      }
+    );
   }
 
 }

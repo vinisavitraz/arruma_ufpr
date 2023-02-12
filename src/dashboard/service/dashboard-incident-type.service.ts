@@ -4,6 +4,8 @@ import { CreateIncidentTypeRequestDTO } from 'src/incident/dto/request/create-in
 import { UpdateIncidentTypeRequestDTO } from 'src/incident/dto/request/update-incident-type-request.dto';
 import { IncidentTypeEntity } from 'src/incident/entity/incident-type.entity';
 import { IncidentService } from 'src/incident/incident.service';
+import { IncidentTypesPageContent } from '../content/incident-types-page.content';
+import { SearchIncidentTypesRequestDTO } from '../dto/request/search-incident-types-request.dto';
 
 @Injectable()
 export class DashboardIncidentTypeService {
@@ -12,10 +14,12 @@ export class DashboardIncidentTypeService {
     private readonly incidentService: IncidentService,
   ) {}
 
-  public async findIncidentTypes(): Promise<IncidentTypeEntity[]> {
-    return await this.incidentService.findIncidentTypes();
+  public async findIncidentTypes(
+    incidentTypesPageContent: IncidentTypesPageContent,
+  ): Promise<IncidentTypeEntity[]> {
+    return await this.incidentService.searchIncidentTypes(SearchIncidentTypesRequestDTO.fromPageContent(incidentTypesPageContent));
   }
-
+  
   public async findIncidentTypeByIDOrCry(id: number): Promise<IncidentTypeEntity> {
     return await this.incidentService.findIncidentTypeByIDOrCry(id);
   }

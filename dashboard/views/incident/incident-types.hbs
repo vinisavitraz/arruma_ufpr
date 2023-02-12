@@ -3,105 +3,100 @@
   <div class="container-fluid">
     <br>
     <br>
-    <div class="row ms-3">
-      <div class="col-10">
-        <h1>Tipos de incidente</h1>
+    <div class="row mx-4">
+      <div class="col-8">
+        <h1>Tipo de incidente</h1>
       </div>
-      <div class="col-2">
-        <a class="btn btn-primary" href="/dashboard/incident-type/create" role="button">Novo tipo de incidente</a>
+      <div class="col-4">
+        <a class="btn btn-primary btn-lg" href="/dashboard/incident-type/create" role="button">Novo tipo de incidente</a>
       </div>
     </div>
-    <hr class="bg-dark border-1 border-top border-dark">
     <br>
     <br>
-    <form method="POST" action="/dashboard/markets/find-markets?limit={{ limit }}" class="needs-validation" novalidate="" autocomplete="off">
-      <div class="row mx-3">
-        <div class="col-4">
-          <label for="name" class="form-label">Nome</label>
-          <input type="text" name="name" id="name" value="{{ name }}" class="form-control">
-        </div>
-        <div class="col-2">
-          <label for="inputId" class="form-label">ID</label>
-          <input type="text" name="id" id="id" value="{{ id }}" class="form-control">
+    <br>
+    <div id="searchForm" class="{{ classSearchForm }}">
+      <div class="row g-5">
+        <div class="col-md-12 col-lg-10">
+          <a href="{{ uri }}" class="btn btn-danger border border-3">Cancelar pesquisa</a>
+          <br>
+          <br>
+          <form method="POST" action="/dashboard/incident-type/search" class="needs-validation" novalidate="" autocomplete="off">
+            <div class="row g-3">
+              <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+                <label for="incidentTypeId" class="form-label">ID do tipo de incidente</label>
+                <input type="text" class="form-control" id="incidentTypeId" name="incidentTypeId" placeholder="Ex: 1234" value="{{ content.incidentTypeId }}">
+              </div>
+              <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+                <label for="incidentTypeName" class="form-label">Nome</label>
+                <input type="text" class="form-control" id="incidentTypeName" name="incidentTypeName" placeholder="Ex: Manutenção" value="{{ content.incidentTypeName }}">
+              </div>
+              <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+                <label for="incidentTypeDescription" class="form-label">Descrição</label>
+                <input type="text" class="form-control" id="incidentTypeDescription" name="incidentTypeDescription" placeholder="Ex: Item necessita de reparo" value="{{ content.incidentTypeDescription }}">
+              </div>
+              
+            </div>
+            <br>
+            <button type="submit" class="btn border border-3">Pesquisar <i class='bx bx-search nav_icon'></i></button>
+          </form>
+          <br>
         </div>
       </div>
-      <br>
-      <div class="row mx-3">
-        <div class="col-2">
-          <button type="submit" class="btn btn-primary ms-auto">
-              Pesquisar
-          </button>
-        </div>
-      </div>
-    </form>
+    </div>
+    <div id="searchButton" class="{{ classSearchButton }}">
+      <button id="showSearchFormButton" class="btn border border-3">Pesquisar <i class='bx bx-search nav_icon'></i></button>
+    </div>
     <br>
-    <hr class="bg-dark border-1 border-top border-dark">
     <br>
-    <div class="mx-5 d-flex flex-row-reverse">
-      {{#if pagination.paginationEnabled}}
-        <div class="p-2">
+    {{#if showContent }}
+    <div class="row g-3 d-flex flex-row-reverse">
+        <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-2">
           <nav aria-label="Páginas">
             <ul class="pagination">
               {{#each pagination.pages}}
                 <li class="page-item">
-                  <a class="page-link" href="/dashboard/markets?limit={{limit}}&skip={{skip}}">{{num}}</a>
+                  <a class="page-link" href="{{ this.pageUrl }}">{{ this.pageNumber }}</a>
                 </li>
               {{/each}}
             </ul>
           </nav>
         </div>
-      {{/if}}
-      <div class="p-2">
-        <a class="btn btn-secondary" href="/dashboard/incident-type">Limpar filtros</a>
-      </div>
-      <div class="p-2">
+      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-2">
         <select class="form-select" name="limit" id="registers-per-page">
-          {{#select limit}}
+          {{#select content.maxPerPage}}
             <option disabled selected value>Registros por página</option>
-            <option data-url="object?limit=1" value="1">1 registro</option>
-            <option data-url="object?limit=10" value="10">10 registros</option>
-            <option data-url="object?limit=25" value="25">25 registros</option>
-            <option data-url="object?limit=50" value="50">50 registros</option>
-            <option data-url="object?limit=100" value="100">100 registros</option>
+            <option data-url="{{ incidents_registers_per_page_url "1" uri content }}" value="1">1 registro</option>
+            <option data-url="{{ incidents_registers_per_page_url "10" uri content }}" value="10">10 registros</option>
+            <option data-url="{{ incidents_registers_per_page_url "25" uri content }}" value="25">25 registros</option>
+            <option data-url="{{ incidents_registers_per_page_url "50" uri content }}" value="50">50 registros</option>
+            <option data-url="{{ incidents_registers_per_page_url "100" uri content }}" value="100">100 registros</option>
           {{/select}}
         </select>
       </div>
-      <div class="p-2 d-flex align-items-center">
-        <label class="form-label">Mostrar</label>
-      </div>
     </div>
+    {{/if}}
     <br>
     {{#if showContent }}
-      <div class="row mx-5">
-        <div class="table-responsive">
-          <table class="table table-light table-bordered table-hover">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nome</th>
-                <th>Descrição</th>
-                <th></th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            {{#each incidentTypes}}
-                <tr>
-                    <td>{{this.id}}</td>
-                    <td>{{this.name}}</td>
-                    <td>{{this.description}}</td>
-                    <td><a class="btn btn-primary" href="/dashboard/incident-type/{{this.id}}">Visualizar</a></td>
-                    <td><a href="/dashboard/incident-type/delete/{{this.id}}" onclick="return confirm('Tem certeza que deseja excluir esse registro?')" class="btn btn-danger">Remover</a></td>
-                </tr>
-            {{/each}}
-            </tbody>
-          </table>
+      {{#each incidentTypes}}
+        <div class="card">
+          <h5 class="card-header bg-primary text-white">#{{this.id}} - {{this.name}}</h5>
+          <div class="card-body">
+            <h4 class="card-title">{{this.name}}</h4>
+            <br>
+            <h5 class="card-text">{{this.description}}</h5>
+            <br>
+            <a href="/dashboard/incident-type/{{this.id}}" class="btn btn-primary">Editar tipo de incidente</a>
+            <a href="/dashboard/incident-type/delete/{{this.id}}" onclick="return confirm('Tem certeza que deseja excluir esse registro?')" class="btn btn-danger">Excluir tipo de incidente</a>
+          </div>
         </div>
-      </div>
+        <br>
+      {{/each}}
+      <br>
     {{else}}
+      <br>
       <div class="row mx-5 d-flex justify-content-center">
-        <div class="col-4 justify-content-center">
-          <h4>Nenhum tipo de incidente cadastrado</h4>
+        <div class="col-3 d-flex justify-content-center">
+          <h5>Nenhum tipo de incidente encontrado</h5>
         </div>
       </div>
     {{/if}}
