@@ -1,4 +1,4 @@
-import { incident, incident_interaction, incident_type, user } from "@prisma/client";
+import { incident, incident_interaction, incident_type, item, location, user } from "@prisma/client";
 import { RoleEnum } from "src/app/enum/role.enum";
 import { IncidentStatusEnum } from "src/app/enum/status.enum";
 import { SearchIncidentsRequestDTO } from "src/dashboard/dto/request/search-incidents-request.dto";
@@ -83,7 +83,7 @@ export class IncidentRepository {
   public async searchIncidents(
     searchIncidentsRequestDTO: SearchIncidentsRequestDTO,
     user: UserEntity | null,
-  ): Promise<(incident & {interactions: incident_interaction[], admin: user | null, user: user})[]> {
+  ): Promise<(incident & {interactions: incident_interaction[], admin: user | null, user: user, incident_type: incident_type, location: location, item: item})[]> {
     return await this.connection.incident.findMany({
       skip: searchIncidentsRequestDTO.skip,
       take: searchIncidentsRequestDTO.maxPerPage,
@@ -130,6 +130,9 @@ export class IncidentRepository {
         interactions: true,
         admin: true,
         user: true,
+        incident_type: true,
+        location: true,
+        item: true,
       },
     });
   }
@@ -158,18 +161,26 @@ export class IncidentRepository {
     });
   }
 
-  public async findIncidentByID(id: number): Promise<incident & {interactions: incident_interaction[], admin: user | null, user: user} | null> {
+  public async findIncidentByID(
+    id: number
+  ): Promise<incident & {interactions: incident_interaction[], admin: user | null, user: user, incident_type: incident_type, location: location, item: item} | null> {
     return await this.connection.incident.findUnique({ 
       where: { id: id },
       include: {
         interactions: true,
         admin: true,
         user: true,
+        incident_type: true,
+        location: true,
+        item: true,
       },
     });
   }
 
-  public async findIncidentByIDAndStatus(id: number, status: string | undefined): Promise<incident & {interactions: incident_interaction[], admin: user | null, user: user} | null> {
+  public async findIncidentByIDAndStatus(
+    id: number, 
+    status: string | undefined
+  ): Promise<incident & {interactions: incident_interaction[], admin: user | null, user: user, incident_type: incident_type, location: location, item: item} | null> {
     return await this.connection.incident.findFirst({ 
       where: { 
         id: id,
@@ -179,6 +190,9 @@ export class IncidentRepository {
         interactions: true,
         admin: true,
         user: true,
+        incident_type: true,
+        location: true,
+        item: true,
       },
     });
   }
@@ -187,7 +201,9 @@ export class IncidentRepository {
     return await this.connection.incident_type.findUnique({ where: { id: id } });
   }
 
-  public async createIncident(createIncidentRequestDTO: CreateIncidentRequestDTO): Promise<incident & {interactions: incident_interaction[], admin: user | null, user: user} | null> {
+  public async createIncident(
+    createIncidentRequestDTO: CreateIncidentRequestDTO
+  ): Promise<incident & {interactions: incident_interaction[], admin: user | null, user: user, incident_type: incident_type, location: location, item: item} | null> {
     return await this.connection.incident.create({ 
       data: {
         title: createIncidentRequestDTO.title,
@@ -203,6 +219,9 @@ export class IncidentRepository {
         interactions: true,
         admin: true,
         user: true,
+        incident_type: true,
+        location: true,
+        item: true,
       },
     });
   }
@@ -216,7 +235,10 @@ export class IncidentRepository {
     });
   }
 
-  public async assignIncidentToAdmin(userAdmin: UserEntity, incident: IncidentEntity): Promise<incident & {interactions: incident_interaction[], admin: user | null, user: user} | null> {
+  public async assignIncidentToAdmin(
+    userAdmin: UserEntity, 
+    incident: IncidentEntity
+  ): Promise<incident & {interactions: incident_interaction[], admin: user | null, user: user, incident_type: incident_type, location: location, item: item} | null> {
     return await this.connection.incident.update({ 
       where: { id: incident.id },
       data: {
@@ -227,11 +249,16 @@ export class IncidentRepository {
         interactions: true,
         admin: true,
         user: true,
+        incident_type: true,
+        location: true,
+        item: true,
       },
     });
   }
 
-  public async setIncidentToClosed(incident: IncidentEntity): Promise<incident & {interactions: incident_interaction[], admin: user | null, user: user} | null> {
+  public async setIncidentToClosed(
+    incident: IncidentEntity
+  ): Promise<incident & {interactions: incident_interaction[], admin: user | null, user: user, incident_type: incident_type, location: location, item: item} | null> {
     return await this.connection.incident.update({ 
       where: { id: incident.id },
       data: {
@@ -242,6 +269,9 @@ export class IncidentRepository {
         interactions: true,
         admin: true,
         user: true,
+        incident_type: true,
+        location: true,
+        item: true,
       },
     });
   }

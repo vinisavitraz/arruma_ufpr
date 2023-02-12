@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { incident, incident_interaction, incident_type, user } from '@prisma/client';
+import { incident, incident_interaction, incident_type, item, location, user } from '@prisma/client';
 import { validateOrReject } from 'class-validator';
 import { RoleEnum } from 'src/app/enum/role.enum';
 import { IncidentStatusEnum } from 'src/app/enum/status.enum';
@@ -36,28 +36,31 @@ export class IncidentService {
     this.repository = new IncidentRepository(this.databaseService);
   }
 
-  public async findIncidentsByStatus(searchIncidentsRequestDTO: SearchIncidentsRequestDTO): Promise<IncidentEntity[]> {    
-    const incidentsDb: (incident & {interactions: incident_interaction[], admin: user | null, user: user})[] = await this.repository.searchIncidents(
-      searchIncidentsRequestDTO, 
-      null,
-    );
-
-    return incidentsDb.map((incident: incident & {interactions: incident_interaction[], admin: user | null, user: user}) => {
-      return IncidentEntity.fromRepository(incident);
-    });
-  }
-
-  public async findUserIncidentsByStatus(
-    user: UserEntity, 
-    searchIncidentsRequestDTO: SearchIncidentsRequestDTO,
-  ): Promise<IncidentEntity[]> {
-    console.log(searchIncidentsRequestDTO);
-    const incidentsDb: (incident & {interactions: incident_interaction[], admin: user | null, user: user})[] = await this.repository.searchIncidents(
+  public async findIncidentsByStatus(user: UserEntity | null, searchIncidentsRequestDTO: SearchIncidentsRequestDTO): Promise<IncidentEntity[]> {    
+    const incidentsDb: (
+      incident & {
+        interactions: incident_interaction[], 
+        admin: user | null, 
+        user: user, 
+        incident_type: incident_type, 
+        location: location, 
+        item: item,
+      }
+    )[] = await this.repository.searchIncidents(
       searchIncidentsRequestDTO, 
       user,
     );
 
-    return incidentsDb.map((incident: incident & {interactions: incident_interaction[], admin: user | null, user: user}) => {
+    return incidentsDb.map((
+      incident: incident & {
+        interactions: incident_interaction[], 
+        admin: user | null, 
+        user: user, 
+        incident_type: incident_type, 
+        location: location, 
+        item: item,
+      }
+    ) => {
       return IncidentEntity.fromRepository(incident);
     });
   }
@@ -71,7 +74,14 @@ export class IncidentService {
   }
 
   public async findIncidentByIDOrCry(id: number): Promise<IncidentEntity> {
-    const incidentDb: incident & {interactions: incident_interaction[], admin: user | null, user: user} | null = await this.repository.findIncidentByID(id);
+    const incidentDb: incident & {
+      interactions: incident_interaction[], 
+      admin: user | null, 
+      user: user, 
+      incident_type: incident_type, 
+      location: location, 
+      item: item,
+    } | null = await this.repository.findIncidentByID(id);
 
     if (!incidentDb) {
       throw new HttpOperationException(
@@ -85,7 +95,14 @@ export class IncidentService {
   }
 
   public async findIncidentByIDAndStatus(id: number, status: string | undefined): Promise<IncidentEntity> {
-    const incidentDb: incident & {interactions: incident_interaction[], admin: user | null, user: user} | null = await this.repository.findIncidentByIDAndStatus(id, status);
+    const incidentDb: incident & {
+      interactions: incident_interaction[], 
+      admin: user | null, 
+      user: user, 
+      incident_type: incident_type, 
+      location: location,
+      item: item,
+    } | null = await this.repository.findIncidentByIDAndStatus(id, status);
 
     if (!incidentDb) {
       return null;
@@ -113,7 +130,14 @@ export class IncidentService {
     await this.findOrCreateLocation(createIncidentRequestDTO);
     await this.findOrCreateItem(createIncidentRequestDTO);
 
-    const incidentDb: incident & {interactions: incident_interaction[], admin: user | null, user: user} = await this.repository.createIncident(createIncidentRequestDTO);
+    const incidentDb: incident & {
+      interactions: incident_interaction[], 
+      admin: user | null, 
+      user: user,
+      incident_type: incident_type, 
+      location: location,
+      item: item,
+    } = await this.repository.createIncident(createIncidentRequestDTO);
 
     return IncidentEntity.fromRepository(incidentDb);
   }
@@ -230,7 +254,14 @@ export class IncidentService {
 
   public async assignIncidentToAdmin(userAdmin: UserEntity, incidentId: number): Promise<IncidentEntity> {
     const incidentDb: IncidentEntity = await this.findIncidentByIDOrCry(incidentId);
-    const assignedIncident: incident & {interactions: incident_interaction[], admin: user | null, user: user} = await this.repository.assignIncidentToAdmin(userAdmin, incidentDb);
+    const assignedIncident: incident & {
+      interactions: incident_interaction[], 
+      admin: user | null, 
+      user: user,
+      incident_type: incident_type, 
+      location: location,
+      item: item,
+    } = await this.repository.assignIncidentToAdmin(userAdmin, incidentDb);
 
     return IncidentEntity.fromRepository(assignedIncident);
   }
@@ -239,7 +270,14 @@ export class IncidentService {
     const incidentDb: IncidentEntity = await this.findIncidentByIDOrCry(incidentId);
     
     if (user.role === RoleEnum.ADMIN || (incidentDb.userId === user.id)) {
-      const closedIncident: incident & {interactions: incident_interaction[], admin: user | null, user: user} = await this.repository.setIncidentToClosed(incidentDb);
+      const closedIncident: incident & {
+        interactions: incident_interaction[], 
+        admin: user | null, 
+        user: user,
+        incident_type: incident_type, 
+        location: location,
+        item: item,
+      } = await this.repository.setIncidentToClosed(incidentDb);
 
       return IncidentEntity.fromRepository(closedIncident);
     }
@@ -266,12 +304,30 @@ export class IncidentService {
       
       return incidents;
     }
-    const incidentsDb: (incident & {interactions: incident_interaction[], admin: user | null, user: user})[] = await this.repository.searchIncidents(
+    const incidentsDb: (
+      incident & {
+        interactions: incident_interaction[], 
+        admin: user | null, 
+        user: user, 
+        incident_type: incident_type, 
+        location: location, 
+        item: item,
+      }
+    )[] = await this.repository.searchIncidents(
       searchIncidentsRequestDTO,
       user,
     );
 
-    return incidentsDb.map((incident: incident & {interactions: incident_interaction[], admin: user | null, user: user}) => {
+    return incidentsDb.map((
+      incident: incident & {
+        interactions: incident_interaction[], 
+        admin: user | null, 
+        user: user,
+        incident_type: incident_type, 
+        location: location, 
+        item: item,
+      }
+    ) => {
       return IncidentEntity.fromRepository(incident);
     });
   }

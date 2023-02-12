@@ -43,7 +43,7 @@
     <div id="searchForm" class="{{ classSearchForm }}">
       <div class="row g-5">
         <div class="col-md-12 col-lg-10">
-          <a href="{{ uri }}?status={{content.incidentStatus}}" class="btn btn-danger border border-3">Cancelar pesquisa</a>
+          <a href="{{ uri }}?incidentStatus={{content.incidentStatus}}" class="btn btn-danger border border-3">Cancelar pesquisa</a>
           <br>
           <br>
           <form method="POST" action="/dashboard/incident/search" class="needs-validation" novalidate="" autocomplete="off">
@@ -121,8 +121,8 @@
     </div>
     <br>
     <br>
+    {{#if showContent }}
     <div class="row g-3 d-flex flex-row-reverse">
-      {{#if showContent }}
         <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-2">
           <nav aria-label="Páginas">
             <ul class="pagination">
@@ -134,8 +134,6 @@
             </ul>
           </nav>
         </div>
-      {{/if}}
-      
       <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-2">
         <select class="form-select" name="limit" id="registers-per-page">
           {{#select content.maxPerPage}}
@@ -149,15 +147,21 @@
         </select>
       </div>
     </div>
+    {{/if}}
     <br>
     {{#if showContent }}
       {{#each incidents}}
         <div class="card">
-          <h5 class="card-header bg-primary text-white">{{this.userName}} - {{format_incident_date this.startDate}}</h5>
+          <h5 class="card-header bg-primary text-white">#{{this.id}} | {{this.userName}} - {{format_incident_date this.startDate}}</h5>
           <div class="card-body">
             <p><span class="badge bg-{{label_status_incident this.status}}">{{text_status_incident this.status }}</span></p>
-            <h5 class="card-title">{{this.title}}</h5>
-            <p class="card-text">{{this.description}}</p>
+            <h4 class="card-title">{{this.title}}</h4>
+            <br>
+            <h5 class="card-text">{{this.description}}</h5>
+            <br>
+            <p><i class='bx bx-category nav_icon'></i> {{ this.incidentTypeName }}</p>
+            <p><i class='bx bx-buildings nav_icon'></i> {{ this.locationName }}</p>
+            <p><i class='bx bx-package nav_icon'></i> {{ this.itemName }}</p>
             <p><i class='bx bx-message nav_icon'></i> {{ this.totalInteractions }}</p>
             <a href="/dashboard/incident/{{this.id}}?origin={{ ../content.origin }}" class="btn btn-primary">Acessar incidente</a>
           </div>

@@ -31,14 +31,14 @@ export class DashboardIncidentService {
   }
 
   public async findIncidentsByStatus(incidentPageContent: IncidentsPageContent): Promise<IncidentEntity[]> {
-    return await this.incidentService.findIncidentsByStatus(SearchIncidentsRequestDTO.fromPageContent(incidentPageContent));
+    return await this.incidentService.findIncidentsByStatus(null, SearchIncidentsRequestDTO.fromPageContent(incidentPageContent));
   }
 
   public async findUserIncidentsByStatus(
     user: UserEntity, 
     incidentPageContent: IncidentsPageContent,
   ): Promise<IncidentEntity[]> {
-    return await this.incidentService.findUserIncidentsByStatus(user, SearchIncidentsRequestDTO.fromPageContent(incidentPageContent));
+    return await this.incidentService.findIncidentsByStatus(user, SearchIncidentsRequestDTO.fromPageContent(incidentPageContent));
   }
 
   public async findIncidentTypes(): Promise<IncidentTypeEntity[]> {
