@@ -3,12 +3,15 @@ import { ApiExcludeController } from "@nestjs/swagger";
 import { Response } from 'express';
 import { RoleEnum } from "src/app/enum/role.enum";
 import { DashboardExceptionFilter } from "src/app/exception/filter/dashboard-exception-filter";
+import { QueryStringBuilder } from "src/app/util/query-string.builder";
 import { AuthenticatedGuard } from "src/auth/guard/authenticated.guard";
 import { RolesGuard } from "src/auth/guard/roles.guard";
 import { Roles } from "src/auth/roles/require-roles.decorator";
 import { CreateUserRequestDTO } from "src/user/dto/request/create-user-request.dto";
 import { UpdateUserRequestDTO } from "src/user/dto/request/update-user-request.dto";
 import { UserEntity } from "src/user/entity/user.entity";
+import { UsersPageContent } from "../content/users-page.content";
+import { DashboardPagination } from "../pagination/dashboard-pagination";
 import { DashboardErrorMapper } from "../render/dashboard-error-mapper";
 import { DashboardResponseRender } from "../render/dashboard-response-render";
 import { DashboardUserService } from "../service/dashboard-user.service";
@@ -58,17 +61,15 @@ export class DashboardUserController {
   @Roles(RoleEnum.ADMIN)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getUsersPage(@Request() req, @Res() res: Response): Promise<void> {    
+    const usersPageContent: UsersPageContent = UsersPageContent.fromQueryParams(req.query);
     const users: UserEntity[] = await this.service.findUsers();
 
-    return DashboardResponseRender.renderForAuthenticatedUser(
-      res,
-      'user/users',
-      req.user,
-      'user',
-      {
-        users: users,
-        showContent: users.length > 0,
-      },
+    return this.renderUsersPage(
+      res, 
+      req.user, 
+      users,  
+      '/dashboard/user', 
+      usersPageContent,
     );
   }
 
@@ -120,6 +121,22 @@ export class DashboardUserController {
     return res.redirect('/dashboard/user');
   }
 
+  @Post('search')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
+  public async searchUsers(@Request() req, @Res() res: Response): Promise<void> { 
+    const usersPageContent: UsersPageContent = UsersPageContent.fromSearch(req.body);
+    const url: string = QueryStringBuilder.build(
+      usersPageContent, 
+      usersPageContent.maxPerPage, 
+      '/dashboard/user',
+      0,
+      true
+    );
+
+    return res.redirect(url);
+  }
+
   @Get('delete/:id')
   @Roles(RoleEnum.ADMIN)
   @UseGuards(AuthenticatedGuard, RolesGuard)
@@ -127,6 +144,37 @@ export class DashboardUserController {
     await this.service.deleteUser(userId);
 
     return res.redirect('/dashboard/user');
+  }
+
+  private async renderUsersPage(
+    @Res() res: Response, 
+    user: UserEntity,
+    users: UserEntity[],
+    uri: string,
+    incidentTypePageContent: UsersPageContent,
+  ): Promise<void> {
+    const pagination: DashboardPagination = DashboardPagination.build(
+      incidentTypePageContent, 
+      uri,
+    );
+    
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'user/users',
+      user,
+      'user',
+      {
+        pagination: pagination,
+        classSearchForm: incidentTypePageContent.searching ? 'd-block' : 'd-none',
+        classSearchButton: incidentTypePageContent.searching ? 'd-none' : 'd-block',
+        content: incidentTypePageContent,
+        uri: uri,
+        users: users,
+        showContent: users.length > 0,
+        cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}],
+        jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/search-form.js'}, {filePath: '/js/filter-tables.js'}],
+      }
+    );
   }
 
 }

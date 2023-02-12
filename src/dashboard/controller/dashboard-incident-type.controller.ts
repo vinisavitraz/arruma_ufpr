@@ -135,7 +135,7 @@ export class DashboardIncidentTypeController {
   @Post('search')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(AuthenticatedGuard, RolesGuard)
-  public async searchIncidents(@Request() req, @Res() res: Response): Promise<void> { 
+  public async searchIncidentTypes(@Request() req, @Res() res: Response): Promise<void> { 
     const incidentTypesPageContent: IncidentTypesPageContent = IncidentTypesPageContent.fromSearch(req.body);
     const url: string = QueryStringBuilder.build(
       incidentTypesPageContent, 
@@ -174,7 +174,7 @@ export class DashboardIncidentTypeController {
         incidentTypes: incidentTypes,
         showContent: incidentTypes.length > 0,
         cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}, {filePath: '/styles/incidents.css'}],
-        jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/incident-types.js'}, {filePath: '/js/filter-tables.js'}],
+        jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/search-form.js'}, {filePath: '/js/filter-tables.js'}],
       }
     );
   }

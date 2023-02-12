@@ -274,7 +274,7 @@ export class DashboardIncidentController {
         incidents: incidents,
         showContent: incidents.length > 0,
         cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}, {filePath: '/styles/incidents.css'}],
-        jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/incidents.js'}, {filePath: '/js/filter-tables.js'}],
+        jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/incidents.js'}, {filePath: '/js/filter-tables.js'}, {filePath: '/js/search-form.js'}],
       }
     );
   }
