@@ -2,6 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { location } from '@prisma/client';
 import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-codes';
 import { HttpOperationException } from 'src/app/exception/http-operation.exception';
+import { SearchLocationsRequestDTO } from 'src/dashboard/dto/request/search-locations-request.dto';
 import { DatabaseService } from 'src/database/database.service';
 import { CreateLocationRequestDTO } from './dto/request/create-location-request.dto';
 import { UpdateLocationRequestDTO } from './dto/request/update-location-request.dto';
@@ -19,6 +20,16 @@ export class LocationService {
 
   public async findLocations(): Promise<LocationEntity[]> {
     const locationsDb: location[] = await this.repository.findLocations();
+
+    return locationsDb.map((location: location) => {
+      return LocationEntity.fromRepository(location);
+    });
+  }
+
+  public async searchLocations(searchLocationsRequestDTO: SearchLocationsRequestDTO): Promise<LocationEntity[]> {    
+    const locationsDb: location[] = await this.repository.searchLocations(
+      searchLocationsRequestDTO
+    );
 
     return locationsDb.map((location: location) => {
       return LocationEntity.fromRepository(location);

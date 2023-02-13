@@ -4,14 +4,26 @@ import { CreateLocationRequestDTO } from 'src/location/dto/request/create-locati
 import { UpdateLocationRequestDTO } from 'src/location/dto/request/update-location-request.dto';
 import { LocationEntity } from 'src/location/entity/location.entity';
 import { LocationService } from 'src/location/location.service';
+import { LocationsPageContent } from '../content/locations-page.content';
+import { SearchLocationsRequestDTO } from '../dto/request/search-locations-request.dto';
 
 @Injectable()
 export class DashboardLocationService {
 
   constructor(private readonly locationService: LocationService) {}
 
+  public async findTotalLocations(): Promise<number> {
+    return await this.locationService.findTotalLocations();
+  }
+
   public async findLocations(): Promise<LocationEntity[]> {
     return await this.locationService.findLocations();
+  }
+
+  public async searchLocations(
+    locationsPageContent: LocationsPageContent,
+  ): Promise<LocationEntity[]> {
+    return await this.locationService.searchLocations(SearchLocationsRequestDTO.fromPageContent(locationsPageContent));
   }
 
   public async findLocationByIDOrCry(id: number): Promise<LocationEntity> {

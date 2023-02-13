@@ -1,4 +1,5 @@
 import { location } from "@prisma/client";
+import { SearchLocationsRequestDTO } from "src/dashboard/dto/request/search-locations-request.dto";
 import { DatabaseService } from "src/database/database.service";
 import { CreateLocationRequestDTO } from "./dto/request/create-location-request.dto";
 import { UpdateLocationRequestDTO } from "./dto/request/update-location-request.dto";
@@ -17,6 +18,29 @@ export class LocationRepository {
       orderBy: [
         {
           id: 'asc',
+        },
+      ],
+    });
+  }
+
+  public async searchLocations(searchLocationsRequestDTO: SearchLocationsRequestDTO): Promise<location[]> {
+    return await this.connection.location.findMany({
+      skip: searchLocationsRequestDTO.skip,
+      take: searchLocationsRequestDTO.maxPerPage,
+      where: {
+        id: searchLocationsRequestDTO.locationId,
+        name: {
+          contains: searchLocationsRequestDTO.locationName,
+          mode: 'insensitive',
+        },
+        description: {
+          contains: searchLocationsRequestDTO.locationDescription,
+          mode: 'insensitive',
+        },
+      },
+      orderBy: [
+        {
+          id: 'desc',
         },
       ],
     });
