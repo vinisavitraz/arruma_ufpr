@@ -4,6 +4,7 @@ import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-
 import { HttpOperationException } from 'src/app/exception/http-operation.exception';
 import { SearchUsersRequestDTO } from 'src/dashboard/dto/request/search-users-request.dto';
 import { DatabaseService } from 'src/database/database.service';
+import { MailService } from 'src/mail/mail.service';
 import { CreateUserRequestDTO } from './dto/request/create-user-request.dto';
 import { UpdateUserRequestDTO } from './dto/request/update-user-request.dto';
 import { UserEntity } from './entity/user.entity';
@@ -14,7 +15,7 @@ export class UserService {
 
   private repository: UserRepository;
 
-  constructor(private databaseService: DatabaseService) {
+  constructor(private databaseService: DatabaseService, private mailService: MailService) {
       this.repository = new UserRepository(this.databaseService);
   }
 
@@ -65,8 +66,9 @@ export class UserService {
   }
 
   public async createUser(createUserRequestDTO: CreateUserRequestDTO): Promise<UserEntity> {
-    const password: string = '';
+    const password: string = '123';
     const userDb: user = await this.repository.createUser(createUserRequestDTO, password);
+    await this.mailService.sendNewAccountMail(password, userDb.email);
 
     return UserEntity.fromRepository(userDb);
   }

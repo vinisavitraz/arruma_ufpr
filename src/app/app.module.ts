@@ -12,9 +12,10 @@ import { APP_FILTER } from '@nestjs/core';
 import { ClassValidatorExceptionFilter } from './exception/filter/class-validator-exception-filter';
 import { HttpOperationExceptionFilter } from './exception/filter/http-operation-exception-filter';
 import { AllExceptionsFilter } from './exception/filter/all-exception-filter';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
-  imports: [DatabaseModule, AuthModule, DashboardModule, LocationModule, ItemModule, UserModule, IncidentModule],
+  imports: [DatabaseModule, AuthModule, DashboardModule, LocationModule, ItemModule, UserModule, IncidentModule, MailModule],
   controllers: [AppController],
   providers: [
     AppService,
