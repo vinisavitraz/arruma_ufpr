@@ -14,6 +14,10 @@ import { Roles } from "src/auth/roles/require-roles.decorator";
 import { RoleEnum } from "src/app/enum/role.enum";
 import { ListItemsResponseDTO } from "src/item/dto/response/list-items-response.dto";
 import { RolesGuard } from "src/auth/guard/roles.guard";
+import { UserEntity } from "src/user/entity/user.entity";
+import { ItemsPageContent } from "../content/items-page.content";
+import { DashboardPagination } from "../pagination/dashboard-pagination";
+import { QueryStringBuilder } from "src/app/util/query-string.builder";
 
 @Controller('dashboard/item')
 @ApiExcludeController()
@@ -65,17 +69,16 @@ export class DashboardItemController {
   @Roles(RoleEnum.ADMIN)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getItemsPage(@Request() req, @Res() res: Response): Promise<void> {
-    const items: ItemEntity[] = await this.service.findItems();
-    
-    return DashboardResponseRender.renderForAuthenticatedUser(
-      res,
-      'item/items',
-      req.user,
-      'item',
-      {
-        items: items,
-        showContent: items.length > 0,
-      },
+    const itemsPageContent: ItemsPageContent = ItemsPageContent.fromQueryParams(req.query);
+    const items: ItemEntity[] = await this.service.searchItems(itemsPageContent);
+    itemsPageContent.total = await this.service.findTotalItems();
+
+    return this.renderItemsPage(
+      res, 
+      req.user, 
+      items,  
+      '/dashboard/item', 
+      itemsPageContent,
     );
   }
 
@@ -135,6 +138,22 @@ export class DashboardItemController {
     return res.redirect('/dashboard/item');
   }
 
+  @Post('search')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
+  public async searchItems(@Request() req, @Res() res: Response): Promise<void> { 
+    const itemsPageContent: ItemsPageContent = ItemsPageContent.fromSearch(req.body);
+    const url: string = QueryStringBuilder.build(
+      itemsPageContent, 
+      itemsPageContent.maxPerPage, 
+      '/dashboard/item',
+      0,
+      true
+    );
+
+    return res.redirect(url);
+  }
+
   @Get('delete/:id')
   @Roles(RoleEnum.ADMIN)
   @UseGuards(AuthenticatedGuard, RolesGuard)
@@ -149,6 +168,39 @@ export class DashboardItemController {
     const items: ItemEntity[] = await this.service.findItemsByLocationID(locationId);
     
     return new ListItemsResponseDTO(items);
+  }
+
+  private async renderItemsPage(
+    @Res() res: Response, 
+    user: UserEntity,
+    items: ItemEntity[],
+    uri: string,
+    itemsPageContent: ItemsPageContent,
+  ): Promise<void> {
+    const locations: LocationEntity[] = await this.service.findLocations();
+    const pagination: DashboardPagination = DashboardPagination.build(
+      itemsPageContent, 
+      uri,
+    );
+    
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'item/items',
+      user,
+      'item',
+      {
+        pagination: pagination,
+        classSearchForm: itemsPageContent.searching ? 'd-block' : 'd-none',
+        classSearchButton: itemsPageContent.searching ? 'd-none' : 'd-block',
+        content: itemsPageContent,
+        uri: uri,
+        items: items,
+        locations: locations,
+        showContent: items.length > 0,
+        cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}],
+        jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/search-form.js'}, {filePath: '/js/filter-tables.js'}],
+      }
+    );
   }
 
 }

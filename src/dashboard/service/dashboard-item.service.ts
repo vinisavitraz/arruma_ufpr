@@ -6,6 +6,8 @@ import { ItemEntity } from 'src/item/entity/item.entity';
 import { ItemService } from 'src/item/item.service';
 import { LocationEntity } from 'src/location/entity/location.entity';
 import { LocationService } from 'src/location/location.service';
+import { ItemsPageContent } from '../content/items-page.content';
+import { SearchItemsRequestDTO } from '../dto/request/search-items-request.dto';
 
 @Injectable()
 export class DashboardItemService {
@@ -15,12 +17,22 @@ export class DashboardItemService {
     private readonly locationService: LocationService,
   ) {}
 
+  public async findTotalItems(): Promise<number> {
+    return await this.itemService.findTotalItems();
+  }
+
   public async findLocations(): Promise<LocationEntity[]> {
     return await this.locationService.findLocations();
   }
 
   public async findItems(): Promise<ItemEntity[]> {
     return await this.itemService.findItems();
+  }
+
+  public async searchItems(
+    itemsPageContent: ItemsPageContent,
+  ): Promise<ItemEntity[]> {
+    return await this.itemService.searchItems(SearchItemsRequestDTO.fromPageContent(itemsPageContent));
   }
 
   public async findItemsByLocationID(locationId: number): Promise<ItemEntity[]> {

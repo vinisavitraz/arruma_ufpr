@@ -1,7 +1,8 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { item } from '@prisma/client';
+import { item, location } from '@prisma/client';
 import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-codes';
 import { HttpOperationException } from 'src/app/exception/http-operation.exception';
+import { SearchItemsRequestDTO } from 'src/dashboard/dto/request/search-items-request.dto';
 import { DatabaseService } from 'src/database/database.service';
 import { CreateItemRequestDTO } from './dto/request/create-item-request.dto';
 import { UpdateItemRequestDTO } from './dto/request/update-item-request.dto';
@@ -18,23 +19,33 @@ export class ItemService {
   }
 
   public async findItems(): Promise<ItemEntity[]> {
-    const itemsDb: item[] = await this.repository.findItems();
+    const itemsDb: (item & { location: location })[] = await this.repository.findItems();
 
-    return itemsDb.map((item: item) => {
+    return itemsDb.map((item: item & { location: location }) => {
+      return ItemEntity.fromRepository(item);
+    });
+  }
+
+  public async searchItems(searchItemsRequestDTO: SearchItemsRequestDTO): Promise<ItemEntity[]> {    
+    const itemsDb: (item & { location: location })[] = await this.repository.searchItems(
+      searchItemsRequestDTO
+    );
+
+    return itemsDb.map((item: item & { location: location }) => {
       return ItemEntity.fromRepository(item);
     });
   }
 
   public async findItemsByLocationID(locationId: number): Promise<ItemEntity[]> {
-    const itemsDb: item[] = await this.repository.findItemsByLocationID(locationId);
+    const itemsDb: (item & { location: location })[] = await this.repository.findItemsByLocationID(locationId);
 
-    return itemsDb.map((item: item) => {
+    return itemsDb.map((item: item & { location: location }) => {
       return ItemEntity.fromRepository(item);
     });
   }
   
   public async findItemByIDOrCry(id: number): Promise<ItemEntity> {
-    const itemDb: item | null = await this.repository.findItemByID(id);
+    const itemDb: item & { location: location } | null = await this.repository.findItemByID(id);
 
     if (!itemDb) {
       throw new HttpOperationException(
@@ -48,7 +59,7 @@ export class ItemService {
   }
 
   public async createItem(createItemRequestDTO: CreateItemRequestDTO): Promise<ItemEntity> {
-    const itemDb: item = await this.repository.createItem(createItemRequestDTO);
+    const itemDb: item & { location: location } = await this.repository.createItem(createItemRequestDTO);
 
     return ItemEntity.fromRepository(itemDb);
   }
@@ -56,7 +67,7 @@ export class ItemService {
   public async updateItem(updateItemRequestDTO: UpdateItemRequestDTO): Promise<ItemEntity> {
     await this.findItemByIDOrCry(updateItemRequestDTO.id);
 
-    const itemDb: item = await this.repository.updateItem(updateItemRequestDTO);
+    const itemDb: item & { location: location } = await this.repository.updateItem(updateItemRequestDTO);
 
     return ItemEntity.fromRepository(itemDb);
   }

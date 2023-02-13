@@ -56,7 +56,6 @@ export class UsersPageContent {
   }
 
   public static fromSearch(queryParams: any): UsersPageContent {
-    console.log(queryParams);
     const maxPerPage: number = SearchInputMorpher.morphNumber(queryParams.maxPerPage) ?? DashboardPagination.MAX_PER_PAGE;
     const skip: number = SearchInputMorpher.morphNumber(queryParams.skip) ?? DashboardPagination.DEFAULT_SKIP;
     const total: number = 0;
