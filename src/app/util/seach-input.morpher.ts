@@ -56,6 +56,20 @@ export class SearchInputMorpher {
     return number;
   }
 
+  public static morphRole(argument: any): number | undefined {
+    if (!argument) {
+      return undefined;
+    }
+
+    const number: number = Number(argument);
+
+    if (isNaN(number)) {
+      return undefined;
+    }
+
+    return number;
+  }
+
   public static morphDateString(argument: any): Date | undefined {
     if (!argument) {
       return undefined;

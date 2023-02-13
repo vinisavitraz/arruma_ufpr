@@ -41,7 +41,7 @@ export class UsersPageContent {
     const userId: number | undefined = SearchInputMorpher.morphID(queryParams.userId);
     const userName: string | undefined = SearchInputMorpher.morphString(queryParams.userName);
     const userEmail: string | undefined = SearchInputMorpher.morphString(queryParams.userEmail);
-    const userRole: number | undefined = SearchInputMorpher.morphID(queryParams.userRole);
+    const userRole: number | undefined = SearchInputMorpher.morphRole(queryParams.userRole);
 
     return new UsersPageContent(
       maxPerPage,
@@ -56,6 +56,7 @@ export class UsersPageContent {
   }
 
   public static fromSearch(queryParams: any): UsersPageContent {
+    console.log(queryParams);
     const maxPerPage: number = SearchInputMorpher.morphNumber(queryParams.maxPerPage) ?? DashboardPagination.MAX_PER_PAGE;
     const skip: number = SearchInputMorpher.morphNumber(queryParams.skip) ?? DashboardPagination.DEFAULT_SKIP;
     const total: number = 0;
@@ -63,7 +64,7 @@ export class UsersPageContent {
     const userId: number | undefined = SearchInputMorpher.morphID(queryParams.userId);
     const userName: string | undefined = SearchInputMorpher.morphString(queryParams.userName);
     const userEmail: string | undefined = SearchInputMorpher.morphString(queryParams.userEmail);
-    const userRole: number | undefined = SearchInputMorpher.morphID(queryParams.userRole);
+    const userRole: number | undefined = SearchInputMorpher.morphRole(queryParams.userRole);
 
     return new UsersPageContent(
       maxPerPage,
