@@ -10,7 +10,7 @@ export class MailService {
 
 private async overrideMailAuthenticationDetailsUsingConfiguration(): Promise<void> {
   const email: string = 'arruma.ufpr@gmail.com';
-  const emailPassword: string = 'arruma@admin';
+  const emailPassword: string = 'njygarmdnyzxxqom';
 
   this.mailerService.addTransporter('custom', {
     host: 'smtp.gmail.com',

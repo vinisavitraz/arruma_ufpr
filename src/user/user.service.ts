@@ -9,6 +9,7 @@ import { CreateUserRequestDTO } from './dto/request/create-user-request.dto';
 import { UpdateUserRequestDTO } from './dto/request/update-user-request.dto';
 import { UserEntity } from './entity/user.entity';
 import { UserRepository } from './user.repository';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -66,8 +67,9 @@ export class UserService {
   }
 
   public async createUser(createUserRequestDTO: CreateUserRequestDTO): Promise<UserEntity> {
-    const password: string = '123';
-    const userDb: user = await this.repository.createUser(createUserRequestDTO, password);
+    const password: string = this.generatePassword();
+    const hashedPassword: string = await this.hashPassword(password);
+    const userDb: user = await this.repository.createUser(createUserRequestDTO, hashedPassword);
     await this.mailService.sendNewAccountMail(password, userDb.email);
 
     return UserEntity.fromRepository(userDb);
@@ -89,6 +91,25 @@ export class UserService {
 
   public async findTotalUsers(): Promise<number> {
     return await this.repository.findTotalUsers();
+  }
+
+  private generatePassword(): string {
+    const validChars: string = '0123456789abcdefghijklmnopqrstuvwxyz!@#%*ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const passwordLength: number = 8;
+    let password = '';
+
+    for (var i = 0; i <= passwordLength; i++) {
+      let randomNumber: number = Math.floor(Math.random() * validChars.length);
+      password += validChars.substring(randomNumber, randomNumber +1);
+     }
+
+     return password;
+  }
+
+  private async hashPassword(password: string): Promise<string> {
+    const salt: string = await bcrypt.genSalt();
+    
+    return await bcrypt.hash(password, salt);
   }
 
 }

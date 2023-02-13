@@ -83,6 +83,7 @@ export class DashboardUserController {
     try {
       await this.service.createUser(createUserRequestDTO);
     } catch (errors) {
+      console.log(errors);
       return DashboardResponseRender.renderForAuthenticatedUser(
         res,
         'user/create-user',
