@@ -82,6 +82,10 @@ export function isAdmin(role: number) {
   return role === RoleEnum.ADMIN;
 }
 
+export function formatRole(role: number) { 
+  return role === RoleEnum.ADMIN ? 'Administrador' : 'Usuário';
+}
+
 export function formatInteractionDate(interactionDate: Date) { 
   return DateFormatter.formatIncidentDateToString(interactionDate);
 }
