@@ -179,7 +179,7 @@ export class DashboardIncidentController {
           locations: locations,
           items: items,
           incident: createIncidentRequestDTO,
-          ...DashboardErrorMapper.map(errors)
+          ...DashboardErrorMapper.mapValidationErrors(errors)
         }
       );
     }  

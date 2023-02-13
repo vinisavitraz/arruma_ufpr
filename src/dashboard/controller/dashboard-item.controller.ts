@@ -102,7 +102,7 @@ export class DashboardItemController {
           locations: locations,
           item: createItemRequestDTO,
           uri: '/dashboard/item/create',
-          ...DashboardErrorMapper.map(errors)
+          ...DashboardErrorMapper.mapValidationErrors(errors)
         }
       );
     }  
@@ -130,7 +130,7 @@ export class DashboardItemController {
           locations: locations,
           item: updateItemRequestDTO,
           uri: '/dashboard/item/update',
-          ...DashboardErrorMapper.map(errors)
+          ...DashboardErrorMapper.mapValidationErrors(errors)
         }
       );
     }  
@@ -139,7 +139,7 @@ export class DashboardItemController {
   }
 
   @Post('search')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @Roles(RoleEnum.ADMIN)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async searchItems(@Request() req, @Res() res: Response): Promise<void> { 
     const itemsPageContent: ItemsPageContent = ItemsPageContent.fromSearch(req.body);

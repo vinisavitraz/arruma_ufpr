@@ -7,6 +7,7 @@ export class HeaderActiveResponseDTO {
   readonly location: string;
   readonly item: string;
   readonly user: string;
+  readonly userChangePassword: string;
 
   constructor(
     home: string,
@@ -16,6 +17,7 @@ export class HeaderActiveResponseDTO {
     location: string,
     item: string,
     user: string,
+    userChangePassword: string,
   ) {
     this.home = home;
     this.incident = incident;
@@ -24,6 +26,7 @@ export class HeaderActiveResponseDTO {
     this.location = location;
     this.item = item;
     this.user = user;
+    this.userChangePassword = userChangePassword;
   }
 
 }

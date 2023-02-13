@@ -10,6 +10,9 @@ import { UpdateUserRequestDTO } from './dto/request/update-user-request.dto';
 import { UserEntity } from './entity/user.entity';
 import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcrypt';
+import { ChangeUserPasswordRequestDTO } from './dto/request/change-user-password-request.dto';
+import { PasswordRulesValidator } from 'src/app/util/password-rules-validator';
+import { validateOrReject } from 'class-validator';
 
 @Injectable()
 export class UserService {
@@ -87,6 +90,17 @@ export class UserService {
     const user: UserEntity = await this.findUserByIDOrCry(userId);
 
     await this.repository.deleteUser(user);
+  }
+
+  public async changeUserPassword(changeUserPasswordRequestDTO: ChangeUserPasswordRequestDTO): Promise<void> {
+    await validateOrReject(changeUserPasswordRequestDTO);
+
+    PasswordRulesValidator.validate(changeUserPasswordRequestDTO);
+
+    const user: UserEntity = await this.findUserByIDOrCry(changeUserPasswordRequestDTO.userId);
+    const hashedPassword: string = await this.hashPassword(changeUserPasswordRequestDTO.password);
+
+    await this.repository.changeUserPassword(user, hashedPassword);
   }
 
   public async findTotalUsers(): Promise<number> {

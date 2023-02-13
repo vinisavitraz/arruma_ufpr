@@ -91,7 +91,7 @@ export class DashboardLocationController {
         'location',
         {
           location: createLocationRequestDto,
-          ...DashboardErrorMapper.map(errors)
+          ...DashboardErrorMapper.mapValidationErrors(errors)
         }
       );
     }  
@@ -115,7 +115,7 @@ export class DashboardLocationController {
         'location',
         {
           location: updateLocationRequestDTO,
-          ...DashboardErrorMapper.map(errors)
+          ...DashboardErrorMapper.mapValidationErrors(errors)
         }
       );
     }  
@@ -124,7 +124,7 @@ export class DashboardLocationController {
   }
 
   @Post('search')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @Roles(RoleEnum.ADMIN)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async searchLocations(@Request() req, @Res() res: Response): Promise<void> { 
     const locationsPageContent: LocationsPageContent = LocationsPageContent.fromSearch(req.body);

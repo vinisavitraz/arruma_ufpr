@@ -7,6 +7,7 @@ import { QueryStringBuilder } from "src/app/util/query-string.builder";
 import { AuthenticatedGuard } from "src/auth/guard/authenticated.guard";
 import { RolesGuard } from "src/auth/guard/roles.guard";
 import { Roles } from "src/auth/roles/require-roles.decorator";
+import { ChangeUserPasswordRequestDTO } from "src/user/dto/request/change-user-password-request.dto";
 import { CreateUserRequestDTO } from "src/user/dto/request/create-user-request.dto";
 import { UpdateUserRequestDTO } from "src/user/dto/request/update-user-request.dto";
 import { UserEntity } from "src/user/entity/user.entity";
@@ -35,6 +36,21 @@ export class DashboardUserController {
       {
         userForm: new CreateUserRequestDTO(),
         uri: '/dashboard/user/create',
+      },
+    );
+  }
+
+  @Get('change-password')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
+  public async getChangePasswordPage(@Request() req, @Res() res: Response): Promise<void> {    
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'user/change-password',
+      req.user,
+      'user-change-password',
+      {
+        passwordForm: new ChangeUserPasswordRequestDTO(),
       },
     );
   }
@@ -91,7 +107,7 @@ export class DashboardUserController {
         'user',
         {
           user: createUserRequestDTO,
-          ...DashboardErrorMapper.map(errors)
+          ...DashboardErrorMapper.mapValidationErrors(errors)
         }
       );
     }  
@@ -115,7 +131,7 @@ export class DashboardUserController {
         'user',
         {
           user: updateUserRequestDTO,
-          ...DashboardErrorMapper.map(errors)
+          ...DashboardErrorMapper.mapValidationErrors(errors)
         }
       );
     }  
@@ -123,8 +139,41 @@ export class DashboardUserController {
     return res.redirect('/dashboard/user');
   }
 
+  @Post('change-password')
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
+  public async changeUserPassword(@Request() req, @Res() res: Response): Promise<void> { 
+    const changeUserPasswordRequestDTO: ChangeUserPasswordRequestDTO = ChangeUserPasswordRequestDTO.fromDashboard(req.body);
+
+    try {
+      await this.service.changeUserPassword(changeUserPasswordRequestDTO);
+    } catch (errors) {
+      return DashboardResponseRender.renderForAuthenticatedUser(
+        res,
+        'user/change-password',
+        req.user,
+        'user-change-password',
+        {
+          passwordForm: changeUserPasswordRequestDTO,
+          ...DashboardErrorMapper.mapValidationErrors(errors),
+        }
+      );
+    }
+
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'user/change-password',
+      req.user,
+      'user-change-password',
+      {
+        passwordForm: new ChangeUserPasswordRequestDTO(),
+        showSuccess: true,
+      }
+    );
+  }
+
   @Post('search')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @Roles(RoleEnum.ADMIN)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async searchUsers(@Request() req, @Res() res: Response): Promise<void> { 
     const usersPageContent: UsersPageContent = UsersPageContent.fromSearch(req.body);

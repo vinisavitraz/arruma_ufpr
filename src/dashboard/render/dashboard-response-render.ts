@@ -56,6 +56,7 @@ export class DashboardResponseRender {
     let location: string = module === 'location' ? 'active' : '';
     let item: string = module === 'item' ? 'active' : '';
     let user: string = module === 'user' ? 'active' : '';
+    let userChangePassword: string = module === 'user-change-password' ? 'active' : '';
 
     return new HeaderActiveResponseDTO(
       home,
@@ -65,6 +66,7 @@ export class DashboardResponseRender {
       location,
       item,
       user,
+      userChangePassword,
     );
   }
 

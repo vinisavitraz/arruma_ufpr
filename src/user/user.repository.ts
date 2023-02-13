@@ -81,6 +81,15 @@ export class UserRepository {
     await this.connection.user.delete({where: { id: user.id }});
   }
 
+  public async changeUserPassword(user: UserEntity, newPassword: string): Promise<void> {
+    await this.connection.user.update({
+      where: { id: user.id },
+      data: {
+        password: newPassword,
+      },
+    });
+  }
+
   public async findTotalUsers(): Promise<number> {
     return await this.connection.user.count();
   }

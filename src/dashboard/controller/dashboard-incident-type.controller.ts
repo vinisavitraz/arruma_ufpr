@@ -100,7 +100,7 @@ export class DashboardIncidentTypeController {
         'incidentType',
         {
           incidentType: createIncidentTypeRequestDTO,
-          ...DashboardErrorMapper.map(errors)
+          ...DashboardErrorMapper.mapValidationErrors(errors)
         }
       );
     }  
@@ -124,7 +124,7 @@ export class DashboardIncidentTypeController {
         'incidentType',
         {
           incidentType: updateIncidentTypeRequestDTO,
-          ...DashboardErrorMapper.map(errors)
+          ...DashboardErrorMapper.mapValidationErrors(errors)
         }
       );
     }  
@@ -133,7 +133,7 @@ export class DashboardIncidentTypeController {
   }
 
   @Post('search')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @Roles(RoleEnum.ADMIN)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async searchIncidentTypes(@Request() req, @Res() res: Response): Promise<void> { 
     const incidentTypesPageContent: IncidentTypesPageContent = IncidentTypesPageContent.fromSearch(req.body);

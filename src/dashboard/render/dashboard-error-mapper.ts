@@ -16,9 +16,10 @@ export class DashboardErrorMapper {
     ['INC_002', 'Descrição do tipo de incidente inválida'],
     ['INC_005', 'Título inválido'],
     ['INC_006', 'Descrição inválida'],
+    ['USR_006', 'Senha inválida'],
   ]);
 
-  public static map(validationErrors: any[]): object {
+  public static mapValidationErrors(validationErrors: any[]): object {
     const errors: string[] = [];
     let errorCodes: string[] = [];
 
