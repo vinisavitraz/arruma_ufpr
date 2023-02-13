@@ -2,6 +2,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { user } from '@prisma/client';
 import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-codes';
 import { HttpOperationException } from 'src/app/exception/http-operation.exception';
+import { SearchUsersRequestDTO } from 'src/dashboard/dto/request/search-users-request.dto';
 import { DatabaseService } from 'src/database/database.service';
 import { CreateUserRequestDTO } from './dto/request/create-user-request.dto';
 import { UpdateUserRequestDTO } from './dto/request/update-user-request.dto';
@@ -19,6 +20,16 @@ export class UserService {
 
   public async findUsers(): Promise<UserEntity[]> {
     const usersDb: user[] = await this.repository.findUsers();
+
+    return usersDb.map((user: user) => {
+      return UserEntity.fromRepository(user);
+    });
+  }
+
+  public async searchUsers(searchUsersRequestDTO: SearchUsersRequestDTO): Promise<UserEntity[]> {    
+    const usersDb: user[] = await this.repository.searchUsers(
+      searchUsersRequestDTO
+    );
 
     return usersDb.map((user: user) => {
       return UserEntity.fromRepository(user);

@@ -62,8 +62,9 @@ export class DashboardUserController {
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getUsersPage(@Request() req, @Res() res: Response): Promise<void> {    
     const usersPageContent: UsersPageContent = UsersPageContent.fromQueryParams(req.query);
-    const users: UserEntity[] = await this.service.findUsers();
-
+    const users: UserEntity[] = await this.service.searchUsers(usersPageContent);
+    usersPageContent.total = await this.service.findTotalUsers();
+    
     return this.renderUsersPage(
       res, 
       req.user, 

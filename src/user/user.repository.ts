@@ -1,4 +1,5 @@
 import { user } from "@prisma/client";
+import { SearchUsersRequestDTO } from "src/dashboard/dto/request/search-users-request.dto";
 import { DatabaseService } from "src/database/database.service";
 import { CreateUserRequestDTO } from "./dto/request/create-user-request.dto";
 import { UpdateUserRequestDTO } from "./dto/request/update-user-request.dto";
@@ -17,6 +18,30 @@ export class UserRepository {
       orderBy: [
         {
           id: 'asc',
+        },
+      ],
+    });
+  }
+
+  public async searchUsers(searchUsersRequestDTO: SearchUsersRequestDTO): Promise<user[]> {
+    return await this.connection.user.findMany({
+      skip: searchUsersRequestDTO.skip,
+      take: searchUsersRequestDTO.maxPerPage,
+      where: {
+        id: searchUsersRequestDTO.userId,
+        name: {
+          contains: searchUsersRequestDTO.userName,
+          mode: 'insensitive',
+        },
+        email: {
+          contains: searchUsersRequestDTO.userEmail,
+          mode: 'insensitive',
+        },
+        role: searchUsersRequestDTO.userRole,
+      },
+      orderBy: [
+        {
+          id: 'desc',
         },
       ],
     });

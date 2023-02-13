@@ -4,6 +4,8 @@ import { CreateUserRequestDTO } from 'src/user/dto/request/create-user-request.d
 import { UpdateUserRequestDTO } from 'src/user/dto/request/update-user-request.dto';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { UserService } from 'src/user/user.service';
+import { UsersPageContent } from '../content/users-page.content';
+import { SearchUsersRequestDTO } from '../dto/request/search-users-request.dto';
 
 @Injectable()
 export class DashboardUserService {
@@ -14,6 +16,16 @@ export class DashboardUserService {
     return await this.userService.findUsers();
   }
 
+  public async findTotalUsers(): Promise<number> {
+    return await this.userService.findTotalUsers();
+  }
+
+  public async searchUsers(
+    usersPageContent: UsersPageContent,
+  ): Promise<UserEntity[]> {
+    return await this.userService.searchUsers(SearchUsersRequestDTO.fromPageContent(usersPageContent));
+  }
+  
   public async findUserByIDOrCry(id: number): Promise<UserEntity> {
     return await this.userService.findUserByIDOrCry(id);
   }
