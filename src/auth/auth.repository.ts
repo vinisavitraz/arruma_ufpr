@@ -34,10 +34,20 @@ export class AuthRepository {
     });
   }
 
-  public async findTokenByType(userId: number, type: TokenType): Promise<user_token | null> {
+  public async findTokenByUserAndType(userId: number, type: TokenType): Promise<user_token | null> {
     return await this.connection.user_token.findFirst({ 
       where: {
         user_id: userId,
+        type: type,
+        expiration_date: {gte: new Date()}
+      },
+    });
+  }
+
+  public async findTokenByNumberAndType(tokenNumber: string, type: TokenType): Promise<user_token | null> {
+    return await this.connection.user_token.findFirst({ 
+      where: {
+        token_number: tokenNumber,
         type: type,
         expiration_date: {gte: new Date()}
       },

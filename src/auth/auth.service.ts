@@ -30,7 +30,7 @@ export class AuthService {
   }
 
   public async auth(user: UserEntity): Promise<TokenEntity> {
-    const tokenDb: user_token | null = await this.repository.findTokenByType(user.id, TokenType.AUTH);
+    const tokenDb: user_token | null = await this.repository.findTokenByUserAndType(user.id, TokenType.AUTH);
     
     if (tokenDb) {
       return TokenEntity.fromRepository(tokenDb);
@@ -72,8 +72,8 @@ export class AuthService {
 
   public async requestForgotPasswordLink(host: string, email: string): Promise<void> {
     const user = await this.userService.findUserByEmailOrCry(email);
-    const activeAuthToken: TokenEntity = await this.findUserToken(user.id, TokenType.AUTH);;
-    const activeRecoverPasswordToken: TokenEntity = await this.findUserToken(user.id, TokenType.RECOVER_PASSWORD);
+    const activeAuthToken: TokenEntity = await this.findTokenByUserAndType(user.id, TokenType.AUTH);;
+    const activeRecoverPasswordToken: TokenEntity = await this.findTokenByUserAndType(user.id, TokenType.RECOVER_PASSWORD);
 
     if (activeAuthToken) {
       await this.repository.deleteToken(activeAuthToken.id);
@@ -87,9 +87,33 @@ export class AuthService {
 
     await this.mailService.sendResetPasswordMail(host, token.number, email);
   }
+  
+  public async findUserByRecoverPasswordToken(tokenNumber: string): Promise<UserEntity> {
+    const activeRecoverPasswordToken: user_token = await this.repository.findTokenByNumberAndType(tokenNumber, TokenType.RECOVER_PASSWORD);
+
+    if (!activeRecoverPasswordToken) {
+      throw new HttpOperationException(
+        HttpStatus.UNAUTHORIZED, 
+        'Token not exists', 
+        HttpOperationErrorCodes.TOKEN_NOT_FOUND,
+      );
+    }
+
+    if (tokenNumber !== activeRecoverPasswordToken.token_number) {
+      throw new HttpOperationException(
+        HttpStatus.UNAUTHORIZED, 
+        'Token provided is not the active token', 
+        HttpOperationErrorCodes.TOKEN_NOT_MATCH,
+      );
+    }
+
+    await this.repository.deleteToken(activeRecoverPasswordToken.id);
+
+    return await this.userService.findUserByIDOrCry(activeRecoverPasswordToken.user_id);
+  }
 
   private async findUserTokenOrCry(userId: number, type: TokenType): Promise<TokenEntity> {
-    const token: user_token = await this.repository.findTokenByType(userId, type);
+    const token: user_token = await this.repository.findTokenByUserAndType(userId, type);
     
     if (!token) {
       throw new HttpOperationException(
@@ -102,8 +126,18 @@ export class AuthService {
     return TokenEntity.fromRepository(token);
   }
 
-  private async findUserToken(userId: number, type: TokenType): Promise<TokenEntity | null> {
-    const token: user_token | null = await this.repository.findTokenByType(userId, type);
+  private async findTokenByUserAndType(userId: number, type: TokenType): Promise<TokenEntity | null> {
+    const token: user_token | null = await this.repository.findTokenByUserAndType(userId, type);
+    
+    if (token) {
+      return TokenEntity.fromRepository(token);
+    }
+
+    return null;    
+  }
+
+  private async findTokenByNumberAndType(tokenNumber: string, type: TokenType): Promise<TokenEntity | null> {
+    const token: user_token | null = await this.repository.findTokenByNumberAndType(tokenNumber, type);
     
     if (token) {
       return TokenEntity.fromRepository(token);
@@ -132,7 +166,7 @@ export class AuthService {
     tokenExpirationDate.setMinutes(tokenExpirationDate.getMinutes() + 10);
     
     return await this.createAndSaveToken(
-      TokenType.AUTH, 
+      TokenType.RECOVER_PASSWORD, 
       payload, 
       tokenExpirationDate, 
       user.id, 

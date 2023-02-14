@@ -1,4 +1,5 @@
 import { ValidationError } from "@nestjs/common";
+import { HttpOperationErrorCodes } from "src/app/exception/http-operation-error-codes";
 
 export class DashboardErrorMapper {
 
@@ -17,6 +18,7 @@ export class DashboardErrorMapper {
     ['INC_005', 'Título inválido'],
     ['INC_006', 'Descrição inválida'],
     ['USR_006', 'Senha inválida'],
+    ['AUTH_006', 'Token não encontrado'],
   ]);
 
   public static mapValidationErrors(validationErrors: any[]): object {
@@ -28,6 +30,14 @@ export class DashboardErrorMapper {
       const errorCode: string[] = Object.keys(validationError.constraints).map(
         function(k){return validationError.constraints[k]}
       );
+
+      if (errorCode.length === 0) {
+        const keys = Object.keys(HttpOperationErrorCodes).filter((x) => HttpOperationErrorCodes[x] == errorCode);
+        
+        if (keys.length > 0) {
+          errorCodes = errorCodes.concat(keys[0]);
+        }
+      }
       errorCodes = errorCodes.concat(errorCode);
     }
     

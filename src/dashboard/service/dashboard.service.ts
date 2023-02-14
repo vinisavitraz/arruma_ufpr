@@ -6,6 +6,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { IncidentService } from 'src/incident/incident.service';
 import { ItemService } from 'src/item/item.service';
 import { LocationService } from 'src/location/location.service';
+import { ChangeUserPasswordRequestDTO } from 'src/user/dto/request/change-user-password-request.dto';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { UserService } from 'src/user/user.service';
 import { ForgotPasswordRequestDTO } from '../dto/request/forgot-password-request.dto';
@@ -34,6 +35,14 @@ export class DashboardService {
     await validateOrReject(forgotPasswordRequestDTO);
 
     await this.authService.requestForgotPasswordLink(host, forgotPasswordRequestDTO.email);
+  }
+
+  public async findUserByRecoverPasswordToken(tokenNumber: string): Promise<UserEntity> {
+    return await this.authService.findUserByRecoverPasswordToken(tokenNumber);
+  }
+
+  public async changeUserPassword(changeUserPasswordRequestDTO: ChangeUserPasswordRequestDTO): Promise<void> {
+    await this.userService.changeUserPassword(changeUserPasswordRequestDTO); 
   }
 
   private async getHomePageForAdmin(): Promise<HomePageResponseDTO> {

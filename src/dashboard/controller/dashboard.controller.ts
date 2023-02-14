@@ -11,6 +11,7 @@ import { HomePageResponseDTO } from '../dto/response/home-page-response.dto';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { ForgotPasswordRequestDTO } from '../dto/request/forgot-password-request.dto';
 import { DashboardErrorMapper } from '../render/dashboard-error-mapper';
+import { ChangeUserPasswordRequestDTO } from 'src/user/dto/request/change-user-password-request.dto';
 
 @Controller('dashboard')
 @ApiExcludeController()
@@ -99,6 +100,47 @@ export class DashboardController {
     );
   }
 
+  @Get('reset-password')
+  public async getResetPasswordPage(@Request() req, @Res() res: Response): Promise<void> {    
+    const tokenNumber: string = req.query.token ?? '';
+
+    try {
+      const user: UserEntity = await this.service.findUserByRecoverPasswordToken(tokenNumber);
+      console.log(user);
+      return DashboardResponseRender.renderWithoutUser(
+        res,
+        'login/reset-password',
+        {
+          cssImports: [{filePath: '/styles/login.css'}],
+          user: user,
+        }
+      );
+    } catch (errors) {
+      console.log(errors);
+      const a = DashboardErrorMapper.mapValidationErrors(errors);
+      console.log(a);
+      return DashboardResponseRender.renderWithoutUser(
+        res,
+        'login/reset-password',
+        {
+          cssImports: [{filePath: '/styles/login.css'}],
+          ...DashboardErrorMapper.mapValidationErrors(errors)
+        }
+      );
+    }
+  }
+
+  @Get('password-changed')
+  public async passwordChanged(@Request() req, @Res() res: Response): Promise<void> {    
+    return DashboardResponseRender.renderWithoutUser(
+      res,
+      'login/password-changed',
+      {
+        cssImports: [{filePath: '/styles/login.css'}],
+      }
+    );
+  }
+
   @Post('forgot-password')
   public async forgotPassword(@Request() req, @Res() res: Response): Promise<void> {    
     const forgotPasswordRequestDTO: ForgotPasswordRequestDTO = ForgotPasswordRequestDTO.fromDashboard(req.body);
@@ -119,6 +161,27 @@ export class DashboardController {
     }
     
     res.redirect('/dashboard/mail-sent');
+  }
+
+  @Post('reset-password')
+  public async resetPassword(@Request() req, @Res() res: Response): Promise<void> {    
+    const changeUserPasswordRequestDTO: ChangeUserPasswordRequestDTO = ChangeUserPasswordRequestDTO.fromDashboard(req.body);
+
+    try {
+      await this.service.changeUserPassword(changeUserPasswordRequestDTO);
+    } catch (errors) {
+      console.log(errors);
+      return DashboardResponseRender.renderWithoutUser(
+        res,
+        'login/reset-password',
+        {
+          cssImports: [{filePath: '/styles/login.css'}],
+          ...DashboardErrorMapper.mapValidationErrors(errors)
+        }
+      );
+    }
+
+    res.redirect('/dashboard/password-changed');  
   }
 
 }
