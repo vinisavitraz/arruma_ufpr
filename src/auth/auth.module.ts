@@ -7,6 +7,7 @@ import { UserModule } from 'src/user/user.module';
 import { LocalStrategy } from './strategy/local.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { SessionSerializer } from './session/session.serializer';
+import { MailModule } from 'src/mail/mail.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { SessionSerializer } from './session/session.serializer';
     }),
     DatabaseModule,
     UserModule,
+    MailModule,
   ],
   controllers: [AuthController],
   providers: [

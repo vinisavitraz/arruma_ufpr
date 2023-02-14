@@ -1,5 +1,5 @@
 import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
-import { IsInt, IsNumber, IsString, MaxLength, MinLength } from "class-validator";
+import { IsInt, IsString, MaxLength, MinLength } from "class-validator";
 import { HttpOperationErrorCodes } from "src/app/exception/http-operation-error-codes";
 import { ItemEntity } from "src/item/entity/item.entity";
 

@@ -15,6 +15,7 @@ import { DashboardUserController } from './controller/dashboard-user.controller'
 import { DashboardUserService } from './service/dashboard-user.service';
 import { DashboardIncidentTypeService } from './service/dashboard-incident-type.service';
 import { DashboardIncidentTypeController } from './controller/dashboard-incident-type.controller';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { DashboardIncidentTypeController } from './controller/dashboard-incident
     LocationModule,
     IncidentModule,
     UserModule,
+    AuthModule,
   ],
   controllers: [
     DashboardController, 

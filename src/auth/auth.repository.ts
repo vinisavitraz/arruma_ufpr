@@ -44,4 +44,8 @@ export class AuthRepository {
     });
   }
 
+  public async deleteToken(tokenId: number): Promise<void> {
+    await this.connection.user_token.delete({where: { id: tokenId}});
+}
+
 }

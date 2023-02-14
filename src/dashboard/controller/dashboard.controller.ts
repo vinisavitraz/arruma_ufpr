@@ -9,13 +9,15 @@ import { DashboardResponseRender } from '../render/dashboard-response-render';
 import { ApiExcludeController } from '@nestjs/swagger';
 import { HomePageResponseDTO } from '../dto/response/home-page-response.dto';
 import { UserEntity } from 'src/user/entity/user.entity';
+import { ForgotPasswordRequestDTO } from '../dto/request/forgot-password-request.dto';
+import { DashboardErrorMapper } from '../render/dashboard-error-mapper';
 
 @Controller('dashboard')
 @ApiExcludeController()
 @UseFilters(DashboardExceptionFilter)
 export class DashboardController {
   
-  constructor(private readonly dashboardService: DashboardService) {}
+  constructor(private readonly service: DashboardService) {}
 
   @Get('login')
   public async getLoginPage(@Res() res: Response): Promise<void> {    
@@ -51,7 +53,7 @@ export class DashboardController {
   @Get()
   public async getHomePage(@Request() req, @Res() res: Response): Promise<void> {
     const user: UserEntity = req.user;
-    const homePage: HomePageResponseDTO = await this.dashboardService.getHomePageData(user);
+    const homePage: HomePageResponseDTO = await this.service.getHomePageData(user);
 
     return DashboardResponseRender.renderForAuthenticatedUser(
       res,
@@ -73,6 +75,50 @@ export class DashboardController {
       req.user,
       'home',
     );
+  }
+
+  @Get('forgot-password')
+  public async getForgotPasswordPage(@Res() res: Response): Promise<void> {    
+    return DashboardResponseRender.renderWithoutUser(
+      res,
+      'login/forgot-password',
+      {
+        cssImports: [{filePath: '/styles/login.css'}],
+      },
+    );
+  }
+
+  @Get('mail-sent')
+  public async getMailSentPage(@Res() res: Response): Promise<void> {    
+    return DashboardResponseRender.renderWithoutUser(
+      res,
+      'login/mail-sent',
+      {
+        cssImports: [{filePath: '/styles/login.css'}],
+      },
+    );
+  }
+
+  @Post('forgot-password')
+  public async forgotPassword(@Request() req, @Res() res: Response): Promise<void> {    
+    const forgotPasswordRequestDTO: ForgotPasswordRequestDTO = ForgotPasswordRequestDTO.fromDashboard(req.body);
+    const host: string = req.protocol + '://' + req.get('host');
+
+    try {
+      await this.service.forgotPassword(host, forgotPasswordRequestDTO);
+    } catch (errors) {
+      console.log(errors);
+      return DashboardResponseRender.renderWithoutUser(
+        res,
+        'login/forgot-password',
+        {
+          cssImports: [{filePath: '/styles/login.css'}],
+          ...DashboardErrorMapper.mapValidationErrors(errors)
+        }
+      );
+    }
+    
+    res.redirect('/dashboard/mail-sent');
   }
 
 }

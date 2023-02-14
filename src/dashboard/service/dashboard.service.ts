@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
+import { validateOrReject } from 'class-validator';
 import { RoleEnum } from 'src/app/enum/role.enum';
 import { IncidentStatusEnum } from 'src/app/enum/status.enum';
+import { AuthService } from 'src/auth/auth.service';
 import { IncidentService } from 'src/incident/incident.service';
 import { ItemService } from 'src/item/item.service';
 import { LocationService } from 'src/location/location.service';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { UserService } from 'src/user/user.service';
+import { ForgotPasswordRequestDTO } from '../dto/request/forgot-password-request.dto';
 import { HomePageResponseDTO } from '../dto/response/home-page-response.dto';
 
 @Injectable()
@@ -16,6 +19,7 @@ export class DashboardService {
     private readonly locationService: LocationService,
     private readonly itemService: ItemService,
     private readonly userService: UserService,
+    private readonly authService: AuthService,
   ) {}
 
   public async getHomePageData(user: UserEntity): Promise<HomePageResponseDTO> {
@@ -24,6 +28,12 @@ export class DashboardService {
     }
 
     return await this.getHomePageForUser(user.id);
+  }
+
+  public async forgotPassword(host: string, forgotPasswordRequestDTO: ForgotPasswordRequestDTO): Promise<void> {
+    await validateOrReject(forgotPasswordRequestDTO);
+
+    await this.authService.requestForgotPasswordLink(host, forgotPasswordRequestDTO.email);
   }
 
   private async getHomePageForAdmin(): Promise<HomePageResponseDTO> {

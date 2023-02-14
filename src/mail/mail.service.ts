@@ -10,7 +10,7 @@ export class MailService {
 
 private async overrideMailAuthenticationDetailsUsingConfiguration(): Promise<void> {
   const email: string = 'arruma.ufpr@gmail.com';
-  const emailPassword: string = 'njygarmdnyzxxqom';
+  const emailPassword: string = 'vsjrkrauoxfzkloq';
 
   this.mailerService.addTransporter('custom', {
     host: 'smtp.gmail.com',
@@ -45,6 +45,32 @@ private async overrideMailAuthenticationDetailsUsingConfiguration(): Promise<voi
     }
 
     return response;
-}
+  }
+
+  public async sendResetPasswordMail(
+    host: string,
+    token: string,
+    emailReceiver: string,
+  ): Promise<void> {
+    const recoverPasswordLink: string = host + '/dashboard/reset-password?token=' + token;
+
+    const response = await this.mailerService.sendMail({
+      transporterName: 'custom',
+      to: emailReceiver,
+      subject: 'ArrumaUFPR - Recuperação de senha',
+      template: './reset-password',
+      context: {
+          title: 'Esqueceu sua senha? Não tem problema!',
+          recoverPasswordLink: recoverPasswordLink,
+      },
+    });
+
+    if (response.rejected.length > 0) {
+      console.log('error sending mail!');
+      return;
+    }
+
+    return response;
+  }
 
 }
