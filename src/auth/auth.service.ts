@@ -11,6 +11,7 @@ import { TokenType } from 'src/app/enum/token.enum';
 import { TokenEntity } from './entity/token.entity';
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from 'src/mail/mail.service';
+import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class AuthService {
@@ -27,6 +28,16 @@ export class AuthService {
     private mailService: MailService,
   ) {
     this.repository = new AuthRepository(this.databaseService);
+  }
+
+  @Cron(CronExpression.EVERY_HOUR)
+  public async removeExpiredTokens(): Promise<void> {
+    const expiredUserTokens: user_token[] = await this.repository.getExpiredUserTokens();
+    
+    if (expiredUserTokens.length > 0) {
+      await this.repository.deleteTokens(expiredUserTokens);
+      console.log('Removed expired tokens - User tokens: ' + expiredUserTokens.length);  
+    }
   }
 
   public async auth(user: UserEntity): Promise<TokenEntity> {

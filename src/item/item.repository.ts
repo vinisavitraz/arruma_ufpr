@@ -1,4 +1,5 @@
 import { item, location } from "@prisma/client";
+import { EntityStatusEnum } from "src/app/enum/status.enum";
 import { SearchItemsRequestDTO } from "src/dashboard/dto/request/search-items-request.dto";
 import { DatabaseService } from "src/database/database.service";
 import { CreateItemRequestDTO } from "./dto/request/create-item-request.dto";
@@ -15,6 +16,9 @@ export class ItemRepository {
 
   public async findItems(): Promise<(item & { location: location })[]> {
     return await this.connection.item.findMany({
+      where: {
+        status: EntityStatusEnum.ACTIVE,
+      },
       orderBy: [
         {
           id: 'asc',
@@ -31,6 +35,7 @@ export class ItemRepository {
       skip: searchItemsRequestDTO.skip,
       take: searchItemsRequestDTO.maxPerPage,
       where: {
+        status: EntityStatusEnum.ACTIVE,
         id: searchItemsRequestDTO.itemId,
         name: {
           contains: searchItemsRequestDTO.itemName,
@@ -57,6 +62,7 @@ export class ItemRepository {
     return await this.connection.item.findMany({
       where: {
         location_id: locationId,
+        status: EntityStatusEnum.ACTIVE,
       },
       orderBy: [
         {
@@ -84,6 +90,7 @@ export class ItemRepository {
         name: createItemRequestDTO.name,
         description: createItemRequestDTO.description,
         location_id: createItemRequestDTO.locationId,
+        status: EntityStatusEnum.ACTIVE,
       },
       include: {
         location: true,
@@ -106,11 +113,16 @@ export class ItemRepository {
   }
 
   public async deleteItem(item: ItemEntity): Promise<void> {
-    await this.connection.item.delete({where: { id: item.id }});
+    await this.connection.item.update({ 
+      where: { id: item.id },
+      data: {
+        status: EntityStatusEnum.INACTIVE,
+      },
+    });
   }
 
   public async findTotalItems(): Promise<number> {
-    return await this.connection.item.count();
+    return await this.connection.item.count({where: {status: EntityStatusEnum.ACTIVE}});
   }
   
 }

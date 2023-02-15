@@ -1,4 +1,5 @@
 import { user } from "@prisma/client";
+import { UserStatusEnum } from "src/app/enum/status.enum";
 import { SearchUsersRequestDTO } from "src/dashboard/dto/request/search-users-request.dto";
 import { DatabaseService } from "src/database/database.service";
 import { CreateUserRequestDTO } from "./dto/request/create-user-request.dto";
@@ -15,6 +16,9 @@ export class UserRepository {
 
   public async findUsers(): Promise<user[]> {
     return await this.connection.user.findMany({
+      where: {
+        status: UserStatusEnum.ACTIVE,
+      },
       orderBy: [
         {
           id: 'asc',
@@ -28,6 +32,7 @@ export class UserRepository {
       skip: searchUsersRequestDTO.skip,
       take: searchUsersRequestDTO.maxPerPage,
       where: {
+        status: UserStatusEnum.ACTIVE,
         id: searchUsersRequestDTO.userId,
         name: {
           contains: searchUsersRequestDTO.userName,
@@ -62,6 +67,7 @@ export class UserRepository {
         email: createUserRequestDTO.email,
         role: createUserRequestDTO.role,
         password: generatedPassword,
+        status: UserStatusEnum.ACTIVE,
       },
     });
   }
@@ -78,7 +84,12 @@ export class UserRepository {
   }
 
   public async deleteUser(user: UserEntity): Promise<void> {
-    await this.connection.user.delete({where: { id: user.id }});
+    await this.connection.user.update({ 
+      where: { id: user.id },
+      data: {
+        status: UserStatusEnum.INACTIVE,
+      },
+    });
   }
 
   public async changeUserPassword(user: UserEntity, newPassword: string): Promise<void> {
@@ -91,7 +102,7 @@ export class UserRepository {
   }
 
   public async findTotalUsers(): Promise<number> {
-    return await this.connection.user.count();
+    return await this.connection.user.count({where: {status: UserStatusEnum.ACTIVE}});
   }
   
 }

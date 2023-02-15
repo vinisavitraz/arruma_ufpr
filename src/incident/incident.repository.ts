@@ -1,6 +1,6 @@
 import { incident, incident_interaction, incident_type, item, location, user } from "@prisma/client";
 import { RoleEnum } from "src/app/enum/role.enum";
-import { IncidentStatusEnum } from "src/app/enum/status.enum";
+import { EntityStatusEnum, IncidentInteractionStatusEnum, IncidentStatusEnum } from "src/app/enum/status.enum";
 import { SearchIncidentTypesRequestDTO } from "src/dashboard/dto/request/search-incident-types-request.dto";
 import { SearchIncidentsRequestDTO } from "src/dashboard/dto/request/search-incidents-request.dto";
 import { DatabaseService } from "src/database/database.service";
@@ -143,6 +143,7 @@ export class IncidentRepository {
       skip: searchIncidentTypesRequestDTO.skip,
       take: searchIncidentTypesRequestDTO.maxPerPage,
       where: {
+        status: EntityStatusEnum.ACTIVE,
         id: searchIncidentTypesRequestDTO.incidentTypeId,
         name: {
           contains: searchIncidentTypesRequestDTO.incidentTypeName,
@@ -163,6 +164,9 @@ export class IncidentRepository {
 
   public async findIncidentTypes(): Promise<incident_type[]> {
     return await this.connection.incident_type.findMany({
+      where: {
+        status: EntityStatusEnum.ACTIVE,
+      },
       orderBy: [
         {
           id: 'asc',
@@ -255,6 +259,7 @@ export class IncidentRepository {
       data: {
         name: createIncidentTypeRequestDTO.name,
         description: createIncidentTypeRequestDTO.description,
+        status: EntityStatusEnum.ACTIVE,
       },
     });
   }
@@ -311,7 +316,12 @@ export class IncidentRepository {
   }
 
   public async deleteIncidentType(incidentType: IncidentTypeEntity): Promise<void> {
-    await this.connection.incident_type.delete({where: { id: incidentType.id }});
+    await this.connection.incident_type.update({ 
+      where: { id: incidentType.id },
+      data: {
+        status: EntityStatusEnum.INACTIVE,
+      },
+    });
   }
 
   public async createIncidentInteraction(createIncidentInteractionRequestDTO: CreateIncidentInteractionRequestDTO): Promise<incident_interaction & {user: user} | null> {
@@ -321,6 +331,7 @@ export class IncidentRepository {
         incident_id: createIncidentInteractionRequestDTO.incidentId,
         user_id: createIncidentInteractionRequestDTO.userId,
         origin: createIncidentInteractionRequestDTO.origin,
+        status: IncidentInteractionStatusEnum.SENT,
       },
       include: {
         user: true,
@@ -338,7 +349,7 @@ export class IncidentRepository {
   }
 
   public async findTotalIncidentTypes(): Promise<number> {
-    return await this.connection.incident_type.count();
+    return await this.connection.incident_type.count({where: {status: EntityStatusEnum.ACTIVE}});
   }
   
 }

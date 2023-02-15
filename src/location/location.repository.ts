@@ -1,4 +1,5 @@
 import { location } from "@prisma/client";
+import { EntityStatusEnum } from "src/app/enum/status.enum";
 import { SearchLocationsRequestDTO } from "src/dashboard/dto/request/search-locations-request.dto";
 import { DatabaseService } from "src/database/database.service";
 import { CreateLocationRequestDTO } from "./dto/request/create-location-request.dto";
@@ -15,6 +16,9 @@ export class LocationRepository {
 
   public async findLocations(): Promise<location[]> {
     return await this.connection.location.findMany({
+      where: {
+        status: EntityStatusEnum.ACTIVE,
+      },
       orderBy: [
         {
           id: 'asc',
@@ -28,6 +32,7 @@ export class LocationRepository {
       skip: searchLocationsRequestDTO.skip,
       take: searchLocationsRequestDTO.maxPerPage,
       where: {
+        status: EntityStatusEnum.ACTIVE,
         id: searchLocationsRequestDTO.locationId,
         name: {
           contains: searchLocationsRequestDTO.locationName,
@@ -55,6 +60,7 @@ export class LocationRepository {
       data: {
         name: createLocationRequestDTO.name,
         description: createLocationRequestDTO.description,
+        status: EntityStatusEnum.ACTIVE,
       },
     });
   }
@@ -70,11 +76,16 @@ export class LocationRepository {
   }
 
   public async deleteLocation(location: LocationEntity): Promise<void> {
-    await this.connection.location.delete({where: { id: location.id }});
+    await this.connection.location.update({ 
+      where: { id: location.id },
+      data: {
+        status: EntityStatusEnum.INACTIVE,
+      },
+    });
   }
 
   public async findTotalLocations(): Promise<number> {
-    return await this.connection.location.count();
+    return await this.connection.location.count({where: {status: EntityStatusEnum.ACTIVE}});
   }
   
 }

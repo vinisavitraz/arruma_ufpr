@@ -56,6 +56,23 @@ export class AuthRepository {
 
   public async deleteToken(tokenId: number): Promise<void> {
     await this.connection.user_token.delete({where: { id: tokenId}});
-}
+  }
+
+  public async getExpiredUserTokens(): Promise<user_token[]> {
+    return await this.connection.user_token.findMany({ 
+      where: {
+        expiration_date: {
+            lt: new Date(),
+        },
+      }, 
+    });
+  }
+
+  public async deleteTokens(userTokens: user_token[]): Promise<void> {
+    for (let i = 0; i < userTokens.length; i++) {
+      const userToken: user_token = userTokens[i];
+      await this.connection.user_token.delete({ where: {id: userToken.id} });
+    }
+  }
 
 }

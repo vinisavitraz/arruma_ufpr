@@ -14,6 +14,7 @@ model user {
   email            String        @db.VarChar(100) @unique
   password         String        @db.VarChar(100)
   role             Int
+  status           String        @db.VarChar(50)
   user_incidents   incident[]    @relation("user_incidents")
   admin_incidents  incident[]    @relation("admin_incidents")
   interactions     incident_interaction[]
@@ -26,6 +27,7 @@ model location {
   id               Int           @id @default(autoincrement())
   name             String        @db.VarChar(100)
   description      String        @db.VarChar(500)
+  status           String        @db.VarChar(50)
   incidents        incident[]
   items            item[]
   
@@ -37,6 +39,7 @@ model item {
   name             String        @db.VarChar(100)
   description      String        @db.VarChar(500)
   location_id      Int
+  status           String        @db.VarChar(50)
   location         location      @relation(fields: [location_id], references: [id])
   incidents        incident[]
   
@@ -47,6 +50,7 @@ model incident_type {
   id               Int           @id @default(autoincrement())
   name             String        @db.VarChar(100)
   description      String        @db.VarChar(500)
+  status           String        @db.VarChar(50)
   incidents        incident[]
   
   @@index([name])
@@ -82,6 +86,7 @@ model incident_interaction {
   sent_date        DateTime      @db.Timestamp(0) @default(now())
   origin           Int
   user_id          Int
+  status           String        @db.VarChar(50)
   user             user          @relation(fields: [user_id], references: [id])
   incident_id      Int
   incident         incident      @relation(fields: [incident_id], references: [id])

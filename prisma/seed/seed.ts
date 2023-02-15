@@ -12,6 +12,7 @@ async function main() {
       password: '$2b$10$sNMPhHviR4DMUgPDc8QUyeeTWZGxVyiEDY94KxySZegcLr5ai/MIC',
       name: 'Professor 1',
       role: 0,
+      status: 'ativo',
     },
   });
 
@@ -23,6 +24,7 @@ async function main() {
       password: '$2b$10$sNMPhHviR4DMUgPDc8QUyeeTWZGxVyiEDY94KxySZegcLr5ai/MIC',
       name: 'Estudante 1',
       role: 1,
+      status: 'ativo',
     },
   });
 
