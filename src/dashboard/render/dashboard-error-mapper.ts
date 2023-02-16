@@ -17,7 +17,9 @@ export class DashboardErrorMapper {
     ['INC_002', 'Descrição do tipo de incidente inválida'],
     ['INC_005', 'Título inválido'],
     ['INC_006', 'Descrição inválida'],
+    ['USR_001', 'Email não encontrado'],
     ['USR_006', 'Senha inválida'],
+    ['AUTH_002', 'Senha inválida'],
     ['AUTH_006', 'Token não encontrado'],
   ]);
 
@@ -53,6 +55,22 @@ export class DashboardErrorMapper {
     return {
       showError: errors.length > 0,
       errors: errors,
+    };
+  }
+
+  public static mapValidationError(validationError: string): object {
+    const errorCode: string | null = this.errorMap.get(validationError);
+
+    if (errorCode) {
+      return {
+        showError: true,
+        errors: [errorCode],
+      };
+    }
+
+    return {
+      showError: false,
+      errors: [],
     };
   }
 

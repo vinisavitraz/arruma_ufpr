@@ -12,6 +12,7 @@ import { UserEntity } from 'src/user/entity/user.entity';
 import { ForgotPasswordRequestDTO } from '../dto/request/forgot-password-request.dto';
 import { DashboardErrorMapper } from '../render/dashboard-error-mapper';
 import { ChangeUserPasswordRequestDTO } from 'src/user/dto/request/change-user-password-request.dto';
+import { HttpOperationException } from 'src/app/exception/http-operation.exception';
 
 @Controller('dashboard')
 @ApiExcludeController()
@@ -21,12 +22,17 @@ export class DashboardController {
   constructor(private readonly service: DashboardService) {}
 
   @Get('login')
-  public async getLoginPage(@Res() res: Response): Promise<void> {    
+  public async getLoginPage(@Request() req, @Res() res: Response): Promise<void> {    
+    const errorCode: string = req.query.errorCode ?? '';
+    const mail: string = req.query.mail ?? '';
+    
     return DashboardResponseRender.renderWithoutUser(
       res,
       'login/login',
       {
         cssImports: [{filePath: '/styles/login.css'}],
+        userMail: mail,
+        ...DashboardErrorMapper.mapValidationError(errorCode),
       },
     );
   }
@@ -116,9 +122,6 @@ export class DashboardController {
         }
       );
     } catch (errors) {
-      console.log(errors);
-      const a = DashboardErrorMapper.mapValidationErrors(errors);
-      console.log(a);
       return DashboardResponseRender.renderWithoutUser(
         res,
         'login/reset-password',
@@ -149,13 +152,13 @@ export class DashboardController {
     try {
       await this.service.forgotPassword(host, forgotPasswordRequestDTO);
     } catch (errors) {
-      console.log(errors);
+      const exception: HttpOperationException = errors;
       return DashboardResponseRender.renderWithoutUser(
         res,
         'login/forgot-password',
         {
           cssImports: [{filePath: '/styles/login.css'}],
-          ...DashboardErrorMapper.mapValidationErrors(errors)
+          ...DashboardErrorMapper.mapValidationError(exception.errorCode)
         }
       );
     }
@@ -164,19 +167,19 @@ export class DashboardController {
   }
 
   @Post('reset-password')
-  public async resetPassword(@Request() req, @Res() res: Response): Promise<void> {    
+  public async resetPassword(@Request() req, @Res() res: Response): Promise<void> {   
     const changeUserPasswordRequestDTO: ChangeUserPasswordRequestDTO = ChangeUserPasswordRequestDTO.fromDashboard(req.body);
 
     try {
       await this.service.changeUserPassword(changeUserPasswordRequestDTO);
-    } catch (errors) {
-      console.log(errors);
+    } catch (error) {
+      const exception: HttpOperationException = error;
       return DashboardResponseRender.renderWithoutUser(
         res,
         'login/reset-password',
         {
           cssImports: [{filePath: '/styles/login.css'}],
-          ...DashboardErrorMapper.mapValidationErrors(errors)
+          ...DashboardErrorMapper.mapValidationError(exception.errorCode)
         }
       );
     }

@@ -1,6 +1,8 @@
-import { ExecutionContext, Injectable } from '@nestjs/common';
+import { ExecutionContext, HttpStatus, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
+import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-codes';
+import { HttpOperationException } from 'src/app/exception/http-operation.exception';
 
 @Injectable()
 export class AuthenticatedGuard extends AuthGuard('local') {
@@ -11,7 +13,16 @@ export class AuthenticatedGuard extends AuthGuard('local') {
   
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: any = context.switchToHttp().getRequest();
-    return request.isAuthenticated();
+
+    if (request.isAuthenticated()) {
+      return true;
+    }
+  
+    throw new HttpOperationException(
+      HttpStatus.UNAUTHORIZED, 
+      'User not authenticated', 
+      HttpOperationErrorCodes.USER_NOT_AUTHENTICATED,
+    );
   }
 
 }

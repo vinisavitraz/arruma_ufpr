@@ -2,43 +2,38 @@ import {
     ExceptionFilter,
     Catch,
     ArgumentsHost,
-    HttpException,
   } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { HttpOperationException } from '../http-operation.exception';
 
-interface IRequestFlash extends Request {
-  flash: any;
-}
-  
-@Catch(HttpException)
+@Catch(HttpOperationException)
 export class DashboardExceptionFilter implements ExceptionFilter {
 
-  catch(exception: HttpException, host: ArgumentsHost): void {
+  catch(exception: HttpOperationException, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
-    const request = ctx.getRequest<IRequestFlash>();
+    const request = ctx.getRequest<Request>();
     const response = ctx.getResponse<Response>();
     const statusCode = exception.getStatus();
+    const userAuthenticated: boolean = request.isAuthenticated();
     
     console.log('Dashboard exception occurred! Endpoint: ' + request.url + ' Http Status: ' + statusCode + ' | Message: ' + exception.message);
+    
+    if (request.url.includes('/dashboard/login')) {
+      let redirectUrl: string = '/dashboard/login?errorCode=' + exception.errorCode;
+      const mail: string = request.body.username ?? '';
 
-    const responseBody = {
-      status_code: statusCode,
-      error_message: exception.message,
-    };
+      if (mail !== '') {
+        redirectUrl += '&mail=' + mail;
+      }
 
-    let redirectPage: string = '/dashboard/login';
-
-    if (statusCode === 401) {
-      redirectPage = '/dashboard/unauthorized'
+      return response.redirect(redirectUrl);
     }
 
-    //if (exception instanceof UnauthorizedException || exception instanceof ForbiddenException) {
-      request.flash('error', 'Please try again!');
-      response.redirect(redirectPage);
-      return;
-    //} 
-    
-    //response.redirect('/error');
+    if (statusCode === 401 && userAuthenticated) {
+      return response.redirect('/dashboard/unauthorized');
+    }
+
+    return response.redirect('/dashboard/login');
   }
   
 }
