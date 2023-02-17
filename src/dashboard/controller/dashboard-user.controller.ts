@@ -28,15 +28,13 @@ export class DashboardUserController {
   @Roles(RoleEnum.ADMIN)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getCreateUserPage(@Request() req, @Res() res: Response): Promise<void> {    
-    return DashboardResponseRender.renderForAuthenticatedUser(
-      res,
-      'user/create-user',
-      req.user,
+
+    return this.renderCreateUserPage(
+      res, 
+      req.user, 
+      new CreateUserRequestDTO(),
+      '/dashboard/user/create',
       'user',
-      {
-        userForm: new CreateUserRequestDTO(),
-        uri: '/dashboard/user/create',
-      },
     );
   }
 
@@ -55,21 +53,33 @@ export class DashboardUserController {
     );
   }
 
+  @Get('profile')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
+  public async getProfilePage(@Request() req, @Res() res: Response): Promise<void> {     
+    const user: UserEntity = await this.service.findUserByIDOrCry(req.user.id);
+
+    return this.renderCreateUserPage(
+      res, 
+      req.user, 
+      CreateUserRequestDTO.fromEntity(user),
+      '/dashboard/user/update-profile',
+      'user-profile',
+    );
+  }
+
   @Get(':id')
   @Roles(RoleEnum.ADMIN)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getUserPage(@Param('id', ParseIntPipe) userId: number, @Request() req, @Res() res: Response): Promise<void> {    
     const user: UserEntity = await this.service.findUserByIDOrCry(userId);
-
-    return DashboardResponseRender.renderForAuthenticatedUser(
-      res,
-      'user/create-user',
-      req.user,
+    
+    return this.renderCreateUserPage(
+      res, 
+      req.user, 
+      CreateUserRequestDTO.fromEntity(user),
+      '/dashboard/user/update',
       'user',
-      {
-        userForm: CreateUserRequestDTO.fromEntity(user),
-        uri: '/dashboard/user/update',
-      }
     );
   }
 
@@ -99,16 +109,14 @@ export class DashboardUserController {
     
     try {
       await this.service.createUser(host, createUserRequestDTO);
-    } catch (errors) {
-      return DashboardResponseRender.renderForAuthenticatedUser(
-        res,
-        'user/create-user',
-        req.user,
+    } catch (error) {
+      return this.renderCreateUserPage(
+        res, 
+        req.user, 
+        createUserRequestDTO,
+        '/dashboard/user/create',
         'user',
-        {
-          user: createUserRequestDTO,
-          ...DashboardErrorMapper.mapValidationErrors(errors)
-        }
+        error,
       );
     }  
 
@@ -123,20 +131,40 @@ export class DashboardUserController {
     
     try {
       await this.service.updateUser(updateUserRequestDTO);
-    } catch (errors) {
-      return DashboardResponseRender.renderForAuthenticatedUser(
-        res,
-        'user/create-user',
-        req.user,
+    } catch (error) {
+      return this.renderCreateUserPage(
+        res, 
+        req.user, 
+        updateUserRequestDTO,
+        '/dashboard/user/update',
         'user',
-        {
-          user: updateUserRequestDTO,
-          ...DashboardErrorMapper.mapValidationErrors(errors)
-        }
+        error,
       );
     }  
 
     return res.redirect('/dashboard/user');
+  }
+
+  @Post('update-profile')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
+  public async updateUserProfile(@Request() req, @Res() res: Response): Promise<void> { 
+    const updateUserRequestDTO: UpdateUserRequestDTO = UpdateUserRequestDTO.fromDashboard(req.body);
+    
+    try {
+      await this.service.updateUser(updateUserRequestDTO);
+    } catch (error) {
+      return this.renderCreateUserPage(
+        res, 
+        req.user, 
+        updateUserRequestDTO,
+        '/dashboard/user/update-profile',
+        'user-profile',
+        error,
+      );
+    }  
+
+    return res.redirect('/dashboard');
   }
 
   @Post('change-password')
@@ -225,6 +253,41 @@ export class DashboardUserController {
         cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}],
         jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/search-form.js'}, {filePath: '/js/filter-tables.js'}],
       }
+    );
+  }
+
+  private async renderCreateUserPage(
+    @Res() res: Response, 
+    user: UserEntity,
+    userForm: CreateUserRequestDTO | UpdateUserRequestDTO,
+    uri: string,
+    module: string,
+    error: any = null
+  ): Promise<void> {
+    let title: string = 'Usuário';
+    let description: string = 'Usuário ou Administrador do sistema.';
+    let backUrl: string = '/dashboard/user';
+
+    if (module === 'user-profile') {
+      title = 'Meu perfil';
+      description = 'Alterar dados da conta';
+      backUrl = '/dashboard';
+    }
+
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'user/create-user',
+      user,
+      module,
+      {
+        jsScripts: [{filePath: '/js/user-form.js'}],
+        userForm: userForm,
+        uri: uri,
+        ...DashboardErrorMapper.mapValidationErrors(error),
+        title: title,
+        description: description,
+        backUrl: backUrl,
+      },
     );
   }
 

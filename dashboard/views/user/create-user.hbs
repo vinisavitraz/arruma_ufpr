@@ -1,12 +1,12 @@
 <body id="body-pd">
   {{>header}}
-  <a class="btn btn-primary btn-lg" href="/dashboard/user" role="button">Voltar</a>
+  <a class="btn btn-primary btn-lg" href="{{ backUrl }}" role="button">Voltar</a>
   <div class="container">
   <main>
     <div class="py-5 text-justify">
-      <h2>Usuário</h2>
+      <h2>{{ title }}</h2>
       <br>
-      <p class="lead">Usuário ou Administrador do sistema.</p>
+      <p class="lead">{{ description }}</p>
     </div>
     {{#if showError }}
       {{#each errors}}
@@ -33,7 +33,24 @@
               <input type="text" class="form-control" id="email" name="email" value="{{ userForm.email }}" placeholder="Ex: joao.silva@mail.com">
             </div>
           </div>
+          <br>
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <label for="document" class="form-label">CPF</label>
+              <input type="text" class="form-control" id="document" name="document" value="{{ userForm.document }}" placeholder="Ex. 806.949.290-26">
+            </div>
 
+            <div class="col-sm-6">
+              <label for="phone" class="form-label">Telefone</label>
+              <input type="text" class="form-control" id="phone" name="phone" value="{{ userForm.phone }}" placeholder="Ex: (41)99999-9999">
+            </div>
+          </div>
+          <br>
+          <div class="col-12">
+            <label for="address" class="form-label">Endereço</label>
+              <input type="text" class="form-control" id="address" placeholder="Ex: Rua Amarela, 10 - Curitiba" name="address" value="{{ userForm.address }}">
+          </div>
+          <br>
           <div class="col-md-12">
             <label for="role" class="form-label">Tipo</label>
             <select class="form-select form-control" id="role" name="role">

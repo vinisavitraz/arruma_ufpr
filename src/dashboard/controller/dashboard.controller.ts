@@ -61,7 +61,6 @@ export class DashboardController {
     try {
       await this.service.createUser(host, createUserRequestDTO);
     } catch (errors) {
-      console.log(errors);
       return this.renderRegisterPage(res, createUserRequestDTO, errors);
     }  
 

@@ -11,27 +11,27 @@
         <input type="hidden" id="role" name="role" value="1">
 				<div class="row mx-5">
 					<label class="mb-2 text-muted" for="email">Email</label>
-					<input id="email" type="email" class="form-control" name="email" value="{{ user.email }}" required autofocus>
+					<input id="email" type="email" class="form-control" name="email" value="{{ user.email }}" placeholder="Ex: joao.silva@mail.com" required autofocus>
 				</div>
 				<br>
 				<div class="row mx-5">
 					<label class="mb-2 text-muted" for="name">Nome</label>
-					<input id="name" type="text" class="form-control" name="name" value="{{ user.name }}" required>
+					<input id="name" type="text" class="form-control" name="name" value="{{ user.name }}"  placeholder="Ex: João Silva" required>
 				</div>
         <br>
 				<div class="row mx-5">
 					<label class="mb-2 text-muted" for="password">CPF</label>
-					<input id="document" type="text" class="form-control" name="document" value="{{ user.document }}" required>
+					<input id="document" type="text" class="form-control" name="document" value="{{ user.document }}" placeholder="Ex. 806.949.290-26" required>
 				</div>
         <br>
 				<div class="row mx-5">
 					<label class="mb-2 text-muted" for="password">Telefone</label>
-					<input id="phone" type="text" class="form-control" name="phone" value="{{ user.phone }}" required>
+					<input id="phone" type="text" class="form-control" name="phone" value="{{ user.phone }}" placeholder="Ex: (41)99999-9999" required>
 				</div>
         <br>
 				<div class="row mx-5">
 					<label class="mb-2 text-muted" for="address">Endereço</label>
-					<input id="address" type="text" class="form-control" name="address" value="{{ user.address }}" required>
+					<input id="address" type="text" class="form-control" name="address" value="{{ user.address }}" placeholder="Ex: Rua Amarela, 10 - Curitiba" required>
 				</div>
         <br>
 				<br>

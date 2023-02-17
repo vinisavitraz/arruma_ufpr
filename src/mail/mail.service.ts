@@ -1,5 +1,6 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
+import { SentMessageInfo } from 'nodemailer';
 
 @Injectable()
 export class MailService {
@@ -24,54 +25,22 @@ private async overrideMailAuthenticationDetailsUsingConfiguration(): Promise<voi
   });
   }
 
-  public async sendNewAccountMail(
-    password: string,
-    emailReceiver: string,
-  ): Promise<void> {
-    const response = await this.mailerService.sendMail({
-      transporterName: 'custom',
-      to: emailReceiver,
-      subject: 'ArrumaUFPR - Ative sua conta',
-      template: './new-account',
-      context: {
-          title: 'Ative sua nova conta ArrumaUFPR',
-          password: password,
-      },
-    });
-
-    if (response.rejected.length > 0) {
-      console.log('error sending mail!');
-      return;
-    }
-
-    return response;
-  }
-
   public async sendCreatePasswordMail(
     host: string,
     token: string,
     emailReceiver: string,
   ): Promise<void> {
-    const recoverPasswordLink: string = host + '/dashboard/reset-password?token=' + token;
 
-    const response = await this.mailerService.sendMail({
-      transporterName: 'custom',
-      to: emailReceiver,
-      subject: 'ArrumaUFPR - Criar nova senha',
-      template: './reset-password',
-      context: {
-          title: 'Novo por aqui? Configure sua nova senha!',
-          recoverPasswordLink: recoverPasswordLink,
-          description: 'Clique no botão abaixo para configurar sua nova senha.',
+    return await this.sendMail(
+      emailReceiver,
+      'ArrumaUFPR - Criar nova senha',
+      './reset-password',
+      {
+        title: 'Novo por aqui? Configure sua nova senha!',
+        recoverPasswordLink: host + '/dashboard/reset-password?token=' + token,
+        description: 'Clique no botão abaixo para configurar sua nova senha.',
       },
-    });
-
-    if (response.rejected.length > 0) {
-      console.log('error sending mail!');
-      return;
-    }
-
-    return response;
+    );
   }
 
   public async sendResetPasswordMail(
@@ -79,18 +48,31 @@ private async overrideMailAuthenticationDetailsUsingConfiguration(): Promise<voi
     token: string,
     emailReceiver: string,
   ): Promise<void> {
-    const recoverPasswordLink: string = host + '/dashboard/reset-password?token=' + token;
 
-    const response = await this.mailerService.sendMail({
+    return await this.sendMail(
+      emailReceiver,
+      'ArrumaUFPR - Recuperação de senha',
+      './reset-password',
+      {
+        title: 'Esqueceu sua senha? Não tem problema!',
+        recoverPasswordLink: host + '/dashboard/reset-password?token=' + token,
+        description: 'Clique no botão abaixo para recuperar a senha da sua conta ArrumaUFPR. Se você não fez essa solicitação, por favor ignore esse email.',
+      },
+    );
+  }
+
+  private async sendMail(
+    emailReceiver: string,
+    subject: string,
+    template: string,
+    context: object,
+  ): Promise<SentMessageInfo | null> {
+    const response: SentMessageInfo = await this.mailerService.sendMail({
       transporterName: 'custom',
       to: emailReceiver,
-      subject: 'ArrumaUFPR - Recuperação de senha',
-      template: './reset-password',
-      context: {
-          title: 'Esqueceu sua senha? Não tem problema!',
-          recoverPasswordLink: recoverPasswordLink,
-          description: 'Clique no botão abaixo para recuperar a senha da sua conta ArrumaUFPR. Se você não fez essa solicitação, por favor ignore esse email.',
-      },
+      subject: subject,
+      template: template,
+      context: context,
     });
 
     if (response.rejected.length > 0) {

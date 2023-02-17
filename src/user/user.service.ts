@@ -119,11 +119,35 @@ export class UserService {
   }
 
   public async updateUser(updateUserRequestDTO: UpdateUserRequestDTO): Promise<UserEntity> {
-    await this.findUserByIDOrCry(updateUserRequestDTO.id);
+    const userDb: UserEntity = await this.findUserByIDOrCry(updateUserRequestDTO.id);
 
-    const userDb: user = await this.repository.updateUser(updateUserRequestDTO);
+    InputFieldValidator.validateEmail(updateUserRequestDTO.email);
+    InputFieldValidator.validateDocument(updateUserRequestDTO.document);
+    InputFieldValidator.validatePhoneNumber(updateUserRequestDTO.phone);
+    InputFieldValidator.validateName(updateUserRequestDTO.name);
 
-    return UserEntity.fromRepository(userDb);
+    updateUserRequestDTO.document = updateUserRequestDTO.document.replace('.', '').replace('-', '');
+    updateUserRequestDTO.phone = updateUserRequestDTO.phone.replace('(', '').replace(')', '').replace('-', '');
+
+    if (userDb.email !== updateUserRequestDTO.email && await this.repository.findUserByEmail(updateUserRequestDTO.email) !== null) {
+      throw new HttpOperationException(
+        HttpStatus.BAD_REQUEST, 
+        'Email already exists on database', 
+        HttpOperationErrorCodes.DUPLICATED_USER_EMAIL,
+      );
+    }
+
+    if (userDb.document !== updateUserRequestDTO.document && await this.repository.findUserByDocument(updateUserRequestDTO.document) !== null) {
+      throw new HttpOperationException(
+        HttpStatus.BAD_REQUEST, 
+        'Document already exists on database', 
+        HttpOperationErrorCodes.DUPLICATED_USER_DOCUMENT,
+      );
+    }
+
+    const user: user = await this.repository.updateUser(updateUserRequestDTO);
+
+    return UserEntity.fromRepository(user);
   }
 
   public async deleteUser(userId: number): Promise<void> {

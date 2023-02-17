@@ -57,6 +57,7 @@ export class DashboardResponseRender {
     let item: string = module === 'item' ? 'active' : '';
     let user: string = module === 'user' ? 'active' : '';
     let userChangePassword: string = module === 'user-change-password' ? 'active' : '';
+    let userProfile: string = module === 'user-profile' ? 'active' : '';
 
     return new HeaderActiveResponseDTO(
       home,
@@ -67,6 +68,7 @@ export class DashboardResponseRender {
       item,
       user,
       userChangePassword,
+      userProfile,
     );
   }
 

@@ -8,6 +8,7 @@ export class HeaderActiveResponseDTO {
   readonly item: string;
   readonly user: string;
   readonly userChangePassword: string;
+  readonly userProfile: string;
 
   constructor(
     home: string,
@@ -18,6 +19,7 @@ export class HeaderActiveResponseDTO {
     item: string,
     user: string,
     userChangePassword: string,
+    userProfile: string,
   ) {
     this.home = home;
     this.incident = incident;
@@ -27,6 +29,7 @@ export class HeaderActiveResponseDTO {
     this.item = item;
     this.user = user;
     this.userChangePassword = userChangePassword;
+    this.userProfile = userProfile;
   }
 
 }
