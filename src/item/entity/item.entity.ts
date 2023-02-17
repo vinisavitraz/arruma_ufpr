@@ -1,11 +1,17 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { item, location } from "@prisma/client";
 
 export class ItemEntity {
 
+  @ApiProperty({example: 1})
   readonly id: number;
+  @ApiProperty({example: 'Projetor'})
   readonly name: string;
+  @ApiProperty({example: 'Projetor Sala A12'})
   readonly description: string;
+  @ApiProperty({example: 1})
   readonly locationId: number;
+  @ApiProperty({example: 'SEPT'})
   readonly locationName: string;
 
   constructor(

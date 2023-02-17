@@ -25,7 +25,7 @@ export class ChangeUserPasswordRequestDTO {
 
   public static fromDashboard(payload: any): ChangeUserPasswordRequestDTO {
     const changeUserPasswordRequestDTO: ChangeUserPasswordRequestDTO = new ChangeUserPasswordRequestDTO();
-    console.log(payload);
+    
     changeUserPasswordRequestDTO.userId = Number(payload['userId']) ?? 0;
     changeUserPasswordRequestDTO.password = payload['password'] ?? '';
     changeUserPasswordRequestDTO.confirmPassword = payload['confirmPassword'] ?? '';

@@ -112,7 +112,6 @@ export class DashboardController {
 
     try {
       const user: UserEntity = await this.service.findUserByRecoverPasswordToken(tokenNumber);
-      console.log(user);
       return DashboardResponseRender.renderWithoutUser(
         res,
         'login/reset-password',

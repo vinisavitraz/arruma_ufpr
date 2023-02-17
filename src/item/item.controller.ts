@@ -1,9 +1,20 @@
-import { Controller, Get, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { UnauthorizedExample } from 'src/app/docs/example/auth/unauthorized-example';
+import { ItemNotFoundExample } from 'src/app/docs/example/item/item-not-found-example';
+import { LocationNotFoundExample } from 'src/app/docs/example/location/location-not-found-example';
 import { RoleEnum } from 'src/app/enum/role.enum';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { Roles } from 'src/auth/roles/require-roles.decorator';
+import { CreateLocationRequestDTO } from 'src/location/dto/request/create-location-request.dto';
+import { UpdateLocationRequestDTO } from 'src/location/dto/request/update-location-request.dto';
+import { DeleteLocationResponseDTO } from 'src/location/dto/response/delete-location-response.dto';
+import { ListLocationResponseDTO } from 'src/location/dto/response/list-location-response.dto';
+import { LocationEntity } from 'src/location/entity/location.entity';
+import { CreateItemRequestDTO } from './dto/request/create-item-request.dto';
+import { UpdateItemRequestDTO } from './dto/request/update-item-request.dto';
+import { DeleteItemResponseDTO } from './dto/response/delete-item-response.dto';
+import { ListItemResponseDTO } from './dto/response/list-item-response.dto';
 import { ListItemsResponseDTO } from './dto/response/list-items-response.dto';
 import { ItemEntity } from './entity/item.entity';
 import { ItemService } from './item.service';
@@ -37,6 +48,45 @@ export class ItemController {
     const items: ItemEntity[] = await this.itemService.findItems();
     
     return new ListItemsResponseDTO(items);
+  }
+
+  @Post()
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Criar novo item' })
+  @ApiBody({ type: [CreateItemRequestDTO] })
+  @ApiOkResponse({ type: ListItemResponseDTO })
+  @ApiUnauthorizedResponse({type: UnauthorizedExample})
+  public async createItem(@Body() createItemRequestDTO: CreateItemRequestDTO): Promise<ListItemResponseDTO> {
+    const item: ItemEntity = await this.itemService.createItem(createItemRequestDTO);
+    
+    return new ListItemResponseDTO(item);
+  }
+
+  @Put()
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Atualizar item' })
+  @ApiBody({ type: [UpdateItemRequestDTO] })
+  @ApiOkResponse({ type: ListItemResponseDTO })
+  @ApiNotFoundResponse({type: ItemNotFoundExample})
+  @ApiUnauthorizedResponse({type: UnauthorizedExample})
+  public async updateItem(@Body() updateItemRequestDTO: UpdateItemRequestDTO): Promise<ListItemResponseDTO> {
+    const item: ItemEntity = await this.itemService.updateItem(updateItemRequestDTO);
+    
+    return new ListItemResponseDTO(item);
+  }
+
+  @Delete(':id')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Excluir item' })
+  @ApiOkResponse({ type: DeleteItemResponseDTO })
+  @ApiUnauthorizedResponse({type: UnauthorizedExample})
+  public async deleteItem(@Param('id', ParseIntPipe) id: number): Promise<DeleteItemResponseDTO> {
+    await this.itemService.deleteItem(id);
+    
+    return new DeleteItemResponseDTO('DELETED');
   }
   
 }
