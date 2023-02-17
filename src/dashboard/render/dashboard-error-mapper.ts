@@ -19,6 +19,8 @@ export class DashboardErrorMapper {
     ['USR_010', 'Endereço do usuário inválido'],
     ['USR_011', 'Email já possui conta'],
     ['USR_012', 'CPF já possui conta'],
+    ['USR_013', 'Email bloqueado. Contate a adminstração do sistema no email `arruma.ufpr@gmail.com`'],
+    ['USR_014', 'CPF bloqueado. Contate a adminstração do sistema no email `arruma.ufpr@gmail.com`'],
     ['INC_001', 'Nome do tipo de incidente inválido'],
     ['INC_002', 'Descrição do tipo de incidente inválida'],
     ['INC_005', 'Título inválido'],
@@ -39,6 +41,10 @@ export class DashboardErrorMapper {
 
     if (validationErrors instanceof HttpOperationException) {
       return this.mapValidationError(validationErrors.errorCode);
+    }
+
+    if (typeof validationErrors === 'string') {
+      return this.mapValidationError(validationErrors);
     }
     
     const errors: string[] = [];

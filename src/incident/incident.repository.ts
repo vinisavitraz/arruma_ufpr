@@ -58,8 +58,18 @@ export class IncidentRepository {
         item: {
           id: searchIncidentsRequestDTO.itemId,
         },
-        user_id: user === null ? undefined : (user.role === RoleEnum.USER ? user.id : undefined),
-        admin_id: user === null ? undefined : (user.role === RoleEnum.ADMIN ? user.id : undefined),
+        AND: {
+          OR: [
+            {
+              user_id: user === null ? undefined : user.id,
+            },
+            {
+              admin_id: user === null ? undefined : user.id,
+            },
+          ],
+        }
+        // user_id: user === null ? undefined : (user.role === RoleEnum.USER ? user.id : undefined),
+        // admin_id: user === null ? undefined : (user.role === RoleEnum.ADMIN ? user.id : undefined),
       },
       orderBy: [
         {

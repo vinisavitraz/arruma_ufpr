@@ -52,6 +52,15 @@ export class UserRepository {
     });
   }
 
+  public async findActiveUserByEmail(email: string): Promise<user | null> {
+    return await this.connection.user.findFirst({ 
+      where: { 
+        email: email,
+        status: UserStatusEnum.ACTIVE,
+      },
+    });
+  }
+
   public async findUserByEmail(email: string): Promise<user | null> {
     return await this.connection.user.findUnique({ where: { email: email } });
   }

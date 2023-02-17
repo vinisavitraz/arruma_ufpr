@@ -16,6 +16,7 @@ import { validateOrReject } from 'class-validator';
 import { InputFieldValidator } from 'src/app/util/input-field.validator';
 import { TokenEntity } from 'src/token/entity/token.entity';
 import { TokenService } from 'src/token/token.service';
+import { UserStatusEnum } from 'src/app/enum/status.enum';
 
 @Injectable()
 export class UserService {
@@ -63,7 +64,7 @@ export class UserService {
   }
 
   public async findUserByEmailOrCry(email: string): Promise<UserEntity> {
-    const userDb: user | null = await this.repository.findUserByEmail(email);
+    const userDb: user | null = await this.repository.findActiveUserByEmail(email);
 
     if (!userDb) {
       throw new HttpOperationException(
@@ -85,7 +86,17 @@ export class UserService {
     createUserRequestDTO.document = createUserRequestDTO.document.replace('.', '').replace('-', '');
     createUserRequestDTO.phone = createUserRequestDTO.phone.replace('(', '').replace(')', '').replace('-', '');
 
-    if (await this.repository.findUserByEmail(createUserRequestDTO.email) !== null) {
+    let userDb: user | null = await this.repository.findUserByEmail(createUserRequestDTO.email);
+
+    if (userDb !== null) {
+      if (userDb.status === UserStatusEnum.INACTIVE){
+        throw new HttpOperationException(
+          HttpStatus.BAD_REQUEST, 
+          'Blocked email', 
+          HttpOperationErrorCodes.BLOCKED_USER_EMAIL,
+        );  
+      }
+
       throw new HttpOperationException(
         HttpStatus.BAD_REQUEST, 
         'Email already exists on database', 
@@ -93,7 +104,16 @@ export class UserService {
       );
     }
 
-    if (await this.repository.findUserByDocument(createUserRequestDTO.document) !== null) {
+    userDb = await this.repository.findUserByDocument(createUserRequestDTO.document);
+
+    if (userDb !== null) {
+      if (userDb.status === UserStatusEnum.INACTIVE){
+        throw new HttpOperationException(
+          HttpStatus.BAD_REQUEST, 
+          'Blocked document', 
+          HttpOperationErrorCodes.BLOCKED_USER_DOCUMENT,
+        );
+      }
       throw new HttpOperationException(
         HttpStatus.BAD_REQUEST, 
         'Document already exists on database', 
@@ -101,7 +121,8 @@ export class UserService {
       );
     }
 
-    const hashedPassword: string = await this.hashPassword(this.generatePassword());
+    const password: string = this.generatePassword();
+    const hashedPassword: string = await this.hashPassword(password);
     let user: user | null = null;
 
     try {
@@ -129,7 +150,7 @@ export class UserService {
     updateUserRequestDTO.document = updateUserRequestDTO.document.replace('.', '').replace('-', '');
     updateUserRequestDTO.phone = updateUserRequestDTO.phone.replace('(', '').replace(')', '').replace('-', '');
 
-    if (userDb.email !== updateUserRequestDTO.email && await this.repository.findUserByEmail(updateUserRequestDTO.email) !== null) {
+    if (userDb.email !== updateUserRequestDTO.email && await this.repository.findActiveUserByEmail(updateUserRequestDTO.email) !== null) {
       throw new HttpOperationException(
         HttpStatus.BAD_REQUEST, 
         'Email already exists on database', 
