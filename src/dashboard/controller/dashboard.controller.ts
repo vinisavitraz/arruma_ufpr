@@ -13,6 +13,7 @@ import { ForgotPasswordRequestDTO } from '../dto/request/forgot-password-request
 import { DashboardErrorMapper } from '../render/dashboard-error-mapper';
 import { ChangeUserPasswordRequestDTO } from 'src/user/dto/request/change-user-password-request.dto';
 import { HttpOperationException } from 'src/app/exception/http-operation.exception';
+import { CreateUserRequestDTO } from 'src/user/dto/request/create-user-request.dto';
 
 @Controller('dashboard')
 @ApiExcludeController()
@@ -32,24 +33,16 @@ export class DashboardController {
       {
         cssImports: [{filePath: '/styles/login.css'}],
         userMail: mail,
-        ...DashboardErrorMapper.mapValidationError(errorCode),
+        ...DashboardErrorMapper.mapValidationErrors(errorCode),
       },
     );
   }
 
   @Get('register')
-  public async getRegisterPage(@Request() req, @Res() res: Response): Promise<void> {    
-    const errorCode: string = req.query.errorCode ?? '';
-    const mail: string = req.query.mail ?? '';
-    
-    return DashboardResponseRender.renderWithoutUser(
+  public async getRegisterPage(@Request() req, @Res() res: Response): Promise<void> {   
+    return this.renderRegisterPage(
       res,
-      'login/register',
-      {
-        cssImports: [{filePath: '/styles/register.css'}],
-        userMail: mail,
-        ...DashboardErrorMapper.mapValidationError(errorCode),
-      },
+      new CreateUserRequestDTO(),
     );
   }
 
@@ -58,6 +51,20 @@ export class DashboardController {
   public async login(@Request() req, @Res() res: Response): Promise<void> {    
     res.redirect('/dashboard');
     return;
+  }
+
+  @Post('register')
+  public async registerUser(@Request() req, @Res() res: Response): Promise<void> { 
+    const createUserRequestDTO: CreateUserRequestDTO = CreateUserRequestDTO.fromDashboard(req.body);
+    
+    try {
+      await this.service.createUser(createUserRequestDTO);
+    } catch (errors) {
+      console.log(errors);
+      return this.renderRegisterPage(res, createUserRequestDTO, errors);
+    }  
+
+    return res.redirect('/dashboard/login');
   }
 
   @UseGuards(AuthenticatedGuard)
@@ -173,7 +180,7 @@ export class DashboardController {
         'login/forgot-password',
         {
           cssImports: [{filePath: '/styles/login.css'}],
-          ...DashboardErrorMapper.mapValidationError(exception.errorCode)
+          ...DashboardErrorMapper.mapValidationErrors(exception)
         }
       );
     }
@@ -194,12 +201,26 @@ export class DashboardController {
         'login/reset-password',
         {
           cssImports: [{filePath: '/styles/login.css'}],
-          ...DashboardErrorMapper.mapValidationError(exception.errorCode)
+          ...DashboardErrorMapper.mapValidationErrors(exception)
         }
       );
     }
 
     res.redirect('/dashboard/password-changed');  
+  }
+
+  private renderRegisterPage(@Res() res: Response, createUserRequestDTO: CreateUserRequestDTO, error: any = null): void {
+    console.log('renderRegisterPage');
+    return DashboardResponseRender.renderWithoutUser(
+      res,
+      'login/register',
+      {
+        cssImports: [{filePath: '/styles/register.css'}],
+        jsScripts: [{filePath: '/js/user-form.js'}],
+        ...DashboardErrorMapper.mapValidationErrors(error),
+        user: createUserRequestDTO,
+      },
+    );
   }
 
 }

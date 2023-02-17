@@ -1,5 +1,6 @@
 import { ValidationError } from "@nestjs/common";
 import { HttpOperationErrorCodes } from "src/app/exception/http-operation-error-codes";
+import { HttpOperationException } from "src/app/exception/http-operation.exception";
 
 export class DashboardErrorMapper {
 
@@ -13,6 +14,11 @@ export class DashboardErrorMapper {
     ['USR_002', 'Nome do usuário inválido'],
     ['USR_003', 'Email do usuário inválido'],
     ['USR_004', 'Tipo do usuário inválido'],
+    ['USR_008', 'CPF do usuário inválido'],
+    ['USR_009', 'Telefone do usuário inválido'],
+    ['USR_010', 'Endereço do usuário inválido'],
+    ['USR_011', 'Email já possui conta'],
+    ['USR_012', 'CPF já possui conta'],
     ['INC_001', 'Nome do tipo de incidente inválido'],
     ['INC_002', 'Descrição do tipo de incidente inválida'],
     ['INC_005', 'Título inválido'],
@@ -23,7 +29,18 @@ export class DashboardErrorMapper {
     ['AUTH_006', 'Token não encontrado'],
   ]);
 
-  public static mapValidationErrors(validationErrors: any[]): object {
+  public static mapValidationErrors(validationErrors: any): object {
+    if (validationErrors === null || validationErrors === undefined) {
+      return {
+        showError: false,
+        errors: [],
+      };
+    }
+
+    if (validationErrors instanceof HttpOperationException) {
+      return this.mapValidationError(validationErrors.errorCode);
+    }
+    
     const errors: string[] = [];
     let errorCodes: string[] = [];
 
@@ -58,7 +75,7 @@ export class DashboardErrorMapper {
     };
   }
 
-  public static mapValidationError(validationError: string): object {
+  private static mapValidationError(validationError: string): object {
     const errorCode: string | null = this.errorMap.get(validationError);
 
     if (errorCode) {

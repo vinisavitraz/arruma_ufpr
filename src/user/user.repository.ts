@@ -56,6 +56,10 @@ export class UserRepository {
     return await this.connection.user.findUnique({ where: { email: email } });
   }
 
+  public async findUserByDocument(document: string): Promise<user | null> {
+    return await this.connection.user.findUnique({ where: { document: document } });
+  }
+
   public async findUserByID(id: number): Promise<user | null> {
     return await this.connection.user.findUnique({ where: { id: id } })
   }
@@ -89,12 +93,18 @@ export class UserRepository {
     });
   }
 
-  public async deleteUser(user: UserEntity): Promise<void> {
+  public async inactivateUser(user: UserEntity): Promise<void> {
     await this.connection.user.update({ 
       where: { id: user.id },
       data: {
         status: UserStatusEnum.INACTIVE,
       },
+    });
+  }
+  
+  public async deleteUser(user: UserEntity): Promise<void> {
+    await this.connection.user.delete({ 
+      where: { id: user.id },
     });
   }
 

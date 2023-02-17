@@ -11,8 +11,9 @@ import { UserEntity } from './entity/user.entity';
 import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcrypt';
 import { ChangeUserPasswordRequestDTO } from './dto/request/change-user-password-request.dto';
-import { PasswordRulesValidator } from 'src/app/util/password-rules-validator';
+import { PasswordRulesValidator } from 'src/app/util/password-rules.validator';
 import { validateOrReject } from 'class-validator';
+import { InputFieldValidator } from 'src/app/util/input-field.validator';
 
 @Injectable()
 export class UserService {
@@ -70,12 +71,49 @@ export class UserService {
   }
 
   public async createUser(createUserRequestDTO: CreateUserRequestDTO): Promise<UserEntity> {
+    InputFieldValidator.validateEmail(createUserRequestDTO.email);
+    InputFieldValidator.validateDocument(createUserRequestDTO.document);
+    InputFieldValidator.validatePhoneNumber(createUserRequestDTO.phone);
+
+    createUserRequestDTO.document = createUserRequestDTO.document.replace('.', '').replace('-', '');
+    createUserRequestDTO.phone = createUserRequestDTO.phone.replace('(', '').replace(')', '').replace('-', '');
+
+    if (await this.repository.findUserByEmail(createUserRequestDTO.email) !== null) {
+      throw new HttpOperationException(
+        HttpStatus.BAD_REQUEST, 
+        'Email already exists on database', 
+        HttpOperationErrorCodes.DUPLICATED_USER_EMAIL,
+      );
+    }
+
+    if (await this.repository.findUserByDocument(createUserRequestDTO.document) !== null) {
+      throw new HttpOperationException(
+        HttpStatus.BAD_REQUEST, 
+        'Document already exists on database', 
+        HttpOperationErrorCodes.DUPLICATED_USER_DOCUMENT,
+      );
+    }
+
     const password: string = this.generatePassword();
     const hashedPassword: string = await this.hashPassword(password);
-    const userDb: user = await this.repository.createUser(createUserRequestDTO, hashedPassword);
-    await this.mailService.sendNewAccountMail(password, userDb.email);
 
-    return UserEntity.fromRepository(userDb);
+    let user: user | null = null;
+
+    try {
+      user = await this.repository.createUser(createUserRequestDTO, hashedPassword);
+      await this.mailService.sendNewAccountMail(password, user.email);
+
+      return UserEntity.fromRepository(user);
+    } catch (error) {
+      console.log('error sending mail');
+      console.log(error);
+      if (user !== null) {
+        await this.repository.deleteUser(user);
+      }
+      console.log('user deleted!');
+
+      throw error;
+    }
   }
 
   public async updateUser(updateUserRequestDTO: UpdateUserRequestDTO): Promise<UserEntity> {
@@ -89,7 +127,7 @@ export class UserService {
   public async deleteUser(userId: number): Promise<void> {
     const user: UserEntity = await this.findUserByIDOrCry(userId);
 
-    await this.repository.deleteUser(user);
+    await this.repository.inactivateUser(user);
   }
 
   public async changeUserPassword(changeUserPasswordRequestDTO: ChangeUserPasswordRequestDTO): Promise<void> {
