@@ -50,7 +50,7 @@ export class LocationController {
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Criar novo local' })
-  @ApiBody({ type: [CreateLocationRequestDTO] })
+  @ApiBody({ type: CreateLocationRequestDTO })
   @ApiOkResponse({ type: ListLocationResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
   public async createLocation(@Body() createLocationRequestDTO: CreateLocationRequestDTO): Promise<ListLocationResponseDTO> {
@@ -63,7 +63,7 @@ export class LocationController {
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Atualizar local' })
-  @ApiBody({ type: [UpdateLocationRequestDTO] })
+  @ApiBody({ type: UpdateLocationRequestDTO })
   @ApiOkResponse({ type: ListLocationResponseDTO })
   @ApiNotFoundResponse({type: LocationNotFoundExample})
   @ApiUnauthorizedResponse({type: UnauthorizedExample})

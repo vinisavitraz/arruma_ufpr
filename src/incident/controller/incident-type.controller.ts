@@ -49,7 +49,7 @@ export class IncidentTypeController {
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Criar novo tipo de incidente' })
-  @ApiBody({ type: [CreateIncidentTypeRequestDTO] })
+  @ApiBody({ type: CreateIncidentTypeRequestDTO })
   @ApiOkResponse({ type: ListIncidentTypeResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
   public async createIncidentType(@Body() createIncidentTypeRequestDTO: CreateIncidentTypeRequestDTO): Promise<ListIncidentTypeResponseDTO> {
@@ -62,7 +62,7 @@ export class IncidentTypeController {
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Atualizar tipo de incidente' })
-  @ApiBody({ type: [UpdateIncidentTypeRequestDTO] })
+  @ApiBody({ type: UpdateIncidentTypeRequestDTO })
   @ApiOkResponse({ type: ListIncidentTypeResponseDTO })
   @ApiNotFoundResponse({type: IncidentTypeNotFoundExample})
   @ApiUnauthorizedResponse({type: UnauthorizedExample})

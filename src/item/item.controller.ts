@@ -38,7 +38,7 @@ export class ItemController {
   @ApiOperation({ summary: 'Listar todos os itens' })
   @ApiOkResponse({ type: ListItemsResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
-  public async listLocations(): Promise<ListItemsResponseDTO> {
+  public async listItems(): Promise<ListItemsResponseDTO> {
     const items: ItemEntity[] = await this.itemService.findItems();
     
     return new ListItemsResponseDTO(items);
@@ -48,7 +48,7 @@ export class ItemController {
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Criar novo item' })
-  @ApiBody({ type: [CreateItemRequestDTO] })
+  @ApiBody({ type: CreateItemRequestDTO })
   @ApiOkResponse({ type: ListItemResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
   public async createItem(@Body() createItemRequestDTO: CreateItemRequestDTO): Promise<ListItemResponseDTO> {
@@ -61,7 +61,7 @@ export class ItemController {
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Atualizar item' })
-  @ApiBody({ type: [UpdateItemRequestDTO] })
+  @ApiBody({ type: UpdateItemRequestDTO })
   @ApiOkResponse({ type: ListItemResponseDTO })
   @ApiNotFoundResponse({type: ItemNotFoundExample})
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
