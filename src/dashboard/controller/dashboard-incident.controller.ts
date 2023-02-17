@@ -57,7 +57,7 @@ export class DashboardIncidentController {
   public async getUserIncidentsPage(@Request() req, @Res() res: Response): Promise<void> { 
     const incidentPageContent: IncidentsPageContent = IncidentsPageContent.fromQueryParams('userIncident', req.query);
     const incidents: IncidentEntity[] = await this.service.findUserIncidentsByStatus(req.user, incidentPageContent);
-    console.log(incidents);
+    
     incidentPageContent.total = await this.service.findTotalIncidentsByStatusAndUser(
       incidentPageContent.incidentStatus,
       req.user.id,
@@ -224,15 +224,11 @@ export class DashboardIncidentController {
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getIncidentsPage(@Request() req, @Res() res: Response): Promise<void> { 
     const incidentPageContent: IncidentsPageContent = IncidentsPageContent.fromQueryParams('incident', req.query);
-    console.log('getIncidentsPage');
-    console.log(incidentPageContent);
     const incidents: IncidentEntity[] = await this.service.findIncidentsByStatus(incidentPageContent);
     incidentPageContent.total = await this.service.findTotalIncidentsByStatusAndUser(
       incidentPageContent.incidentStatus,
       undefined,
     );
-    
-    console.log(incidents);
     
     return this.renderIncidentsPage(
       res, 

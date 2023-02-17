@@ -28,6 +28,7 @@ export class IncidentRepository {
       skip: searchIncidentsRequestDTO.skip,
       take: searchIncidentsRequestDTO.maxPerPage,
       where: {
+        id: searchIncidentsRequestDTO.incidentId,
         title: {
           contains: searchIncidentsRequestDTO.incidentTitle,
           mode: 'insensitive',
