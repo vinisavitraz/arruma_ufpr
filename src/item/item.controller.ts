@@ -2,15 +2,9 @@ import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuard
 import { ApiBearerAuth, ApiBody, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { UnauthorizedExample } from 'src/app/docs/example/auth/unauthorized-example';
 import { ItemNotFoundExample } from 'src/app/docs/example/item/item-not-found-example';
-import { LocationNotFoundExample } from 'src/app/docs/example/location/location-not-found-example';
 import { RoleEnum } from 'src/app/enum/role.enum';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { Roles } from 'src/auth/roles/require-roles.decorator';
-import { CreateLocationRequestDTO } from 'src/location/dto/request/create-location-request.dto';
-import { UpdateLocationRequestDTO } from 'src/location/dto/request/update-location-request.dto';
-import { DeleteLocationResponseDTO } from 'src/location/dto/response/delete-location-response.dto';
-import { ListLocationResponseDTO } from 'src/location/dto/response/list-location-response.dto';
-import { LocationEntity } from 'src/location/entity/location.entity';
 import { CreateItemRequestDTO } from './dto/request/create-item-request.dto';
 import { UpdateItemRequestDTO } from './dto/request/update-item-request.dto';
 import { DeleteItemResponseDTO } from './dto/response/delete-item-response.dto';

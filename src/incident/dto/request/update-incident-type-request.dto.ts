@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsInt, IsNumber, IsString, MaxLength, MinLength } from "class-validator";
+import { IsInt, IsString, MaxLength, MinLength } from "class-validator";
 import { HttpOperationErrorCodes } from "src/app/exception/http-operation-error-codes";
 import { IncidentTypeEntity } from "src/incident/entity/incident-type.entity";
 
@@ -14,7 +14,6 @@ export class UpdateIncidentTypeRequestDTO {
   @MaxLength(100, {message: HttpOperationErrorCodes.INVALID_INCIDENT_TYPE_NAME})
   @ApiProperty({example: 'Manutenção'})
   name: string;
-
 
   @IsString({message: HttpOperationErrorCodes.INVALID_INCIDENT_TYPE_DESCRIPTION})
   @MinLength(1, {message: HttpOperationErrorCodes.INVALID_INCIDENT_TYPE_DESCRIPTION})

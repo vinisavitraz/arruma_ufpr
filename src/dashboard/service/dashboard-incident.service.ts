@@ -8,7 +8,7 @@ import { CreateIncidentRequestDTO } from 'src/incident/dto/request/create-incide
 import { IncidentInteractionEntity } from 'src/incident/entity/incident-interaction.entity';
 import { IncidentTypeEntity } from 'src/incident/entity/incident-type.entity';
 import { IncidentEntity } from 'src/incident/entity/incident.entity';
-import { IncidentService } from 'src/incident/incident.service';
+import { IncidentService } from 'src/incident/service/incident.service';
 import { ItemEntity } from 'src/item/entity/item.entity';
 import { ItemService } from 'src/item/item.service';
 import { LocationEntity } from 'src/location/entity/location.entity';

@@ -3,7 +3,7 @@ import { validateOrReject } from 'class-validator';
 import { RoleEnum } from 'src/app/enum/role.enum';
 import { IncidentStatusEnum } from 'src/app/enum/status.enum';
 import { AuthService } from 'src/auth/auth.service';
-import { IncidentService } from 'src/incident/incident.service';
+import { IncidentService } from 'src/incident/service/incident.service';
 import { ItemService } from 'src/item/item.service';
 import { LocationService } from 'src/location/location.service';
 import { ChangeUserPasswordRequestDTO } from 'src/user/dto/request/change-user-password-request.dto';

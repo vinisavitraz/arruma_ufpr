@@ -3,7 +3,7 @@ import { validateOrReject } from 'class-validator';
 import { CreateIncidentTypeRequestDTO } from 'src/incident/dto/request/create-incident-type-request.dto';
 import { UpdateIncidentTypeRequestDTO } from 'src/incident/dto/request/update-incident-type-request.dto';
 import { IncidentTypeEntity } from 'src/incident/entity/incident-type.entity';
-import { IncidentService } from 'src/incident/incident.service';
+import { IncidentService } from 'src/incident/service/incident.service';
 import { IncidentTypesPageContent } from '../content/incident-types-page.content';
 import { SearchIncidentTypesRequestDTO } from '../dto/request/search-incident-types-request.dto';
 

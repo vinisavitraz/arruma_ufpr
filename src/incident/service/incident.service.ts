@@ -15,14 +15,14 @@ import { CreateLocationRequestDTO } from 'src/location/dto/request/create-locati
 import { LocationEntity } from 'src/location/entity/location.entity';
 import { LocationService } from 'src/location/location.service';
 import { UserEntity } from 'src/user/entity/user.entity';
-import { CreateIncidentInteractionRequestDTO } from './dto/request/create-incident-interaction-request.dto';
-import { CreateIncidentRequestDTO } from './dto/request/create-incident-request.dto';
-import { CreateIncidentTypeRequestDTO } from './dto/request/create-incident-type-request.dto';
-import { UpdateIncidentTypeRequestDTO } from './dto/request/update-incident-type-request.dto';
-import { IncidentInteractionEntity } from './entity/incident-interaction.entity';
-import { IncidentTypeEntity } from './entity/incident-type.entity';
-import { IncidentEntity } from './entity/incident.entity';
-import { IncidentRepository } from './incident.repository';
+import { CreateIncidentInteractionRequestDTO } from '../dto/request/create-incident-interaction-request.dto';
+import { CreateIncidentRequestDTO } from '../dto/request/create-incident-request.dto';
+import { CreateIncidentTypeRequestDTO } from '../dto/request/create-incident-type-request.dto';
+import { UpdateIncidentTypeRequestDTO } from '../dto/request/update-incident-type-request.dto';
+import { IncidentInteractionEntity } from '../entity/incident-interaction.entity';
+import { IncidentTypeEntity } from '../entity/incident-type.entity';
+import { IncidentEntity } from '../entity/incident.entity';
+import { IncidentRepository } from '../incident.repository';
 
 @Injectable()
 export class IncidentService {
@@ -73,6 +73,32 @@ export class IncidentService {
 
     return incidentTypesDb.map((incidentType: incident_type) => {
       return IncidentTypeEntity.fromRepository(incidentType);
+    });
+  }
+
+  public async findIncidents(): Promise<IncidentEntity[]> {
+    const incidentsDb: (
+      incident & {
+        interactions: incident_interaction[], 
+        admin: user | null, 
+        user: user, 
+        incident_type: incident_type, 
+        location: location, 
+        item: item,
+      }
+    )[] = await this.repository.findIncidents();
+
+    return incidentsDb.map((
+      incident: incident & {
+        interactions: incident_interaction[], 
+        admin: user | null, 
+        user: user, 
+        incident_type: incident_type, 
+        location: location, 
+        item: item,
+      }
+    ) => {
+      return IncidentEntity.fromRepository(incident);
     });
   }
 

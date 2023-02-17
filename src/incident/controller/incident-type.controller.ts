@@ -5,22 +5,19 @@ import { IncidentTypeNotFoundExample } from 'src/app/docs/example/incident/incid
 import { RoleEnum } from 'src/app/enum/role.enum';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { Roles } from 'src/auth/roles/require-roles.decorator';
-import { CreateIncidentRequestDTO } from './dto/request/create-incident-request.dto';
-import { CreateIncidentTypeRequestDTO } from './dto/request/create-incident-type-request.dto';
-import { UpdateIncidentTypeRequestDTO } from './dto/request/update-incident-type-request.dto';
-import { DeleteIncidentTypeResponseDTO } from './dto/response/delete-incident-type-response.dto';
-import { ListIncidentResponseDTO } from './dto/response/list-incident-response.dto';
-import { ListIncidentTypeResponseDTO } from './dto/response/list-incident-type-response.dto';
-import { ListIncidentTypesResponseDTO } from './dto/response/list-incident-types-response.dto';
-import { IncidentTypeEntity } from './entity/incident-type.entity';
-import { IncidentEntity } from './entity/incident.entity';
-import { IncidentService } from './incident.service';
+import { CreateIncidentTypeRequestDTO } from '../dto/request/create-incident-type-request.dto';
+import { UpdateIncidentTypeRequestDTO } from '../dto/request/update-incident-type-request.dto';
+import { DeleteIncidentTypeResponseDTO } from '../dto/response/delete-incident-type-response.dto';
+import { ListIncidentTypeResponseDTO } from '../dto/response/list-incident-type-response.dto';
+import { ListIncidentTypesResponseDTO } from '../dto/response/list-incident-types-response.dto';
+import { IncidentTypeEntity } from '../entity/incident-type.entity';
+import { IncidentService } from '../service/incident.service';
 
 @ApiBearerAuth()
 @ApiHeader({name: 'Authorization'})
-@Controller('incident')
-@ApiTags('incident')
-export class IncidentController {
+@Controller('incident/type')
+@ApiTags('incident type')
+export class IncidentTypeController {
   constructor(private readonly incidentService: IncidentService) {}
 
   @Get()
@@ -49,19 +46,6 @@ export class IncidentController {
   }
 
   @Post()
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Criar novo incidente' })
-  @ApiBody({ type: CreateIncidentRequestDTO })
-  @ApiOkResponse({ type: ListIncidentResponseDTO })
-  @ApiUnauthorizedResponse({type: UnauthorizedExample})
-  public async createIncident(@Body() createIncidentRequestDTO: CreateIncidentRequestDTO): Promise<ListIncidentResponseDTO> {
-    const incident: IncidentEntity = await this.incidentService.createIncident(createIncidentRequestDTO);
-    
-    return new ListIncidentResponseDTO(incident);
-  }
-
-  @Post('type')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Criar novo tipo de incidente' })

@@ -20,67 +20,6 @@ export class IncidentRepository {
     this.connection = databaseService;
   }
 
-  public async findIncidentsByStatus(
-    status: string | undefined,
-    skip: number,
-    take: number,
-  ): Promise<(incident & {interactions: incident_interaction[], admin: user | null, user: user})[]> {
-    return await this.connection.incident.findMany({
-      where: {
-        status: status,
-      },
-      skip: skip,
-      take: take,
-      orderBy: [
-        {
-          id: 'desc',
-        },
-      ],
-      include: {
-        interactions: true,
-        admin: true,
-        user: true,
-      },
-    });
-  }
-
-  public async findUserIncidentsByStatus(
-    user: UserEntity, 
-    status: string | undefined,
-    skip: number,
-    take: number,
-  ): Promise<(incident & {interactions: incident_interaction[], admin: user | null, user: user})[]> {
-    let where: any = {};
-
-    if (user.role === RoleEnum.ADMIN) {
-      where = {
-        admin_id: user.id,
-        status: status,
-      };
-    } else {
-      where = {
-        user_id: user.id,
-        status: status,
-      };
-    }
-    
-    return await this.connection.incident.findMany({
-      where: where,
-      skip: skip,
-      take: take,
-      orderBy: [
-        {
-          id: 'desc',
-        },
-      ],
-      include: {
-        interactions: true,
-        admin: true,
-        user: true,
-      },
-    });
-  }
-
   public async searchIncidents(
     searchIncidentsRequestDTO: SearchIncidentsRequestDTO,
     user: UserEntity | null,
@@ -159,6 +98,27 @@ export class IncidentRepository {
           id: 'desc',
         },
       ],
+    });
+  }
+
+  public async findIncidents(): Promise<(incident & {interactions: incident_interaction[], admin: user | null, user: user, incident_type: incident_type, location: location, item: item})[]> {
+    return await this.connection.incident.findMany({
+      where: {
+        status: EntityStatusEnum.ACTIVE,
+      },
+      orderBy: [
+        {
+          id: 'asc',
+        },
+      ],
+      include: {
+        interactions: true,
+        admin: true,
+        user: true,
+        incident_type: true,
+        location: true,
+        item: true,
+      },
     });
   }
 
