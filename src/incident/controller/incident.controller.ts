@@ -1,19 +1,13 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { UnauthorizedExample } from 'src/app/docs/example/auth/unauthorized-example';
 import { IncidentNotFoundExample } from 'src/app/docs/example/incident/incident-not-found-example';
-import { IncidentTypeNotFoundExample } from 'src/app/docs/example/incident/incident-type-not-found-example';
 import { RoleEnum } from 'src/app/enum/role.enum';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { Roles } from 'src/auth/roles/require-roles.decorator';
 import { CreateIncidentRequestDTO } from '../dto/request/create-incident-request.dto';
-import { UpdateIncidentTypeRequestDTO } from '../dto/request/update-incident-type-request.dto';
-import { DeleteIncidentTypeResponseDTO } from '../dto/response/delete-incident-type-response.dto';
 import { ListIncidentResponseDTO } from '../dto/response/list-incident-response.dto';
-import { ListIncidentTypeResponseDTO } from '../dto/response/list-incident-type-response.dto';
-import { ListIncidentTypesResponseDTO } from '../dto/response/list-incident-types-response.dto';
 import { ListIncidentsResponseDTO } from '../dto/response/list-incidents-response.dto';
-import { IncidentTypeEntity } from '../entity/incident-type.entity';
 import { IncidentEntity } from '../entity/incident.entity';
 import { IncidentService } from '../service/incident.service';
 

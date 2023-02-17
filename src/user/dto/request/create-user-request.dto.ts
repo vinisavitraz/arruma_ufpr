@@ -14,6 +14,23 @@ export class CreateUserRequestDTO {
   @ApiProperty({example: 'John Doe'})
   name: string;
 
+  @IsString({message: HttpOperationErrorCodes.INVALID_USER_DOCUMENT})
+  @MinLength(1, {message: HttpOperationErrorCodes.INVALID_USER_DOCUMENT})
+  @MaxLength(15, {message: HttpOperationErrorCodes.INVALID_USER_DOCUMENT})
+  @ApiProperty({example: '53089037009'})
+  document: string;
+
+  @IsString({message: HttpOperationErrorCodes.INVALID_USER_PHONE})
+  @MinLength(1, {message: HttpOperationErrorCodes.INVALID_USER_PHONE})
+  @MaxLength(15, {message: HttpOperationErrorCodes.INVALID_USER_PHONE})
+  @ApiProperty({example: '41996691200'})
+  phone: string;
+
+  @IsString({message: HttpOperationErrorCodes.INVALID_USER_ADDRESS})
+  @MinLength(1, {message: HttpOperationErrorCodes.INVALID_USER_ADDRESS})
+  @MaxLength(500, {message: HttpOperationErrorCodes.INVALID_USER_ADDRESS})
+  @ApiProperty({example: 'Fake quarter, number 1 - PR'})
+  address: string;
 
   @IsString({message: HttpOperationErrorCodes.INVALID_USER_EMAIL})
   @MinLength(1, {message: HttpOperationErrorCodes.INVALID_USER_EMAIL})
@@ -30,6 +47,9 @@ export class CreateUserRequestDTO {
 
     createUserRequestDTO.id = Number(payload['id']) ?? 0;
     createUserRequestDTO.name = payload['name'] ?? '';
+    createUserRequestDTO.document = payload['document'] ?? '';
+    createUserRequestDTO.phone = payload['phone'] ?? '';
+    createUserRequestDTO.address = payload['address'] ?? '';
     createUserRequestDTO.email = payload['email'] ?? '';
     createUserRequestDTO.role = Number(payload['role']) ?? 0;
 
@@ -41,6 +61,9 @@ export class CreateUserRequestDTO {
 
     createUserRequestDTO.id = user.id;
     createUserRequestDTO.name = user.name;
+    createUserRequestDTO.document = user.document;
+    createUserRequestDTO.phone = user.phone;
+    createUserRequestDTO.address = user.address;
     createUserRequestDTO.email = user.email;
     createUserRequestDTO.role = user.role;
 

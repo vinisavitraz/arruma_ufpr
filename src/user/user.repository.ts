@@ -64,6 +64,9 @@ export class UserRepository {
     return await this.connection.user.create({ 
       data: {
         name: createUserRequestDTO.name,
+        document: createUserRequestDTO.document,
+        phone: createUserRequestDTO.phone,
+        address: createUserRequestDTO.address,
         email: createUserRequestDTO.email,
         role: createUserRequestDTO.role,
         password: generatedPassword,
@@ -77,6 +80,9 @@ export class UserRepository {
       where: { id: updateUserRequestDTO.id },
       data: {
         name: updateUserRequestDTO.name,
+        document: updateUserRequestDTO.document,
+        phone: updateUserRequestDTO.phone,
+        address: updateUserRequestDTO.address,
         email: updateUserRequestDTO.email,
         role: updateUserRequestDTO.role,
       },

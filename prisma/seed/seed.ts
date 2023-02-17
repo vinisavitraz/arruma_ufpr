@@ -13,6 +13,9 @@ async function main() {
       name: 'Professor 1',
       role: 0,
       status: 'ativo',
+      phone: '41996690000',
+      document: '14318817083',
+      address: 'Fake street, number 2 - PR',
     },
   });
 
@@ -25,9 +28,11 @@ async function main() {
       name: 'Estudante 1',
       role: 1,
       status: 'ativo',
+      phone: '41996691200',
+      document: '53089037009',
+      address: 'Fake quarter, number 1 - PR',
     },
   });
-
 }
 
 main()

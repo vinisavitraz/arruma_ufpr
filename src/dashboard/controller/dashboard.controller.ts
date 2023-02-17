@@ -37,6 +37,22 @@ export class DashboardController {
     );
   }
 
+  @Get('register')
+  public async getRegisterPage(@Request() req, @Res() res: Response): Promise<void> {    
+    const errorCode: string = req.query.errorCode ?? '';
+    const mail: string = req.query.mail ?? '';
+    
+    return DashboardResponseRender.renderWithoutUser(
+      res,
+      'login/register',
+      {
+        cssImports: [{filePath: '/styles/register.css'}],
+        userMail: mail,
+        ...DashboardErrorMapper.mapValidationError(errorCode),
+      },
+    );
+  }
+
   @UseGuards(AuthGuard('local'), DashboardAuthGuard)
   @Post('login')
   public async login(@Request() req, @Res() res: Response): Promise<void> {    
