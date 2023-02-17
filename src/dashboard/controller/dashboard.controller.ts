@@ -210,7 +210,6 @@ export class DashboardController {
   }
 
   private renderRegisterPage(@Res() res: Response, createUserRequestDTO: CreateUserRequestDTO, error: any = null): void {
-    console.log('renderRegisterPage');
     return DashboardResponseRender.renderWithoutUser(
       res,
       'login/register',

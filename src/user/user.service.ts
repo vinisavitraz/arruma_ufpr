@@ -74,6 +74,7 @@ export class UserService {
     InputFieldValidator.validateEmail(createUserRequestDTO.email);
     InputFieldValidator.validateDocument(createUserRequestDTO.document);
     InputFieldValidator.validatePhoneNumber(createUserRequestDTO.phone);
+    InputFieldValidator.validateName(createUserRequestDTO.name);
 
     createUserRequestDTO.document = createUserRequestDTO.document.replace('.', '').replace('-', '');
     createUserRequestDTO.phone = createUserRequestDTO.phone.replace('(', '').replace(')', '').replace('-', '');
@@ -105,12 +106,9 @@ export class UserService {
 
       return UserEntity.fromRepository(user);
     } catch (error) {
-      console.log('error sending mail');
-      console.log(error);
       if (user !== null) {
         await this.repository.deleteUser(user);
       }
-      console.log('user deleted!');
 
       throw error;
     }

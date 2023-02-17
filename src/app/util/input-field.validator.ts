@@ -108,6 +108,24 @@ export class InputFieldValidator {
     }
   }
 
+  public static validateName(name: string): void {
+    if (this.isEmpty(name)) {
+      throw new HttpOperationException(
+        HttpStatus.BAD_REQUEST, 
+        'Invalid name', 
+        HttpOperationErrorCodes.INVALID_USER_NAME,
+      );
+    }
+
+    if (!(/^[A-Za-z\s]+$/.test(name))) {
+      throw new HttpOperationException(
+        HttpStatus.BAD_REQUEST, 
+        'Invalid name', 
+        HttpOperationErrorCodes.INVALID_USER_NAME,
+      );
+    }
+  }
+
   private static isEmpty(value: string): boolean {
     return value === '';
   }
