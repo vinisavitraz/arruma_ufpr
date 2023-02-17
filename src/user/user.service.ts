@@ -14,13 +14,19 @@ import { ChangeUserPasswordRequestDTO } from './dto/request/change-user-password
 import { PasswordRulesValidator } from 'src/app/util/password-rules.validator';
 import { validateOrReject } from 'class-validator';
 import { InputFieldValidator } from 'src/app/util/input-field.validator';
+import { TokenEntity } from 'src/token/entity/token.entity';
+import { TokenService } from 'src/token/token.service';
 
 @Injectable()
 export class UserService {
 
   private repository: UserRepository;
 
-  constructor(private databaseService: DatabaseService, private mailService: MailService) {
+  constructor(
+    private databaseService: DatabaseService,
+    private mailService: MailService,
+    private tokenService: TokenService,
+  ) {
       this.repository = new UserRepository(this.databaseService);
   }
 
@@ -70,7 +76,7 @@ export class UserService {
     return UserEntity.fromRepository(userDb);
   }
 
-  public async createUser(createUserRequestDTO: CreateUserRequestDTO): Promise<UserEntity> {
+  public async createUser(host: string, createUserRequestDTO: CreateUserRequestDTO): Promise<UserEntity> {
     InputFieldValidator.validateEmail(createUserRequestDTO.email);
     InputFieldValidator.validateDocument(createUserRequestDTO.document);
     InputFieldValidator.validatePhoneNumber(createUserRequestDTO.phone);
@@ -95,14 +101,12 @@ export class UserService {
       );
     }
 
-    const password: string = this.generatePassword();
-    const hashedPassword: string = await this.hashPassword(password);
-
+    const hashedPassword: string = await this.hashPassword(this.generatePassword());
     let user: user | null = null;
 
     try {
       user = await this.repository.createUser(createUserRequestDTO, hashedPassword);
-      await this.mailService.sendNewAccountMail(password, user.email);
+      await this.sendCreateUserPasswordMail(host, user.email);
 
       return UserEntity.fromRepository(user);
     } catch (error) {
@@ -141,6 +145,26 @@ export class UserService {
 
   public async findTotalUsers(): Promise<number> {
     return await this.repository.findTotalUsers();
+  }
+
+  public async sendCreateUserPasswordMail(host: string, email: string): Promise<void> {
+    const user = await this.findUserByEmailOrCry(email);
+    const token: TokenEntity = await this.tokenService.getNewResetPasswordToken(user);
+
+    await this.mailService.sendCreatePasswordMail(host, token.number, email);
+  }
+
+  public async sendResetUserPasswordMail(host: string, email: string): Promise<void> {
+    const user = await this.findUserByEmailOrCry(email);
+    const token: TokenEntity = await this.tokenService.getNewResetPasswordToken(user);
+
+    await this.mailService.sendResetPasswordMail(host, token.number, email);
+  }
+  
+  public async findUserByResetPasswordToken(tokenNumber: string): Promise<UserEntity> {
+    const token: TokenEntity = await this.tokenService.getAndDeleteResetPasswordToken(tokenNumber);
+
+    return await this.findUserByIDOrCry(token.userId);
   }
 
   private generatePassword(): string {

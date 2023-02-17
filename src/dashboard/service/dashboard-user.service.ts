@@ -31,10 +31,10 @@ export class DashboardUserService {
     return await this.userService.findUserByIDOrCry(id);
   }
 
-  public async createUser(createUserRequestDTO: CreateUserRequestDTO): Promise<void> {
+  public async createUser(host: string, createUserRequestDTO: CreateUserRequestDTO): Promise<void> {
     await validateOrReject(createUserRequestDTO);
 
-    await this.userService.createUser(createUserRequestDTO); 
+    await this.userService.createUser(host, createUserRequestDTO); 
   }
 
   public async updateUser(updateUserRequestDTO: UpdateUserRequestDTO): Promise<void> {

@@ -35,17 +35,17 @@ export class DashboardService {
   public async forgotPassword(host: string, forgotPasswordRequestDTO: ForgotPasswordRequestDTO): Promise<void> {
     await validateOrReject(forgotPasswordRequestDTO);
 
-    await this.authService.requestForgotPasswordLink(host, forgotPasswordRequestDTO.email);
+    await this.userService.sendResetUserPasswordMail(host, forgotPasswordRequestDTO.email);
   }
 
   public async findUserByRecoverPasswordToken(tokenNumber: string): Promise<UserEntity> {
-    return await this.authService.findUserByRecoverPasswordToken(tokenNumber);
+    return await this.userService.findUserByResetPasswordToken(tokenNumber);
   }
 
-  public async createUser(createUserRequestDTO: CreateUserRequestDTO): Promise<void> {
+  public async createUser(host: string, createUserRequestDTO: CreateUserRequestDTO): Promise<void> {
     await validateOrReject(createUserRequestDTO);
 
-    await this.userService.createUser(createUserRequestDTO); 
+    await this.userService.createUser(host, createUserRequestDTO); 
   }
 
   public async changeUserPassword(changeUserPasswordRequestDTO: ChangeUserPasswordRequestDTO): Promise<void> {

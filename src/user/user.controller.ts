@@ -1,4 +1,4 @@
-import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuards, UseInterceptors, Request } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { UnauthorizedExample } from 'src/app/docs/example/auth/unauthorized-example';
 import { UserNotFoundExample } from 'src/app/docs/example/user/user-not-found-example';
@@ -53,8 +53,10 @@ export class UserController {
   @ApiBody({ type: CreateUserRequestDTO })
   @ApiOkResponse({ type: ListUserResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
-  public async createUser(@Body() createUserRequestDTO: CreateUserRequestDTO): Promise<ListUserResponseDTO> {
-    const user: UserEntity = await this.userService.createUser(createUserRequestDTO);
+  public async createUser(@Request() req, @Body() createUserRequestDTO: CreateUserRequestDTO): Promise<ListUserResponseDTO> {
+    const host: string = req.protocol + '://' + req.get('host');
+
+    const user: UserEntity = await this.userService.createUser(host, createUserRequestDTO);
     
     return new ListUserResponseDTO(user);
   }

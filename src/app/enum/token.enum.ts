@@ -1,4 +1,4 @@
 export enum TokenType {
   AUTH = 'auth',
-  RECOVER_PASSWORD = 'recover_password',
+  RESET_PASSWORD = 'reset_password',
 }

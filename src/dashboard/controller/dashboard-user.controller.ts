@@ -94,10 +94,11 @@ export class DashboardUserController {
   @Roles(RoleEnum.ADMIN)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async createUser(@Request() req, @Res() res: Response): Promise<void> { 
+    const host: string = req.protocol + '://' + req.get('host');
     const createUserRequestDTO: CreateUserRequestDTO = CreateUserRequestDTO.fromDashboard(req.body);
     
     try {
-      await this.service.createUser(createUserRequestDTO);
+      await this.service.createUser(host, createUserRequestDTO);
     } catch (errors) {
       return DashboardResponseRender.renderForAuthenticatedUser(
         res,

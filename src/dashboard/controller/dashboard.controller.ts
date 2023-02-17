@@ -55,10 +55,11 @@ export class DashboardController {
 
   @Post('register')
   public async registerUser(@Request() req, @Res() res: Response): Promise<void> { 
+    const host: string = req.protocol + '://' + req.get('host');
     const createUserRequestDTO: CreateUserRequestDTO = CreateUserRequestDTO.fromDashboard(req.body);
     
     try {
-      await this.service.createUser(createUserRequestDTO);
+      await this.service.createUser(host, createUserRequestDTO);
     } catch (errors) {
       console.log(errors);
       return this.renderRegisterPage(res, createUserRequestDTO, errors);

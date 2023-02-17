@@ -13,9 +13,20 @@ import { ClassValidatorExceptionFilter } from './exception/filter/class-validato
 import { HttpOperationExceptionFilter } from './exception/filter/http-operation-exception-filter';
 import { AllExceptionsFilter } from './exception/filter/all-exception-filter';
 import { MailModule } from 'src/mail/mail.module';
+import { TokenModule } from 'src/token/token.module';
 
 @Module({
-  imports: [DatabaseModule, AuthModule, DashboardModule, LocationModule, ItemModule, UserModule, IncidentModule, MailModule],
+  imports: [
+    DatabaseModule, 
+    AuthModule, 
+    DashboardModule, 
+    LocationModule, 
+    ItemModule, 
+    UserModule, 
+    IncidentModule, 
+    MailModule,
+    TokenModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,

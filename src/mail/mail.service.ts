@@ -47,6 +47,33 @@ private async overrideMailAuthenticationDetailsUsingConfiguration(): Promise<voi
     return response;
   }
 
+  public async sendCreatePasswordMail(
+    host: string,
+    token: string,
+    emailReceiver: string,
+  ): Promise<void> {
+    const recoverPasswordLink: string = host + '/dashboard/reset-password?token=' + token;
+
+    const response = await this.mailerService.sendMail({
+      transporterName: 'custom',
+      to: emailReceiver,
+      subject: 'ArrumaUFPR - Criar nova senha',
+      template: './reset-password',
+      context: {
+          title: 'Novo por aqui? Configure sua nova senha!',
+          recoverPasswordLink: recoverPasswordLink,
+          description: 'Clique no botão abaixo para configurar sua nova senha.',
+      },
+    });
+
+    if (response.rejected.length > 0) {
+      console.log('error sending mail!');
+      return;
+    }
+
+    return response;
+  }
+
   public async sendResetPasswordMail(
     host: string,
     token: string,
@@ -62,6 +89,7 @@ private async overrideMailAuthenticationDetailsUsingConfiguration(): Promise<voi
       context: {
           title: 'Esqueceu sua senha? Não tem problema!',
           recoverPasswordLink: recoverPasswordLink,
+          description: 'Clique no botão abaixo para recuperar a senha da sua conta ArrumaUFPR. Se você não fez essa solicitação, por favor ignore esse email.',
       },
     });
 
