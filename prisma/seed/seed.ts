@@ -5,12 +5,12 @@ const prisma  = new PrismaClient();
 async function main() {
   
   const userTeacher: user = await prisma.user.upsert({
-    where: { email: 't@mail' },
+    where: { email: 'admin@mail.com' },
     update: {},
     create: {
-      email: 't@mail',
+      email: 'admin@mail.com',
       password: '$2b$10$sNMPhHviR4DMUgPDc8QUyeeTWZGxVyiEDY94KxySZegcLr5ai/MIC',
-      name: 'Professor 1',
+      name: 'Admin',
       role: 0,
       status: 'ativo',
       phone: '41996690000',
@@ -20,12 +20,12 @@ async function main() {
   });
 
   const userStudent: user = await prisma.user.upsert({
-    where: { email: 's@mail' },
+    where: { email: 'user@mail.com' },
     update: {},
     create: {
-      email: 's@mail',
+      email: 'user@mail.com',
       password: '$2b$10$sNMPhHviR4DMUgPDc8QUyeeTWZGxVyiEDY94KxySZegcLr5ai/MIC',
-      name: 'Estudante 1',
+      name: 'Usuário teste',
       role: 1,
       status: 'ativo',
       phone: '41996691200',
