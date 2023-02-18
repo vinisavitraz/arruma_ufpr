@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 
-export class AuthResponseDto {
+export class AuthResponseDTO {
 
   @ApiProperty({example: 1})
   readonly userId: number;

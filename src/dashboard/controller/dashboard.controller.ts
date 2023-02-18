@@ -22,6 +22,7 @@ export class DashboardController {
   
   constructor(private readonly service: DashboardService) {}
 
+
   @Get('login')
   public async getLoginPage(@Request() req, @Res() res: Response): Promise<void> {    
     const errorCode: string = req.query.errorCode ?? '';

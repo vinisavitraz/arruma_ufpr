@@ -45,6 +45,16 @@ export class TokenService {
     return null;    
   }
 
+  public async findTokenByNumberAndType(tokenNumber: string, type: TokenType): Promise<TokenEntity | null> {
+    const token: user_token | null = await this.repository.findTokenByNumberAndType(tokenNumber, type);
+    
+    if (token) {
+      return TokenEntity.fromRepository(token);
+    }
+
+    return null;    
+  }
+
   public async validateUserToken(userId: number, tokenFromRequest: string): Promise<void> {
     const activeToken: TokenEntity = await this.findUserTokenOrCry(userId, TokenType.AUTH);
 
@@ -86,6 +96,10 @@ export class TokenService {
     await this.repository.deleteToken(activeRecoverPasswordToken.id);
 
     return TokenEntity.fromRepository(activeRecoverPasswordToken);
+  }
+
+  public async deleteToken(token: TokenEntity): Promise<void> {
+    await this.repository.deleteToken(token.id);
   }
 
   public async findUserTokenOrCry(userId: number, type: TokenType): Promise<TokenEntity> {
@@ -151,6 +165,12 @@ export class TokenService {
     const tokenDb: user_token = await this.repository.saveToken(token);
     
     return TokenEntity.fromRepository(tokenDb);
+  }
+
+  public async updateTokenExpireDate(token: TokenEntity, newExpireDate: Date): Promise<TokenEntity> {
+    const updatedToken: user_token = await this.repository.updateTokenExpirationDate(token.id, newExpireDate);
+
+    return TokenEntity.fromRepository(updatedToken);
   }
   
 }

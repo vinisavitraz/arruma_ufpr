@@ -5,23 +5,24 @@ import { AuthGuard } from '@nestjs/passport';
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
 
-    static PUBLIC_ENDPOINT_KEY = 'publicEndpoint';
+  static PUBLIC_ENDPOINT_KEY = 'publicEndpoint';
 
-    constructor(private reflector: Reflector) {
-        super();
-    }
+  constructor(private reflector: Reflector) {
+    super();
+  }
+  
+  public canActivate(context: ExecutionContext): any {
+    console.log('JwtAuthGuard');
+    const publicEndpoint: boolean = this.reflector.getAllAndOverride<boolean>(JwtAuthGuard.PUBLIC_ENDPOINT_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
     
-    public canActivate(context: ExecutionContext): any {
-        const publicEndpoint: boolean = this.reflector.getAllAndOverride<boolean>(JwtAuthGuard.PUBLIC_ENDPOINT_KEY, [
-            context.getHandler(),
-            context.getClass(),
-        ]);
-        
-        if (publicEndpoint) {
-            return true;
-        }
-
-        return super.canActivate(context);
+    if (publicEndpoint) {
+      return true;
     }
+
+    return super.canActivate(context);
+  }
 
 }
