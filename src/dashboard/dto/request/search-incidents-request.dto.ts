@@ -37,4 +37,12 @@ export class SearchIncidentsRequestDTO {
 
   }
 
+  public static fromStatus(incidentStatus: string): SearchIncidentsRequestDTO {
+    const searchIncidentsRequestDTO: SearchIncidentsRequestDTO = new SearchIncidentsRequestDTO();
+
+    searchIncidentsRequestDTO.incidentStatus = incidentStatus;
+
+    return searchIncidentsRequestDTO;
+  }
+
 }

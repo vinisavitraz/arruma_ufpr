@@ -71,7 +71,7 @@ export class AuthController {
     return await this.authService.validateTokenNumberAndExtendExpireDateIfExists(tokenNumber);
   }
 
-  private validateAndGetTokenFromRequestHeader(headers): string {
+  private validateAndGetTokenFromRequestHeader(headers: any): string {
     const headerAuthorization: string = headers.authorization;
     
     if (!headerAuthorization) {

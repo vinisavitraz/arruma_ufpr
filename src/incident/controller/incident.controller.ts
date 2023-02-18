@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, UseGuards, Request } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { UnauthorizedExample } from 'src/app/docs/example/auth/unauthorized-example';
 import { IncidentNotFoundExample } from 'src/app/docs/example/incident/incident-not-found-example';
 import { RoleEnum } from 'src/app/enum/role.enum';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { Roles } from 'src/auth/roles/require-roles.decorator';
+import { SearchIncidentsRequestDTO } from 'src/dashboard/dto/request/search-incidents-request.dto';
 import { CreateIncidentRequestDTO } from '../dto/request/create-incident-request.dto';
 import { ListIncidentResponseDTO } from '../dto/response/list-incident-response.dto';
 import { ListIncidentsResponseDTO } from '../dto/response/list-incidents-response.dto';
@@ -17,6 +18,30 @@ import { IncidentService } from '../service/incident.service';
 @ApiTags('incident')
 export class IncidentController {
   constructor(private readonly incidentService: IncidentService) {}
+
+  @Get('user/:status')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Listar incidentes do usuário filtrados por status'})
+  @ApiOkResponse({ type: ListIncidentsResponseDTO })
+  @ApiUnauthorizedResponse({type: UnauthorizedExample})
+  public async listUserIncidentsByStatus(@Param('status') status: string, @Request() req): Promise<ListIncidentsResponseDTO> {
+    const incidents: IncidentEntity[] = await this.incidentService.findIncidentsByStatus(req.user, SearchIncidentsRequestDTO.fromStatus(status));
+    
+    return new ListIncidentsResponseDTO(incidents);
+  }
+
+  @Get(':status')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Listar incidentes filtrados por status'})
+  @ApiOkResponse({ type: ListIncidentsResponseDTO })
+  @ApiUnauthorizedResponse({type: UnauthorizedExample})
+  public async listIncidentsByStatus(@Param('status') status: string): Promise<ListIncidentsResponseDTO> {
+    const incidents: IncidentEntity[] = await this.incidentService.findIncidentsByStatus(null, SearchIncidentsRequestDTO.fromStatus(status));
+    
+    return new ListIncidentsResponseDTO(incidents);
+  }
 
   @Get()
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
