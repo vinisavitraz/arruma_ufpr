@@ -26,8 +26,11 @@ export class IncidentController {
   @ApiOkResponse({ type: ListIncidentsResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
   public async listUserIncidentsByStatus(@Param('status') status: string, @Request() req): Promise<ListIncidentsResponseDTO> {
+    console.log('listUserIncidentsByStatus');
+    console.log(status);
+    console.log(req.user.id);
     const incidents: IncidentEntity[] = await this.incidentService.findIncidentsByStatus(req.user, SearchIncidentsRequestDTO.fromStatus(status));
-    
+    console.log(incidents)
     return new ListIncidentsResponseDTO(incidents);
   }
 
@@ -38,8 +41,11 @@ export class IncidentController {
   @ApiOkResponse({ type: ListIncidentsResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
   public async listIncidentsByStatus(@Param('status') status: string): Promise<ListIncidentsResponseDTO> {
+    console.log('listIncidentsByStatus');
+    console.log(status);
+    console.log(null);
     const incidents: IncidentEntity[] = await this.incidentService.findIncidentsByStatus(null, SearchIncidentsRequestDTO.fromStatus(status));
-    
+    console.log(incidents)
     return new ListIncidentsResponseDTO(incidents);
   }
 

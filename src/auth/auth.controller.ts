@@ -27,7 +27,6 @@ export class AuthController {
   @ApiBody({ type: AuthExample })
   @ApiOkResponse({ type: AuthResponseDTO })
   public async auth(@Request() req): Promise<AuthResponseDTO> {
-    console.log('auth');
     const token: TokenEntity = await this.authService.getAuthenticatedUserToken(req.user);
     
     return new AuthResponseDTO(
