@@ -8,6 +8,7 @@ $(function () {
   const hideItemFormButton = document.querySelector('#hideItemForm');
 
   showIncidentTypeFormButton.addEventListener('click', () => {
+    $('#incidentTypeId option[value=0]').attr('selected','selected');
     changeInputType('incidentTypeSelect', 'incidentTypeForm');
   });
 
@@ -16,6 +17,7 @@ $(function () {
   });
 
   showLocationFormButton.addEventListener('click', () => {
+    $('#locationId option[value=0]').attr('selected','selected');
     newLocation = true;
     changeInputType('locationSelect', 'locationForm');
     changeInputType('itemSelect', 'itemForm');
@@ -27,6 +29,7 @@ $(function () {
   });
 
   showItemFormButton.addEventListener('click', () => {
+    $('#itemId option[value=0]').attr('selected','selected');
     changeInputType('itemSelect', 'itemForm');
   });
 

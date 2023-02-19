@@ -163,7 +163,9 @@ export class DashboardIncidentController {
     const createIncidentRequestDTO: CreateIncidentRequestDTO = CreateIncidentRequestDTO.fromDashboard(req.body, req.user);
 
     try {
-      await this.service.createIncident(createIncidentRequestDTO);
+      const incident: IncidentEntity = await this.service.createIncident(createIncidentRequestDTO);
+      
+      return res.redirect('/dashboard/incident/' + incident.id);
     } catch (errors) {
       const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
       const locations: LocationEntity[] = await this.service.findLocations(); 
@@ -182,9 +184,7 @@ export class DashboardIncidentController {
           ...DashboardErrorMapper.mapValidationErrors(errors)
         }
       );
-    }  
-
-    return res.redirect('/dashboard/incident/user');
+    } 
   }
 
   @Post('interaction')
