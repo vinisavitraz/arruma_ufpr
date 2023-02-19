@@ -50,7 +50,7 @@ export class IncidentController {
     return new AssignIncidentResponseDTO('fechado');
   }
 
-  @Get('interactions/:id')
+  @Get('interaction/:id')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Listar interações do incidente'})
