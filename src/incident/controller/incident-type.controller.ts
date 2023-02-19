@@ -11,26 +11,15 @@ import { DeleteIncidentTypeResponseDTO } from '../dto/response/delete-incident-t
 import { ListIncidentTypeResponseDTO } from '../dto/response/list-incident-type-response.dto';
 import { ListIncidentTypesResponseDTO } from '../dto/response/list-incident-types-response.dto';
 import { IncidentTypeEntity } from '../entity/incident-type.entity';
-import { IncidentService } from '../service/incident.service';
+import { IncidentTypeService } from '../service/incident-type.service';
 
 @ApiBearerAuth()
 @ApiHeader({name: 'Authorization'})
-@Controller('incident/type')
+@Controller('incident-type')
 @ApiTags('incident type')
 export class IncidentTypeController {
-  constructor(private readonly incidentService: IncidentService) {}
 
-  @Get()
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Listar todos os tipos de incidente' })
-  @ApiOkResponse({ type: ListIncidentTypesResponseDTO })
-  @ApiUnauthorizedResponse({type: UnauthorizedExample})
-  public async listIncidentTypes(): Promise<ListIncidentTypesResponseDTO> {
-    const incidentTypes: IncidentTypeEntity[] = await this.incidentService.findIncidentTypes();
-    
-    return new ListIncidentTypesResponseDTO(incidentTypes);
-  }
+  constructor(private readonly incidentTypeService: IncidentTypeService) {}
 
   @Get(':id')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
@@ -40,7 +29,7 @@ export class IncidentTypeController {
   @ApiNotFoundResponse({type: IncidentTypeNotFoundExample})
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
   public async listIncidentTypeByID(@Param('id', ParseIntPipe) id: number): Promise<ListIncidentTypeResponseDTO> {
-    const incidentType: IncidentTypeEntity = await this.incidentService.findIncidentTypeByIDOrCry(id);
+    const incidentType: IncidentTypeEntity = await this.incidentTypeService.findIncidentTypeByIDOrCry(id);
     
     return new ListIncidentTypeResponseDTO(incidentType);
   }
@@ -53,7 +42,7 @@ export class IncidentTypeController {
   @ApiOkResponse({ type: ListIncidentTypeResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
   public async createIncidentType(@Body() createIncidentTypeRequestDTO: CreateIncidentTypeRequestDTO): Promise<ListIncidentTypeResponseDTO> {
-    const incidentType: IncidentTypeEntity = await this.incidentService.createIncidentType(createIncidentTypeRequestDTO);
+    const incidentType: IncidentTypeEntity = await this.incidentTypeService.createIncidentType(createIncidentTypeRequestDTO);
     
     return new ListIncidentTypeResponseDTO(incidentType);
   }
@@ -67,7 +56,7 @@ export class IncidentTypeController {
   @ApiNotFoundResponse({type: IncidentTypeNotFoundExample})
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
   public async updateIncidentType(@Body() updateIncidentTypeRequestDTO: UpdateIncidentTypeRequestDTO): Promise<ListIncidentTypeResponseDTO> {
-    const incidentType: IncidentTypeEntity = await this.incidentService.updateIncidentType(updateIncidentTypeRequestDTO);
+    const incidentType: IncidentTypeEntity = await this.incidentTypeService.updateIncidentType(updateIncidentTypeRequestDTO);
     
     return new ListIncidentTypeResponseDTO(incidentType);
   }
@@ -79,9 +68,21 @@ export class IncidentTypeController {
   @ApiOkResponse({ type: DeleteIncidentTypeResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
   public async deleteIncidentType(@Param('id', ParseIntPipe) id: number): Promise<DeleteIncidentTypeResponseDTO> {
-    await this.incidentService.deleteIncidentType(id);
+    await this.incidentTypeService.deleteIncidentType(id);
     
     return new DeleteIncidentTypeResponseDTO('DELETED');
+  }
+
+  @Get()
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Listar todos os tipos de incidente' })
+  @ApiOkResponse({ type: ListIncidentTypesResponseDTO })
+  @ApiUnauthorizedResponse({type: UnauthorizedExample})
+  public async listIncidentTypes(): Promise<ListIncidentTypesResponseDTO> {
+    const incidentTypes: IncidentTypeEntity[] = await this.incidentTypeService.findIncidentTypes();
+    
+    return new ListIncidentTypesResponseDTO(incidentTypes);
   }
   
 }

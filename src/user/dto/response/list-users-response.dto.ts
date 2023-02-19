@@ -4,10 +4,10 @@ import { UserEntity } from "src/user/entity/user.entity";
 export class ListUsersResponseDTO {
 
   @ApiProperty({ type: [UserEntity] })
-  readonly users: UserEntity[];
+  readonly entities: UserEntity[];
 
   constructor(users: UserEntity[]) {
-    this.users = users;
+    this.entities = users;
   }
 
 }

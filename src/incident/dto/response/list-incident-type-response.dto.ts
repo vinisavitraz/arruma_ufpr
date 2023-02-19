@@ -4,10 +4,10 @@ import { IncidentTypeEntity } from "src/incident/entity/incident-type.entity";
 export class ListIncidentTypeResponseDTO {
 
   @ApiProperty()
-  readonly incidentType: IncidentTypeEntity;
+  readonly entity: IncidentTypeEntity;
 
   constructor(incidentType: IncidentTypeEntity) {
-    this.incidentType = incidentType;
+    this.entity = incidentType;
   }
 
 }

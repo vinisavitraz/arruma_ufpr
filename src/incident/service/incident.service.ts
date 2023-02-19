@@ -18,11 +18,11 @@ import { UserEntity } from 'src/user/entity/user.entity';
 import { CreateIncidentInteractionRequestDTO } from '../dto/request/create-incident-interaction-request.dto';
 import { CreateIncidentRequestDTO } from '../dto/request/create-incident-request.dto';
 import { CreateIncidentTypeRequestDTO } from '../dto/request/create-incident-type-request.dto';
-import { UpdateIncidentTypeRequestDTO } from '../dto/request/update-incident-type-request.dto';
 import { IncidentInteractionEntity } from '../entity/incident-interaction.entity';
 import { IncidentTypeEntity } from '../entity/incident-type.entity';
 import { IncidentEntity } from '../entity/incident.entity';
 import { IncidentRepository } from '../incident.repository';
+import { IncidentTypeService } from './incident-type.service';
 
 @Injectable()
 export class IncidentService {
@@ -33,6 +33,7 @@ export class IncidentService {
     private databaseService: DatabaseService,
     private locationService: LocationService,
     private itemService: ItemService,
+    private incidentTypeService: IncidentTypeService,
   ) {
     this.repository = new IncidentRepository(this.databaseService);
   }
@@ -179,26 +180,6 @@ export class IncidentService {
     return IncidentEntity.fromRepository(incidentDb);
   }
 
-  public async createIncidentType(createIncidentTypeRequestDTO: CreateIncidentTypeRequestDTO): Promise<IncidentTypeEntity> {
-    const incidentTypeDb: incident_type = await this.repository.createIncidentType(createIncidentTypeRequestDTO);
-
-    return IncidentTypeEntity.fromRepository(incidentTypeDb);
-  }
-
-  public async updateIncidentType(updateIncidentTypeRequestDTO: UpdateIncidentTypeRequestDTO): Promise<IncidentTypeEntity> {
-    await this.findIncidentTypeByIDOrCry(updateIncidentTypeRequestDTO.id);
-    
-    const incidentTypeDb: incident_type = await this.repository.updateIncidentType(updateIncidentTypeRequestDTO);
-
-    return IncidentTypeEntity.fromRepository(incidentTypeDb);
-  }
-
-  public async deleteIncidentType(incidentTypeId: number): Promise<void> {
-    const incidentType: IncidentTypeEntity = await this.findIncidentTypeByIDOrCry(incidentTypeId);
-
-    await this.repository.deleteIncidentType(incidentType);
-  }
-
   public async createIncidentInteraction(user: UserEntity, createIncidentInteractionRequestDTO: CreateIncidentInteractionRequestDTO): Promise<IncidentInteractionEntity> {
     const incidentDb: IncidentEntity = await this.findIncidentByIDOrCry(createIncidentInteractionRequestDTO.incidentId);
     const incidentInteractionDb: incident_interaction & {user: user} | null = await this.repository.createIncidentInteraction(createIncidentInteractionRequestDTO);
@@ -233,10 +214,6 @@ export class IncidentService {
     return await this.repository.findTotalIncidentsByStatusForHomePage(status, id);
   }
 
-  public async findTotalIncidentTypes(): Promise<number> {
-    return await this.repository.findTotalIncidentTypes();
-  }
-
   private async findOrCreateIncidentType(createIncidentRequestDTO: CreateIncidentRequestDTO): Promise<void> {
     if (createIncidentRequestDTO.incidentTypeId > 0) {
       const incidentType: IncidentTypeEntity = await this.findIncidentTypeByIDOrCry(createIncidentRequestDTO.incidentTypeId);
@@ -250,7 +227,7 @@ export class IncidentService {
 
     await validateOrReject(createIncidentTypeRequestDTO);
 
-    const incidentType: IncidentTypeEntity = await this.createIncidentType(createIncidentTypeRequestDTO);
+    const incidentType: IncidentTypeEntity = await this.incidentTypeService.createIncidentType(createIncidentTypeRequestDTO);
     createIncidentRequestDTO.incidentTypeId = incidentType.id;
   }
 

@@ -4,10 +4,10 @@ import { UserEntity } from "src/user/entity/user.entity";
 export class ListUserResponseDTO {
 
   @ApiProperty()
-  readonly user: UserEntity;
+  readonly entity: UserEntity;
 
   constructor(user: UserEntity) {
-    this.user = user;
+    this.entity = user;
   }
 
 }

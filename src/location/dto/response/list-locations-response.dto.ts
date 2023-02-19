@@ -4,10 +4,10 @@ import { LocationEntity } from "src/location/entity/location.entity";
 export class ListLocationsResponseDTO {
 
   @ApiProperty({ type: [LocationEntity] })
-  readonly locations: LocationEntity[];
+  readonly entities: LocationEntity[];
 
   constructor(locations: LocationEntity[]) {
-    this.locations = locations;
+    this.entities = locations;
   }
 
 }

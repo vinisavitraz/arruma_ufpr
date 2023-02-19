@@ -17,47 +17,30 @@ import { IncidentService } from '../service/incident.service';
 @Controller('incident')
 @ApiTags('incident')
 export class IncidentController {
+
   constructor(private readonly incidentService: IncidentService) {}
 
-  @Get('user/:status')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Listar incidentes do usuário filtrados por status'})
-  @ApiOkResponse({ type: ListIncidentsResponseDTO })
-  @ApiUnauthorizedResponse({type: UnauthorizedExample})
-  public async listUserIncidentsByStatus(@Param('status') status: string, @Request() req): Promise<ListIncidentsResponseDTO> {
-    console.log('listUserIncidentsByStatus');
-    console.log(status);
-    console.log(req.user.id);
-    const incidents: IncidentEntity[] = await this.incidentService.findIncidentsByStatus(req.user, SearchIncidentsRequestDTO.fromStatus(status));
-    console.log(incidents)
-    return new ListIncidentsResponseDTO(incidents);
-  }
-
-  @Get(':status')
+  @Get('status/:status')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Listar incidentes filtrados por status'})
   @ApiOkResponse({ type: ListIncidentsResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
   public async listIncidentsByStatus(@Param('status') status: string): Promise<ListIncidentsResponseDTO> {
-    console.log('listIncidentsByStatus');
-    console.log(status);
-    console.log(null);
     const incidents: IncidentEntity[] = await this.incidentService.findIncidentsByStatus(null, SearchIncidentsRequestDTO.fromStatus(status));
-    console.log(incidents)
+
     return new ListIncidentsResponseDTO(incidents);
   }
 
-  @Get()
+  @Get('user/status/:status')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: 'Listar todos os incidentes'})
+  @ApiOperation({ summary: 'Listar incidentes do usuário filtrados por status'})
   @ApiOkResponse({ type: ListIncidentsResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
-  public async listIncidents(): Promise<ListIncidentsResponseDTO> {
-    const incidents: IncidentEntity[] = await this.incidentService.findIncidents();
-    
+  public async listUserIncidentsByStatus(@Param('status') status: string, @Request() req): Promise<ListIncidentsResponseDTO> {
+    const incidents: IncidentEntity[] = await this.incidentService.findIncidentsByStatus(req.user, SearchIncidentsRequestDTO.fromStatus(status));
+
     return new ListIncidentsResponseDTO(incidents);
   }
 
@@ -73,7 +56,19 @@ export class IncidentController {
     
     return new ListIncidentResponseDTO(incident);
   }
-
+  
+  @Get()
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Listar todos os incidentes'})
+  @ApiOkResponse({ type: ListIncidentsResponseDTO })
+  @ApiUnauthorizedResponse({type: UnauthorizedExample})
+  public async listIncidents(): Promise<ListIncidentsResponseDTO> {
+    const incidents: IncidentEntity[] = await this.incidentService.findIncidents();
+    
+    return new ListIncidentsResponseDTO(incidents);
+  }
+  
   @Post()
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(JwtAuthGuard)

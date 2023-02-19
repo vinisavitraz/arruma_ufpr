@@ -3,6 +3,7 @@ import { validateOrReject } from 'class-validator';
 import { RoleEnum } from 'src/app/enum/role.enum';
 import { IncidentStatusEnum } from 'src/app/enum/status.enum';
 import { AuthService } from 'src/auth/auth.service';
+import { IncidentTypeService } from 'src/incident/service/incident-type.service';
 import { IncidentService } from 'src/incident/service/incident.service';
 import { ItemService } from 'src/item/item.service';
 import { LocationService } from 'src/location/location.service';
@@ -18,10 +19,10 @@ export class DashboardService {
 
   constructor(
     private readonly incidentService: IncidentService,
+    private readonly incidentTypeService: IncidentTypeService,
     private readonly locationService: LocationService,
     private readonly itemService: ItemService,
     private readonly userService: UserService,
-    private readonly authService: AuthService,
   ) {}
 
   public async getHomePageData(user: UserEntity): Promise<HomePageResponseDTO> {
@@ -57,7 +58,7 @@ export class DashboardService {
     const totalPendingIncidents: number = await this.incidentService.findTotalIncidentsByStatusAndUser(IncidentStatusEnum.PENDING, 0);
     const totalClosedIncidents: number = await this.incidentService.findTotalIncidentsByStatusAndUser(IncidentStatusEnum.CLOSED, 0);
     const totalIncidents: number = await this.incidentService.findTotalIncidentsByStatusAndUser('', 0);
-    const totalIncidentTypes: number = await this.incidentService.findTotalIncidentTypes();
+    const totalIncidentTypes: number = await this.incidentTypeService.findTotalIncidentTypes();
     const totalLocations: number = await this.locationService.findTotalLocations();
     const totalItems: number = await this.itemService.findTotalItems();
     const totalUsers: number = await this.userService.findTotalUsers();

@@ -20,7 +20,7 @@ import { ItemService } from './item.service';
 export class ItemController {
   constructor(private readonly itemService: ItemService) {}
 
-  @Get(':id')
+  @Get('location/:id')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Listar items pelo ID do local' })
@@ -30,6 +30,19 @@ export class ItemController {
     const items: ItemEntity[] = await this.itemService.findItemsByLocationID(locationId);
     
     return new ListItemsResponseDTO(items);
+  }
+
+  @Get(':id')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Listar item pelo ID' })
+  @ApiOkResponse({ type: ListItemResponseDTO })
+  @ApiNotFoundResponse({type: ItemNotFoundExample})
+  @ApiUnauthorizedResponse({type: UnauthorizedExample})
+  public async listItemByID(@Param('id', ParseIntPipe) id: number): Promise<ListItemResponseDTO> {
+    const item: ItemEntity = await this.itemService.findItemByIDOrCry(id);
+    
+    return new ListItemResponseDTO(item);
   }
 
   @Get()
