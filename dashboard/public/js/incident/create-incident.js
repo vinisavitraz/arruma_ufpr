@@ -66,7 +66,7 @@ $(function () {
       }
     );
     const responseJson = await response.json();
-    appendItemsToSelect(responseJson.items);
+    appendItemsToSelect(responseJson.entities);
   }
 
   function appendItemsToSelect(items) {
