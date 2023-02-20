@@ -6,10 +6,12 @@ import { RoleEnum } from 'src/app/enum/role.enum';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { Roles } from 'src/auth/roles/require-roles.decorator';
 import { CreateUserRequestDTO } from './dto/request/create-user-request.dto';
+import { ResetUserPasswordRequestDTO } from './dto/request/reset-user-password-request.dto';
 import { UpdateUserRequestDTO } from './dto/request/update-user-request.dto';
 import { DeleteUserResponseDTO } from './dto/response/delete-user-response.dto';
 import { ListUserResponseDTO } from './dto/response/list-user-response.dto';
 import { ListUsersResponseDTO } from './dto/response/list-users-response.dto';
+import { UpdatePasswordResponseDTO } from './dto/response/update-password-response.dto';
 import { UserEntity } from './entity/user.entity';
 import { UserService } from './user.service';
 
@@ -59,6 +61,20 @@ export class UserController {
     const user: UserEntity = await this.userService.createUser(host, createUserRequestDTO);
     
     return new ListUserResponseDTO(user);
+  }
+
+  @Put('password')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Atualizar senha do usuário' })
+  @ApiBody({ type: ResetUserPasswordRequestDTO })
+  @ApiOkResponse({ type: UpdatePasswordResponseDTO })
+  @ApiNotFoundResponse({type: UserNotFoundExample})
+  @ApiUnauthorizedResponse({type: UnauthorizedExample})
+  public async updatedUserPassword(@Body() resetUserPasswordRequestDTO: ResetUserPasswordRequestDTO): Promise<UpdatePasswordResponseDTO> {
+    await this.userService.changeUserPassword(resetUserPasswordRequestDTO);
+    
+    return new UpdatePasswordResponseDTO('updated');
   }
 
   @Put()

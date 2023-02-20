@@ -1,11 +1,11 @@
 import { HttpStatus } from "@nestjs/common";
-import { ChangeUserPasswordRequestDTO } from "src/user/dto/request/change-user-password-request.dto";
+import { ResetUserPasswordRequestDTO } from "src/user/dto/request/reset-user-password-request.dto";
 import { HttpOperationErrorCodes } from "../exception/http-operation-error-codes";
 import { HttpOperationException } from "../exception/http-operation.exception";
 
 export class PasswordRulesValidator {
 
-  public static validate(changeUserPasswordRequestDTO: ChangeUserPasswordRequestDTO): void {
+  public static validate(changeUserPasswordRequestDTO: ResetUserPasswordRequestDTO): void {
     if (!changeUserPasswordRequestDTO.password || !changeUserPasswordRequestDTO.confirmPassword) {
       throw new HttpOperationException(
         HttpStatus.BAD_REQUEST, 

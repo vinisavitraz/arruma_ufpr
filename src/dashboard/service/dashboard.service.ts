@@ -7,7 +7,7 @@ import { IncidentTypeService } from 'src/incident/service/incident-type.service'
 import { IncidentService } from 'src/incident/service/incident.service';
 import { ItemService } from 'src/item/item.service';
 import { LocationService } from 'src/location/location.service';
-import { ChangeUserPasswordRequestDTO } from 'src/user/dto/request/change-user-password-request.dto';
+import { ResetUserPasswordRequestDTO } from 'src/user/dto/request/reset-user-password-request.dto';
 import { CreateUserRequestDTO } from 'src/user/dto/request/create-user-request.dto';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { UserService } from 'src/user/user.service';
@@ -49,7 +49,7 @@ export class DashboardService {
     await this.userService.createUser(host, createUserRequestDTO); 
   }
 
-  public async changeUserPassword(changeUserPasswordRequestDTO: ChangeUserPasswordRequestDTO): Promise<void> {
+  public async changeUserPassword(changeUserPasswordRequestDTO: ResetUserPasswordRequestDTO): Promise<void> {
     await this.userService.changeUserPassword(changeUserPasswordRequestDTO); 
   }
 

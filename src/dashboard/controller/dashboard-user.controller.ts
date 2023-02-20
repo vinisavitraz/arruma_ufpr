@@ -7,7 +7,7 @@ import { QueryStringBuilder } from "src/app/util/query-string.builder";
 import { AuthenticatedGuard } from "src/auth/guard/authenticated.guard";
 import { RolesGuard } from "src/auth/guard/roles.guard";
 import { Roles } from "src/auth/roles/require-roles.decorator";
-import { ChangeUserPasswordRequestDTO } from "src/user/dto/request/change-user-password-request.dto";
+import { ResetUserPasswordRequestDTO } from "src/user/dto/request/reset-user-password-request.dto";
 import { CreateUserRequestDTO } from "src/user/dto/request/create-user-request.dto";
 import { UpdateUserRequestDTO } from "src/user/dto/request/update-user-request.dto";
 import { UserEntity } from "src/user/entity/user.entity";
@@ -48,7 +48,7 @@ export class DashboardUserController {
       req.user,
       'user-change-password',
       {
-        passwordForm: new ChangeUserPasswordRequestDTO(),
+        passwordForm: new ResetUserPasswordRequestDTO(),
       },
     );
   }
@@ -171,7 +171,7 @@ export class DashboardUserController {
   @Roles(RoleEnum.ADMIN)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async changeUserPassword(@Request() req, @Res() res: Response): Promise<void> { 
-    const changeUserPasswordRequestDTO: ChangeUserPasswordRequestDTO = ChangeUserPasswordRequestDTO.fromDashboard(req.body);
+    const changeUserPasswordRequestDTO: ResetUserPasswordRequestDTO = ResetUserPasswordRequestDTO.fromDashboard(req.body);
 
     try {
       await this.service.changeUserPassword(changeUserPasswordRequestDTO);
@@ -194,7 +194,7 @@ export class DashboardUserController {
       req.user,
       'user-change-password',
       {
-        passwordForm: new ChangeUserPasswordRequestDTO(),
+        passwordForm: new ResetUserPasswordRequestDTO(),
         showSuccess: true,
       }
     );

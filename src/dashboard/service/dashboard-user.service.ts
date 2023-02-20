@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { validateOrReject } from 'class-validator';
-import { ChangeUserPasswordRequestDTO } from 'src/user/dto/request/change-user-password-request.dto';
+import { ResetUserPasswordRequestDTO } from 'src/user/dto/request/reset-user-password-request.dto';
 import { CreateUserRequestDTO } from 'src/user/dto/request/create-user-request.dto';
 import { UpdateUserRequestDTO } from 'src/user/dto/request/update-user-request.dto';
 import { UserEntity } from 'src/user/entity/user.entity';
@@ -47,7 +47,7 @@ export class DashboardUserService {
     await this.userService.deleteUser(userId); 
   }
 
-  public async changeUserPassword(changeUserPasswordRequestDTO: ChangeUserPasswordRequestDTO): Promise<void> {
+  public async changeUserPassword(changeUserPasswordRequestDTO: ResetUserPasswordRequestDTO): Promise<void> {
     await this.userService.changeUserPassword(changeUserPasswordRequestDTO); 
   }
 

@@ -10,7 +10,7 @@ import { UpdateUserRequestDTO } from './dto/request/update-user-request.dto';
 import { UserEntity } from './entity/user.entity';
 import { UserRepository } from './user.repository';
 import * as bcrypt from 'bcrypt';
-import { ChangeUserPasswordRequestDTO } from './dto/request/change-user-password-request.dto';
+import { ResetUserPasswordRequestDTO } from './dto/request/reset-user-password-request.dto';
 import { PasswordRulesValidator } from 'src/app/util/password-rules.validator';
 import { validateOrReject } from 'class-validator';
 import { InputFieldValidator } from 'src/app/util/input-field.validator';
@@ -142,20 +142,15 @@ export class UserService {
   public async updateUser(updateUserRequestDTO: UpdateUserRequestDTO): Promise<UserEntity> {
     const userDb: UserEntity = await this.findUserByIDOrCry(updateUserRequestDTO.id);
 
-    console.log('validateEmail');
     InputFieldValidator.validateEmail(updateUserRequestDTO.email);
-    console.log('validateDocument');
     InputFieldValidator.validateDocument(updateUserRequestDTO.document);
-    console.log('validatePhoneNumber');
     InputFieldValidator.validatePhoneNumber(updateUserRequestDTO.phone);
-    console.log('validateName');
     InputFieldValidator.validateName(updateUserRequestDTO.name);
     
 
     updateUserRequestDTO.document = updateUserRequestDTO.document.replace('.', '').replace('-', '');
     updateUserRequestDTO.phone = updateUserRequestDTO.phone.replace('(', '').replace(')', '').replace('-', '');
 
-    console.log('validateEmail 2');
     if (userDb.email !== updateUserRequestDTO.email && await this.repository.findActiveUserByEmail(updateUserRequestDTO.email) !== null) {
       throw new HttpOperationException(
         HttpStatus.BAD_REQUEST, 
@@ -163,7 +158,7 @@ export class UserService {
         HttpOperationErrorCodes.DUPLICATED_USER_EMAIL,
       );
     }
-    console.log('validateDocument 2');
+
     if (userDb.document !== updateUserRequestDTO.document && await this.repository.findUserByDocument(updateUserRequestDTO.document) !== null) {
       throw new HttpOperationException(
         HttpStatus.BAD_REQUEST, 
@@ -171,7 +166,7 @@ export class UserService {
         HttpOperationErrorCodes.DUPLICATED_USER_DOCUMENT,
       );
     }
-    console.log('updateUser');
+
     const user: user = await this.repository.updateUser(updateUserRequestDTO);
 
     return UserEntity.fromRepository(user);
@@ -183,7 +178,7 @@ export class UserService {
     await this.repository.inactivateUser(user);
   }
 
-  public async changeUserPassword(changeUserPasswordRequestDTO: ChangeUserPasswordRequestDTO): Promise<void> {
+  public async changeUserPassword(changeUserPasswordRequestDTO: ResetUserPasswordRequestDTO): Promise<void> {
     await validateOrReject(changeUserPasswordRequestDTO);
 
     PasswordRulesValidator.validate(changeUserPasswordRequestDTO);

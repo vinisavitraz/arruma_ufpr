@@ -11,7 +11,7 @@ import { HomePageResponseDTO } from '../dto/response/home-page-response.dto';
 import { UserEntity } from 'src/user/entity/user.entity';
 import { ForgotPasswordRequestDTO } from '../dto/request/forgot-password-request.dto';
 import { DashboardErrorMapper } from '../render/dashboard-error-mapper';
-import { ChangeUserPasswordRequestDTO } from 'src/user/dto/request/change-user-password-request.dto';
+import { ResetUserPasswordRequestDTO } from 'src/user/dto/request/reset-user-password-request.dto';
 import { HttpOperationException } from 'src/app/exception/http-operation.exception';
 import { CreateUserRequestDTO } from 'src/user/dto/request/create-user-request.dto';
 
@@ -191,7 +191,7 @@ export class DashboardController {
 
   @Post('reset-password')
   public async resetPassword(@Request() req, @Res() res: Response): Promise<void> {   
-    const changeUserPasswordRequestDTO: ChangeUserPasswordRequestDTO = ChangeUserPasswordRequestDTO.fromDashboard(req.body);
+    const changeUserPasswordRequestDTO: ResetUserPasswordRequestDTO = ResetUserPasswordRequestDTO.fromDashboard(req.body);
 
     try {
       await this.service.changeUserPassword(changeUserPasswordRequestDTO);
