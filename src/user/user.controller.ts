@@ -1,16 +1,19 @@
 import { Body, ClassSerializerInterceptor, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuards, UseInterceptors, Request } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { UnauthorizedExample } from 'src/app/docs/example/auth/unauthorized-example';
+import { UserEmailNotFoundExample } from 'src/app/docs/example/user/user-email-not-found-example';
 import { UserNotFoundExample } from 'src/app/docs/example/user/user-not-found-example';
 import { RoleEnum } from 'src/app/enum/role.enum';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { Roles } from 'src/auth/roles/require-roles.decorator';
+import { ForgotPasswordRequestDTO } from 'src/dashboard/dto/request/forgot-password-request.dto';
 import { CreateUserRequestDTO } from './dto/request/create-user-request.dto';
 import { ResetUserPasswordRequestDTO } from './dto/request/reset-user-password-request.dto';
 import { UpdateUserRequestDTO } from './dto/request/update-user-request.dto';
 import { DeleteUserResponseDTO } from './dto/response/delete-user-response.dto';
 import { ListUserResponseDTO } from './dto/response/list-user-response.dto';
 import { ListUsersResponseDTO } from './dto/response/list-users-response.dto';
+import { RequestResetPasswordResponseDTO } from './dto/response/request-reset-password-response.dto';
 import { UpdatePasswordResponseDTO } from './dto/response/update-password-response.dto';
 import { UserEntity } from './entity/user.entity';
 import { UserService } from './user.service';
@@ -46,6 +49,19 @@ export class UserController {
     const users: UserEntity[] = await this.userService.findUsers();
     
     return new ListUsersResponseDTO(users);
+  }
+
+  @Post('reset-password')
+  @ApiOperation({ summary: 'Solicitar reset de senha' })
+  @ApiBody({ type: ForgotPasswordRequestDTO })
+  @ApiOkResponse({ type: RequestResetPasswordResponseDTO })
+  @ApiNotFoundResponse({type: UserEmailNotFoundExample})
+  public async requestResetPassword(@Request() req, @Body() forgotPasswordRequestDTO: ForgotPasswordRequestDTO): Promise<RequestResetPasswordResponseDTO> {
+    const host: string = req.protocol + '://' + req.get('host');
+
+    await this.userService.sendResetUserPasswordMail(host, forgotPasswordRequestDTO.email);
+    
+    return new RequestResetPasswordResponseDTO('deliveredOnMail');
   }
 
   @Post()

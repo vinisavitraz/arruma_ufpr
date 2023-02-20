@@ -117,7 +117,7 @@ export class InputFieldValidator {
       );
     }
 
-    if (!(/^[A-Za-z\s]+$/.test(name))) {
+    if (!(/[a-zA-Z\u00C0-\u00FF ]+/i.test(name))) {
       throw new HttpOperationException(
         HttpStatus.BAD_REQUEST, 
         'Invalid name', 
