@@ -52,7 +52,7 @@ export class UserController {
   }
 
   @Post('reset-password')
-  @ApiOperation({ summary: 'Solicitar reset de senha' })
+  @ApiOperation({ summary: 'Solicitar reset de senha do usuário' })
   @ApiBody({ type: ForgotPasswordRequestDTO })
   @ApiOkResponse({ type: RequestResetPasswordResponseDTO })
   @ApiNotFoundResponse({type: UserEmailNotFoundExample})
