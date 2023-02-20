@@ -1,25 +1,18 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { user } from "@prisma/client";
-import { AuthenticatedUserInfoEntity } from "src/auth/entity/authenticated-user-info.entity";
+import { UserEntity } from "src/user/entity/user.entity";
 
 export class AuthenticatedUserInfoResponseDTO {
 
-  @ApiProperty({ type: AuthenticatedUserInfoEntity })
-  readonly authenticatedUserInfo: AuthenticatedUserInfoEntity;
+  @ApiProperty({ type: UserEntity })
+  readonly authenticatedUserInfo: UserEntity;
 
-  constructor(authenticatedUserInfo: AuthenticatedUserInfoEntity) {
+  constructor(authenticatedUserInfo: UserEntity) {
     this.authenticatedUserInfo = authenticatedUserInfo;
   }
 
   public static fromEntity(user: user): AuthenticatedUserInfoResponseDTO {
-    const authenticatedUserInfo: AuthenticatedUserInfoEntity = new AuthenticatedUserInfoEntity(
-      user.id,
-      user.email,
-      user.name,
-      user.role,
-    );
-
-    return new AuthenticatedUserInfoResponseDTO(authenticatedUserInfo);
+    return new AuthenticatedUserInfoResponseDTO(UserEntity.fromRepository(user));
   }
 
 }

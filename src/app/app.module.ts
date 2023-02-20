@@ -10,7 +10,6 @@ import { AppService } from './app.service';
 import { APP_FILTER } from '@nestjs/core';
 import { ClassValidatorExceptionFilter } from './exception/filter/class-validator-exception-filter';
 import { HttpOperationExceptionFilter } from './exception/filter/http-operation-exception-filter';
-import { AllExceptionsFilter } from './exception/filter/all-exception-filter';
 import { MailModule } from 'src/mail/mail.module';
 import { TokenModule } from 'src/token/token.module';
 
@@ -36,10 +35,6 @@ import { TokenModule } from 'src/token/token.module';
     {
       provide: APP_FILTER,
       useClass: ClassValidatorExceptionFilter,
-    },
-    {
-      provide: APP_FILTER,
-      useClass: AllExceptionsFilter,
     },
   ],
 })

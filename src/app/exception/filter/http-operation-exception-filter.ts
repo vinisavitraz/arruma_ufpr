@@ -22,6 +22,8 @@ export class HttpOperationExceptionFilter implements ExceptionFilter {
 
     const responseBody: APIErrorEntity = new APIErrorEntity(statusCode, exception.errorCode, exception.message);
     
+    console.log(responseBody);
+
     response
       .status(statusCode)
       .json(responseBody);
