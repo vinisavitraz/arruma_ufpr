@@ -19,7 +19,7 @@ import { UserEntity } from './entity/user.entity';
 import { UserService } from './user.service';
 
 @ApiBearerAuth()
-@ApiHeader({name: 'Authorization'})
+
 @Controller('user')
 @ApiTags('user')
 export class UserController {
@@ -30,6 +30,7 @@ export class UserController {
   @Get(':id')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(JwtAuthGuard)
+  @ApiHeader({name: 'Authorization'})
   @ApiOperation({ summary: 'Listar usuário pelo ID' })
   @ApiOkResponse({ type: ListUserResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
@@ -42,6 +43,7 @@ export class UserController {
   @Get()
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(JwtAuthGuard)
+  @ApiHeader({name: 'Authorization'})
   @ApiOperation({ summary: 'Listar todos os usuários' })
   @ApiOkResponse({ type: ListUsersResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
@@ -67,6 +69,7 @@ export class UserController {
   @Post()
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(JwtAuthGuard)
+  @ApiHeader({name: 'Authorization'})
   @ApiOperation({ summary: 'Criar novo usuário' })
   @ApiBody({ type: CreateUserRequestDTO })
   @ApiOkResponse({ type: ListUserResponseDTO })
@@ -82,6 +85,7 @@ export class UserController {
   @Put('password')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(JwtAuthGuard)
+  @ApiHeader({name: 'Authorization'})
   @ApiOperation({ summary: 'Atualizar senha do usuário' })
   @ApiBody({ type: ResetUserPasswordRequestDTO })
   @ApiOkResponse({ type: UpdatePasswordResponseDTO })
@@ -96,6 +100,7 @@ export class UserController {
   @Put()
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(JwtAuthGuard)
+  @ApiHeader({name: 'Authorization'})
   @ApiOperation({ summary: 'Atualizar usuário' })
   @ApiBody({ type: UpdateUserRequestDTO })
   @ApiOkResponse({ type: ListUserResponseDTO })
@@ -110,6 +115,7 @@ export class UserController {
   @Delete(':id')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(JwtAuthGuard)
+  @ApiHeader({name: 'Authorization'})
   @ApiOperation({ summary: 'Excluir usuário' })
   @ApiOkResponse({ type: DeleteUserResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})

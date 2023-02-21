@@ -114,9 +114,6 @@ export class IncidentRepository {
 
   public async findIncidents(): Promise<(incident & {interactions: incident_interaction[], admin: user | null, user: user, incident_type: incident_type, location: location, item: item})[]> {
     return await this.connection.incident.findMany({
-      where: {
-        status: EntityStatusEnum.ACTIVE,
-      },
       orderBy: [
         {
           id: 'asc',
