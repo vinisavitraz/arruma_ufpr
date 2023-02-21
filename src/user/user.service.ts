@@ -17,6 +17,7 @@ import { InputFieldValidator } from 'src/app/util/input-field.validator';
 import { TokenEntity } from 'src/token/entity/token.entity';
 import { TokenService } from 'src/token/token.service';
 import { UserStatusEnum } from 'src/app/enum/status.enum';
+import { CreateUserWithPasswordRequestDTO } from './dto/request/create-user-with-password-request.dto';
 
 @Injectable()
 export class UserService {
@@ -77,7 +78,21 @@ export class UserService {
     return UserEntity.fromRepository(userDb);
   }
 
-  public async createUser(host: string, createUserRequestDTO: CreateUserRequestDTO): Promise<UserEntity> {
+  public async findUserByDocumentOrCry(document: string): Promise<UserEntity> {
+    const userDb: user | null = await this.repository.findActiveUserByDocument(document);
+
+    if (!userDb) {
+      throw new HttpOperationException(
+        HttpStatus.NOT_FOUND, 
+        'User with document ' + document + ' not found on database.', 
+        HttpOperationErrorCodes.USER_NOT_FOUND,
+      );
+    }
+
+    return UserEntity.fromRepository(userDb);
+  }
+
+  public async createUser(host: string, createUserRequestDTO: CreateUserRequestDTO | CreateUserWithPasswordRequestDTO): Promise<UserEntity> {
     InputFieldValidator.validateEmail(createUserRequestDTO.email);
     InputFieldValidator.validateDocument(createUserRequestDTO.document);
     InputFieldValidator.validatePhoneNumber(createUserRequestDTO.phone);
@@ -121,14 +136,27 @@ export class UserService {
       );
     }
 
-    const password: string = this.generatePassword();
+    const generatePassword: boolean = createUserRequestDTO instanceof CreateUserRequestDTO;
+    let password: string = '';
+
+    if (generatePassword) {
+      password = this.generatePassword();
+    } else {
+      await validateOrReject(createUserRequestDTO);
+      PasswordRulesValidator.validateCreateUser(createUserRequestDTO as CreateUserWithPasswordRequestDTO);
+      password = (createUserRequestDTO as CreateUserWithPasswordRequestDTO).password;
+    }
+
     const hashedPassword: string = await this.hashPassword(password);
     let user: user | null = null;
 
     try {
       user = await this.repository.createUser(createUserRequestDTO, hashedPassword);
-      await this.sendCreateUserPasswordMail(host, user.email);
 
+      if (generatePassword) {
+        await this.sendCreateUserPasswordMail(host, user.email);
+      }
+      
       return UserEntity.fromRepository(user);
     } catch (error) {
       if (user !== null) {
@@ -181,7 +209,7 @@ export class UserService {
   public async changeUserPassword(changeUserPasswordRequestDTO: ResetUserPasswordRequestDTO): Promise<void> {
     await validateOrReject(changeUserPasswordRequestDTO);
 
-    PasswordRulesValidator.validate(changeUserPasswordRequestDTO);
+    PasswordRulesValidator.validateChangePassword(changeUserPasswordRequestDTO);
 
     const user: UserEntity = await this.findUserByIDOrCry(changeUserPasswordRequestDTO.userId);
     const hashedPassword: string = await this.hashPassword(changeUserPasswordRequestDTO.password);

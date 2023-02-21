@@ -65,6 +65,15 @@ export class UserRepository {
     return await this.connection.user.findUnique({ where: { email: email } });
   }
 
+  public async findActiveUserByDocument(document: string): Promise<user | null> {
+    return await this.connection.user.findFirst({ 
+      where: { 
+        document: document,
+        status: UserStatusEnum.ACTIVE,
+      },
+    });
+  }
+
   public async findUserByDocument(document: string): Promise<user | null> {
     return await this.connection.user.findUnique({ where: { document: document } });
   }

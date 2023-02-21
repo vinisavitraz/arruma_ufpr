@@ -34,6 +34,16 @@
 					<input id="address" type="text" class="form-control" name="address" value="{{ user.address }}" placeholder="Ex: Rua Amarela, 10 - Curitiba" required>
 				</div>
         <br>
+				<div class="row mx-5">
+					<label class="mb-2 text-muted" for="password">Senha</label>
+					<input id="password" type="password" class="form-control" name="password" value="{{ user.password }}" placeholder="Digite a senha" required>
+				</div>
+        <br>
+				<div class="row mx-5">
+					<label class="mb-2 text-muted" for="confirmPassword">Confirmar senha</label>
+					<input id="confirmPassword" type="password" class="form-control" name="confirmPassword" value="{{ user.confirmPassword }}" placeholder="Confirme a senha" required>
+				</div>
+        <br>
 				<br>
         {{#if showError }}
           {{#each errors}}

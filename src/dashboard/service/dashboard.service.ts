@@ -13,6 +13,7 @@ import { UserEntity } from 'src/user/entity/user.entity';
 import { UserService } from 'src/user/user.service';
 import { ForgotPasswordRequestDTO } from '../dto/request/forgot-password-request.dto';
 import { HomePageResponseDTO } from '../dto/response/home-page-response.dto';
+import { CreateUserWithPasswordRequestDTO } from 'src/user/dto/request/create-user-with-password-request.dto';
 
 @Injectable()
 export class DashboardService {
@@ -47,6 +48,12 @@ export class DashboardService {
     await validateOrReject(createUserRequestDTO);
 
     await this.userService.createUser(host, createUserRequestDTO); 
+  }
+
+  public async createUserWithPassword(host: string, createUserWithPasswordRequestDTO: CreateUserWithPasswordRequestDTO): Promise<void> {
+    await validateOrReject(createUserWithPasswordRequestDTO);
+
+    await this.userService.createUser(host, createUserWithPasswordRequestDTO); 
   }
 
   public async changeUserPassword(changeUserPasswordRequestDTO: ResetUserPasswordRequestDTO): Promise<void> {
