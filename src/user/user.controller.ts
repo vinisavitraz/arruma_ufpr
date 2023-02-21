@@ -35,13 +35,11 @@ export class UserController {
   @ApiOkResponse({ type: UserNotRegisteredResponseDTO })
   @ApiNotFoundResponse({type: UserNotFoundExample})
   public async validateEmailNotRegistered(@Param('email') email: string): Promise<UserNotRegisteredResponseDTO> {
-    console.log(email);
     let user: UserEntity | null = null;
 
     try {
       user = await this.userService.findUserByEmailOrCry(email);
     } catch (errors) {
-      console.log(errors);
       return new UserNotRegisteredResponseDTO('notRegistered');
     }  
     
