@@ -19,7 +19,11 @@ Software para controle de tickets de incidentes relacionados a manutenção pred
 
 ## Rodando localmente
 
-Comandos devem ser executados via CMD.
+### Pré requisitos
+
+- Docker
+- Git
+- Se tiver PostgreSQL já instalado na maquina, parar o serviço para nao dar conflito
 
 Clonar o projeto via GIT:
 
