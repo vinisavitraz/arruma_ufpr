@@ -267,11 +267,20 @@ export class DashboardUserController {
     let title: string = 'Usuário';
     let description: string = 'Usuário ou Administrador do sistema.';
     let backUrl: string = '/dashboard/user';
+    let emailVisibility: string = '';
+    let documentVisibility: string = '';
 
     if (module === 'user-profile') {
       title = 'Meu perfil';
       description = 'Alterar dados da conta';
       backUrl = '/dashboard';
+      emailVisibility = 'readonly';
+      documentVisibility = 'readonly';
+    }
+
+    if (uri.includes('/dashboard/user/update')) {
+      emailVisibility = 'readonly';
+      documentVisibility = 'readonly';
     }
 
     return DashboardResponseRender.renderForAuthenticatedUser(
@@ -287,6 +296,8 @@ export class DashboardUserController {
         title: title,
         description: description,
         backUrl: backUrl,
+        emailVisibility: emailVisibility,
+        documentVisibility: documentVisibility,
       },
     );
   }

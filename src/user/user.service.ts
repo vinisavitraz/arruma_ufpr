@@ -236,7 +236,7 @@ export class UserService {
   }
   
   public async findUserByResetPasswordToken(tokenNumber: string): Promise<UserEntity> {
-    const token: TokenEntity = await this.tokenService.getAndDeleteResetPasswordToken(tokenNumber);
+    const token: TokenEntity = await this.tokenService.getResetPasswordToken(tokenNumber);
 
     return await this.findUserByIDOrCry(token.userId);
   }

@@ -25,7 +25,7 @@ export class TokenService {
     this.repository = new TokenRepository(this.databaseService);
   }
 
-  @Cron(CronExpression.EVERY_HOUR)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   public async removeExpiredTokens(): Promise<void> {
     const expiredUserTokens: user_token[] = await this.repository.getExpiredUserTokens();
     
@@ -82,7 +82,7 @@ export class TokenService {
     return await this.buildNewTokenRecoverPassword(user);
   }
 
-  public async getAndDeleteResetPasswordToken(tokenNumber: string): Promise<TokenEntity> {
+  public async getResetPasswordToken(tokenNumber: string): Promise<TokenEntity> {
     const activeRecoverPasswordToken: user_token = await this.repository.findTokenByNumberAndType(tokenNumber, TokenType.RESET_PASSWORD);
 
     if (!activeRecoverPasswordToken) {
@@ -92,8 +92,6 @@ export class TokenService {
         HttpOperationErrorCodes.TOKEN_NOT_FOUND,
       );
     }
-
-    await this.repository.deleteToken(activeRecoverPasswordToken.id);
 
     return TokenEntity.fromRepository(activeRecoverPasswordToken);
   }

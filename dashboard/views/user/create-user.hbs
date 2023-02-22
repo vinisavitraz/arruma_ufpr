@@ -30,14 +30,14 @@
 
             <div class="col-sm-6">
               <label for="email" class="form-label">Email</label>
-              <input type="text" class="form-control" id="email" name="email" value="{{ userForm.email }}" placeholder="Ex: joao.silva@mail.com">
+              <input type="text" class="form-control" {{ emailVisibility }} id="email" name="email" value="{{ userForm.email }}" placeholder="Ex: joao.silva@mail.com">
             </div>
           </div>
           <br>
           <div class="row g-3">
             <div class="col-sm-6">
               <label for="document" class="form-label">CPF</label>
-              <input type="text" class="form-control" id="document" name="document" value="{{ userForm.document }}" placeholder="Ex. 806.949.290-26">
+              <input type="text" class="form-control"  {{ documentVisibility }}  id="document" name="document" value="{{ userForm.document }}" placeholder="Ex. 806.949.290-26">
             </div>
 
             <div class="col-sm-6">
