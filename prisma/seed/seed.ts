@@ -18,21 +18,6 @@ async function main() {
       address: 'Fake street, number 2 - PR',
     },
   });
-
-  const userStudent: user = await prisma.user.upsert({
-    where: { email: 'user@mail.com' },
-    update: {},
-    create: {
-      email: 'user@mail.com',
-      password: '$2b$10$sNMPhHviR4DMUgPDc8QUyeeTWZGxVyiEDY94KxySZegcLr5ai/MIC',
-      name: 'Usuário teste',
-      role: 1,
-      status: 'ativo',
-      phone: '41996691200',
-      document: '53089037009',
-      address: 'Fake quarter, number 1 - PR',
-    },
-  });
 }
 
 main()
