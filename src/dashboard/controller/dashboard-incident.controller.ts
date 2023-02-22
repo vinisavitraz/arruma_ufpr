@@ -83,7 +83,7 @@ export class DashboardIncidentController {
   }
 
   @Get('close/:id')
-  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @Roles(RoleEnum.ADMIN)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async closeIncident(@Param('id', ParseIntPipe) incidentId: number, @Request() req, @Res() res: Response): Promise<void> { 
     const origin: string = req.query.origin ?? '';
@@ -124,7 +124,7 @@ export class DashboardIncidentController {
         cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}, {filePath: '/styles/timeline.css'}],
         jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/incident-detail.js'}],
         showButtonAssign: incident.status === IncidentStatusEnum.OPEN && user.role === RoleEnum.ADMIN,
-        showButtonClose: incident.status !== IncidentStatusEnum.CLOSED,
+        showButtonClose: incident.status !== IncidentStatusEnum.CLOSED && user.role === RoleEnum.ADMIN,
         showButtonNewMessage: incident.status !== IncidentStatusEnum.CLOSED,
       }
     );
