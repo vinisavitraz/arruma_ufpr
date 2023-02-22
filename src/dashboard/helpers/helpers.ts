@@ -113,3 +113,8 @@ export function buildIncidentsRegistersPerPageUrl(
 ) { 
   return QueryStringBuilder.build(content, Number(maxPerPage), uri, 0);
 }
+
+
+export function formatInteractionColor(origin: number) {
+  return origin === 0 ? 'text-secondary' : 'text-primary';
+}

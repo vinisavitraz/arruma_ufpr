@@ -191,15 +191,17 @@ export class DashboardIncidentController {
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async addInteractionToIncident(@Request() req, @Res() res: Response): Promise<void> { 
+    const origin: string = req.query.origin ?? 'incident';
+    const url: string = origin === 'incident' ? '/dashboard/incident' : '/dashboard/incident/user';
     const createIncidentInteractionRequestDTO: CreateIncidentInteractionRequestDTO = CreateIncidentInteractionRequestDTO.fromDashboard(req.body, req.user);
 
     try {
       await this.service.createIncidentInteraction(req.user, createIncidentInteractionRequestDTO);
     } catch (errors) {
-      return res.redirect('/dashboard/incident');
+      return res.redirect(url);
     }  
 
-    return res.redirect('/dashboard/incident/' + createIncidentInteractionRequestDTO.incidentId);
+    return res.redirect('/dashboard/incident/' + createIncidentInteractionRequestDTO.incidentId + '?origin=' + origin);
   }
 
   @Post('search')

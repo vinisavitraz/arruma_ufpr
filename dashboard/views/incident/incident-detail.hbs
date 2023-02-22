@@ -81,7 +81,7 @@
         <div id="formNewMessage" class="d-none">
           <div class="row g-5">
             <div class="col-md-12 col-lg-10">
-              <form method="POST" action="/dashboard/incident/interaction" class="needs-validation" novalidate="" autocomplete="off">
+              <form method="POST" action="/dashboard/incident/interaction?origin={{ origin }}" class="needs-validation" novalidate="" autocomplete="off">
               <input type="hidden" id="incidentId" name="incidentId" value="{{incident.id}}">
                 <div class="col-12 mx-1">
                   <label for="description" class="form-label">Nova mensagem</label>
@@ -102,13 +102,19 @@
         </div>
       {{/if}}
       {{#if showContent }}
-        <div class="col-md-12 col-lg-10">
-          <div class="my-3 p-3 bg-body rounded shadow-sm">
-          <h6 class="border-bottom pb-2 mb-0">Mensagens</h6>
-          {{#each incidentInteractions}}
-            {{{format_interaction this }}}
-          {{/each}}
-        </div>
+        <section class="py-5">
+          <ul class="timeline">
+            {{#each incidentInteractions}}
+            <li class="timeline-item mb-5">
+              <h5 class="fw-bold {{format_interaction_color this.origin }}">{{ this.userName }}</h5>
+              <p class="text-muted mb-2 fw-bold">{{format_incident_date this.sentDate }}</p>
+              <p class="text-muted">
+                {{ this.description }}
+              </p>
+            </li>
+            {{/each}}
+          </ul>
+        </section>
       {{else}}
         <div class="py-5 mx-3 text-justify">
           <h5>Incidente não possui mensagens.</h5>
