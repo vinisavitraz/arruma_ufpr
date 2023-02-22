@@ -92,50 +92,66 @@ export class UserService {
     return UserEntity.fromRepository(userDb);
   }
 
+  public async validateAvailableEmailOrCry(email: string): Promise<void> {
+    InputFieldValidator.validateEmail(email);
+
+    const userDb: user | null = await this.repository.findUserByEmail(email);
+
+    if (userDb === null) {
+      return;
+    }
+
+    if (userDb.status === UserStatusEnum.INACTIVE){
+      throw new HttpOperationException(
+        HttpStatus.BAD_REQUEST, 
+        'Blocked email', 
+        HttpOperationErrorCodes.BLOCKED_USER_EMAIL,
+      );  
+    }
+
+    throw new HttpOperationException(
+      HttpStatus.BAD_REQUEST, 
+      'Email already exists on database', 
+      HttpOperationErrorCodes.DUPLICATED_USER_EMAIL,
+    );
+  }
+
+  public async validateAvailableDocumentOrCry(document: string): Promise<void> {
+    InputFieldValidator.validateDocument(document);
+
+    const userDb: user | null = await this.repository.findUserByDocument(document);
+
+    if (userDb === null) {
+      return;
+    }
+
+    if (userDb.status === UserStatusEnum.INACTIVE){
+      throw new HttpOperationException(
+        HttpStatus.BAD_REQUEST, 
+        'Blocked document', 
+        HttpOperationErrorCodes.BLOCKED_USER_DOCUMENT,
+      );
+    }
+
+    throw new HttpOperationException(
+      HttpStatus.BAD_REQUEST, 
+      'Document already exists on database', 
+      HttpOperationErrorCodes.DUPLICATED_USER_DOCUMENT,
+    );
+  }
+
   public async createUser(host: string, createUserRequestDTO: CreateUserRequestDTO | CreateUserWithPasswordRequestDTO): Promise<UserEntity> {
     InputFieldValidator.validateEmail(createUserRequestDTO.email);
     InputFieldValidator.validateDocument(createUserRequestDTO.document);
     InputFieldValidator.validatePhoneNumber(createUserRequestDTO.phone);
     InputFieldValidator.validateName(createUserRequestDTO.name);
 
-    createUserRequestDTO.document = createUserRequestDTO.document.replace('.', '').replace('-', '');
-    createUserRequestDTO.phone = createUserRequestDTO.phone.replace('(', '').replace(')', '').replace('-', '');
+    createUserRequestDTO.document = createUserRequestDTO.document.replaceAll('.', '').replaceAll('-', '');
+    createUserRequestDTO.phone = createUserRequestDTO.phone.replaceAll('(', '').replaceAll(')', '').replaceAll('-', '');
 
-    let userDb: user | null = await this.repository.findUserByEmail(createUserRequestDTO.email);
-
-    if (userDb !== null) {
-      if (userDb.status === UserStatusEnum.INACTIVE){
-        throw new HttpOperationException(
-          HttpStatus.BAD_REQUEST, 
-          'Blocked email', 
-          HttpOperationErrorCodes.BLOCKED_USER_EMAIL,
-        );  
-      }
-
-      throw new HttpOperationException(
-        HttpStatus.BAD_REQUEST, 
-        'Email already exists on database', 
-        HttpOperationErrorCodes.DUPLICATED_USER_EMAIL,
-      );
-    }
-
-    userDb = await this.repository.findUserByDocument(createUserRequestDTO.document);
-
-    if (userDb !== null) {
-      if (userDb.status === UserStatusEnum.INACTIVE){
-        throw new HttpOperationException(
-          HttpStatus.BAD_REQUEST, 
-          'Blocked document', 
-          HttpOperationErrorCodes.BLOCKED_USER_DOCUMENT,
-        );
-      }
-      throw new HttpOperationException(
-        HttpStatus.BAD_REQUEST, 
-        'Document already exists on database', 
-        HttpOperationErrorCodes.DUPLICATED_USER_DOCUMENT,
-      );
-    }
-
+    await this.validateAvailableEmailOrCry(createUserRequestDTO.email);
+    await this.validateAvailableDocumentOrCry(createUserRequestDTO.document);
+    
     const generatePassword: boolean = createUserRequestDTO instanceof CreateUserRequestDTO;
     let password: string = '';
 

@@ -35,22 +35,8 @@ export class UserController {
   @ApiOkResponse({ type: UserNotRegisteredResponseDTO })
   @ApiNotFoundResponse({type: UserNotFoundExample})
   public async validateEmailNotRegistered(@Param('email') email: string): Promise<UserNotRegisteredResponseDTO> {
-    let user: UserEntity | null = null;
-
-    try {
-      user = await this.userService.findUserByEmailOrCry(email);
-    } catch (errors) {
-      return new UserNotRegisteredResponseDTO('notRegistered');
-    }  
-    
-    if (user !== null) {
-      throw new HttpOperationException(
-        HttpStatus.BAD_REQUEST, 
-        'Email already exists on database', 
-        HttpOperationErrorCodes.DUPLICATED_USER_EMAIL,
-      );
-    }
-    
+    await this.userService.validateAvailableEmailOrCry(email);
+      
     return new UserNotRegisteredResponseDTO('notRegistered');
   }
 
@@ -59,22 +45,8 @@ export class UserController {
   @ApiOkResponse({ type: UserNotRegisteredResponseDTO })
   @ApiNotFoundResponse({type: UserNotFoundExample})
   public async validateDocumentNotRegistered(@Param('document') document: string): Promise<UserNotRegisteredResponseDTO> {
-    let user: UserEntity | null = null;
-
-    try {
-      user = await this.userService.findUserByDocumentOrCry(document);
-    } catch (errors) {
-      return new UserNotRegisteredResponseDTO('notRegistered');
-    }  
-    
-    if (user !== null) {
-      throw new HttpOperationException(
-        HttpStatus.BAD_REQUEST, 
-        'Document already exists on database', 
-        HttpOperationErrorCodes.DUPLICATED_USER_DOCUMENT,
-      );
-    }
-    
+    await this.userService.validateAvailableDocumentOrCry(document);
+      
     return new UserNotRegisteredResponseDTO('notRegistered');
   }
 
