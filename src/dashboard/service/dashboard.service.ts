@@ -13,7 +13,7 @@ import { UserEntity } from 'src/user/entity/user.entity';
 import { UserService } from 'src/user/user.service';
 import { ForgotPasswordRequestDTO } from '../dto/request/forgot-password-request.dto';
 import { HomePageResponseDTO } from '../dto/response/home-page-response.dto';
-import { CreateUserWithPasswordRequestDTO } from 'src/user/dto/request/create-user-with-password-request.dto';
+import { RegisterUserRequestDTO } from 'src/user/dto/request/register-user-request.dto';
 
 @Injectable()
 export class DashboardService {
@@ -44,13 +44,13 @@ export class DashboardService {
     return await this.userService.findUserByResetPasswordToken(tokenNumber);
   }
 
-  public async createUser(host: string, createUserRequestDTO: CreateUserRequestDTO): Promise<void> {
+  public async createUser(host: string, createUserRequestDTO: CreateUserRequestDTO | RegisterUserRequestDTO): Promise<void> {
     await validateOrReject(createUserRequestDTO);
 
     await this.userService.createUser(host, createUserRequestDTO); 
   }
 
-  public async createUserWithPassword(host: string, createUserWithPasswordRequestDTO: CreateUserWithPasswordRequestDTO): Promise<void> {
+  public async createUserWithPassword(host: string, createUserWithPasswordRequestDTO: RegisterUserRequestDTO): Promise<void> {
     await validateOrReject(createUserWithPasswordRequestDTO);
 
     await this.userService.createUser(host, createUserWithPasswordRequestDTO); 

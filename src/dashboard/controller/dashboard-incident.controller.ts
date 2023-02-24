@@ -121,7 +121,7 @@ export class DashboardIncidentController {
         incident: incident,
         incidentInteractions: incidentInteractions,
         showContent: incidentInteractions.length > 0,
-        cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}, {filePath: '/styles/timeline.css'}],
+        cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}, {filePath: '/styles/timeline.css'}, {filePath: '/styles/incident-detail.css'}],
         jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/incident-detail.js'}],
         showButtonAssign: incident.status === IncidentStatusEnum.OPEN && user.role === RoleEnum.ADMIN,
         showButtonClose: incident.status !== IncidentStatusEnum.CLOSED && user.role === RoleEnum.ADMIN,

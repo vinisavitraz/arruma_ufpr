@@ -36,14 +36,14 @@ export class IncidentInteractionEntity {
     this.incidentId = incidentId;
   }
 
-  public static fromRepository(incidentInteraction: incident_interaction & {user: user}): IncidentInteractionEntity {
+  public static fromRepository(incidentInteraction: incident_interaction & {user: user | null}): IncidentInteractionEntity {
     return new IncidentInteractionEntity(
       incidentInteraction.id,
       incidentInteraction.description,
       incidentInteraction.sent_date,
       incidentInteraction.origin,
-      incidentInteraction.user_id,
-      incidentInteraction.user.name,
+      incidentInteraction.user_id ?? 0,
+      incidentInteraction.user !== null ? incidentInteraction.user.name : 'Sistema',
       incidentInteraction.incident_id,
     );
   }

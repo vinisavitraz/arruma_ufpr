@@ -11,7 +11,7 @@ async function main() {
       email: 'admin@mail.com',
       password: '$2b$10$sNMPhHviR4DMUgPDc8QUyeeTWZGxVyiEDY94KxySZegcLr5ai/MIC',
       name: 'Admin',
-      role: 0,
+      role: 1,
       status: 'ativo',
       phone: '41996690000',
       document: '14318817083',

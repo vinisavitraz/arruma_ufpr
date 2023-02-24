@@ -1,8 +1,9 @@
 import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
 import { IsInt, IsString, MaxLength, MinLength } from "class-validator";
+import { RoleEnum } from "src/app/enum/role.enum";
 import { HttpOperationErrorCodes } from "src/app/exception/http-operation-error-codes";
 
-export class CreateUserWithPasswordRequestDTO {
+export class RegisterUserRequestDTO {
 
   @ApiHideProperty()
   id: number;
@@ -53,8 +54,8 @@ export class CreateUserWithPasswordRequestDTO {
   @ApiProperty({example: '1234'})
   confirmPassword: string;
 
-  public static fromDashboard(payload: any): CreateUserWithPasswordRequestDTO {
-    const createUserWithPasswordRequestDTO: CreateUserWithPasswordRequestDTO = new CreateUserWithPasswordRequestDTO();
+  public static fromDashboard(payload: any): RegisterUserRequestDTO {
+    const createUserWithPasswordRequestDTO: RegisterUserRequestDTO = new RegisterUserRequestDTO();
 
     createUserWithPasswordRequestDTO.id = Number(payload['id']) ?? 0;
     createUserWithPasswordRequestDTO.name = payload['name'] ?? '';
@@ -62,7 +63,7 @@ export class CreateUserWithPasswordRequestDTO {
     createUserWithPasswordRequestDTO.phone = payload['phone'] ?? '';
     createUserWithPasswordRequestDTO.address = payload['address'] ?? '';
     createUserWithPasswordRequestDTO.email = payload['email'] ?? '';
-    createUserWithPasswordRequestDTO.role = Number(payload['role']) ?? 0;
+    createUserWithPasswordRequestDTO.role = RoleEnum.USER;
     createUserWithPasswordRequestDTO.password = payload['password'] ?? '';
     createUserWithPasswordRequestDTO.confirmPassword = payload['confirmPassword'] ?? '';
 

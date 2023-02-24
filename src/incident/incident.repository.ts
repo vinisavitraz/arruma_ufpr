@@ -143,7 +143,7 @@ export class IncidentRepository {
     });
   }
 
-  public async findIncidentInteractions(incidentId: number): Promise<(incident_interaction & { user: user })[]> {
+  public async findIncidentInteractions(incidentId: number): Promise<(incident_interaction & { user: user | null })[]> {
     return await this.connection.incident_interaction.findMany({
       where: { incident_id: incidentId, },
       orderBy: [
@@ -292,7 +292,7 @@ export class IncidentRepository {
     });
   }
 
-  public async createIncidentInteraction(createIncidentInteractionRequestDTO: CreateIncidentInteractionRequestDTO): Promise<incident_interaction & {user: user} | null> {
+  public async createIncidentInteraction(createIncidentInteractionRequestDTO: CreateIncidentInteractionRequestDTO): Promise<incident_interaction & {user: user | null} | null> {
     return await this.connection.incident_interaction.create({ 
       data: {
         description: createIncidentInteractionRequestDTO.description,

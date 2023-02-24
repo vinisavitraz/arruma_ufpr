@@ -16,5 +16,11 @@ $(function () {
     
     document.getElementById(toShow).classList.remove("d-none");
     document.getElementById(toShow).classList.add("d-block");
-  }
+  }  
 });
+
+function hoverRating(element) {
+  console.log('aa');
+  $(element).removeClass('bx-star')
+  $(element).addClass('bxs-star');
+}

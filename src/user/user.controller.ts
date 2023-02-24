@@ -10,7 +10,7 @@ import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { Roles } from 'src/auth/roles/require-roles.decorator';
 import { ForgotPasswordRequestDTO } from 'src/dashboard/dto/request/forgot-password-request.dto';
 import { CreateUserRequestDTO } from './dto/request/create-user-request.dto';
-import { CreateUserWithPasswordRequestDTO } from './dto/request/create-user-with-password-request.dto';
+import { RegisterUserRequestDTO } from './dto/request/register-user-request.dto';
 import { ResetUserPasswordRequestDTO } from './dto/request/reset-user-password-request.dto';
 import { UpdateUserRequestDTO } from './dto/request/update-user-request.dto';
 import { DeleteUserResponseDTO } from './dto/response/delete-user-response.dto';
@@ -93,12 +93,12 @@ export class UserController {
 
   @Post('register')
   @ApiOperation({ summary: 'Criar novo usuário com senha' })
-  @ApiBody({ type: CreateUserWithPasswordRequestDTO })
+  @ApiBody({ type: RegisterUserRequestDTO })
   @ApiOkResponse({ type: ListUserResponseDTO })
-  public async registerNewUser(@Request() req, @Body() createUserWithPasswordRequestDTO: CreateUserWithPasswordRequestDTO): Promise<ListUserResponseDTO> {
+  public async registerNewUser(@Request() req, @Body() registerUserRequestDTO: RegisterUserRequestDTO): Promise<ListUserResponseDTO> {
     const host: string = req.protocol + '://' + req.get('host');
 
-    const user: UserEntity = await this.userService.createUser(host, createUserWithPasswordRequestDTO);
+    const user: UserEntity = await this.userService.createUser(host, registerUserRequestDTO);
     
     return new ListUserResponseDTO(user);
   }

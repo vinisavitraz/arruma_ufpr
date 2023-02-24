@@ -14,7 +14,7 @@ import { DashboardErrorMapper } from '../render/dashboard-error-mapper';
 import { ResetUserPasswordRequestDTO } from 'src/user/dto/request/reset-user-password-request.dto';
 import { HttpOperationException } from 'src/app/exception/http-operation.exception';
 import { CreateUserRequestDTO } from 'src/user/dto/request/create-user-request.dto';
-import { CreateUserWithPasswordRequestDTO } from 'src/user/dto/request/create-user-with-password-request.dto';
+import { RegisterUserRequestDTO } from 'src/user/dto/request/register-user-request.dto';
 
 @Controller('dashboard')
 @ApiExcludeController()
@@ -58,7 +58,7 @@ export class DashboardController {
   @Post('register')
   public async registerUser(@Request() req, @Res() res: Response): Promise<void> { 
     const host: string = req.protocol + '://' + req.get('host');
-    const createUserWithPasswordRequestDTO: CreateUserWithPasswordRequestDTO = CreateUserWithPasswordRequestDTO.fromDashboard(req.body);
+    const createUserWithPasswordRequestDTO: RegisterUserRequestDTO = RegisterUserRequestDTO.fromDashboard(req.body);
     
     try {
       await this.service.createUser(host, createUserWithPasswordRequestDTO);

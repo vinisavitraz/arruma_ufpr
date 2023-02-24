@@ -182,11 +182,11 @@ export class IncidentService {
 
   public async createIncidentInteraction(user: UserEntity, createIncidentInteractionRequestDTO: CreateIncidentInteractionRequestDTO): Promise<IncidentInteractionEntity> {
     const incidentDb: IncidentEntity = await this.findIncidentByIDOrCry(createIncidentInteractionRequestDTO.incidentId);
-    const incidentInteractionDb: incident_interaction & {user: user} | null = await this.repository.createIncidentInteraction(createIncidentInteractionRequestDTO);
 
     if ( incidentDb.status === IncidentStatusEnum.OPEN && user.role === RoleEnum.ADMIN) {
       await this.repository.assignIncidentToAdmin(user, incidentDb);
     }
+    const incidentInteractionDb: incident_interaction & {user: user} | null = await this.repository.createIncidentInteraction(createIncidentInteractionRequestDTO);
 
     return IncidentInteractionEntity.fromRepository(incidentInteractionDb);
   }
@@ -267,6 +267,14 @@ export class IncidentService {
   }
 
   public async assignIncidentToAdmin(userAdmin: UserEntity, incidentId: number): Promise<IncidentEntity> {
+    if (userAdmin.role !== RoleEnum.ADMIN) {
+      throw new HttpOperationException(
+        HttpStatus.BAD_REQUEST, 
+        'Assign user is not admin', 
+        HttpOperationErrorCodes.INVALID_ASSIGNED_USER_ROLE_INCIDENT,
+      );
+    }
+
     const incidentDb: IncidentEntity = await this.findIncidentByIDOrCry(incidentId);
     const assignedIncident: incident & {
       interactions: incident_interaction[], 
@@ -277,6 +285,8 @@ export class IncidentService {
       item: item,
     } = await this.repository.assignIncidentToAdmin(userAdmin, incidentDb);
 
+    await this.createNewInteractionBySystem(incidentDb, 'Incidente em atendimento - O administrador ' + userAdmin.name + ' está responsável por esse incidente.');
+    
     return IncidentEntity.fromRepository(assignedIncident);
   }
 
@@ -292,6 +302,8 @@ export class IncidentService {
         location: location,
         item: item,
       } = await this.repository.setIncidentToClosed(incidentDb);
+
+      await this.createNewInteractionBySystem(incidentDb, 'Incidente fechado - O administrador ' + user.name + ' fechou este incidente.');
 
       return IncidentEntity.fromRepository(closedIncident);
     }
@@ -344,6 +356,18 @@ export class IncidentService {
     ) => {
       return IncidentEntity.fromRepository(incident);
     });
+  }
+
+  public async createNewInteractionBySystem(incident: IncidentEntity, description: string): Promise<IncidentInteractionEntity> {
+    const incidentInteraction: CreateIncidentInteractionRequestDTO = new CreateIncidentInteractionRequestDTO();
+    incidentInteraction.incidentId = incident.id;
+    incidentInteraction.userId = null;
+    incidentInteraction.origin = RoleEnum.SYSTEM;
+    incidentInteraction.description = description;
+
+    const incidentInteractionDb: incident_interaction & {user: user} | null = await this.repository.createIncidentInteraction(incidentInteraction);
+
+    return IncidentInteractionEntity.fromRepository(incidentInteractionDb);
   }
 
 }

@@ -6,7 +6,7 @@ import { resolve } from 'path';
 import * as session from 'express-session';
 import * as passport from 'passport';
 import * as flash from 'connect-flash';
-import { formatDate, formatDateTime, select, formatMilliseconds, labelStatusIncident, textStatusIncident, formatInteractionDate, isAdmin, formatIncidentDate, setActiveTab, formatObjectDateTime, buildIncidentsRegistersPerPageUrl, formatInteraction, formatRole, formatInteractionColor, isPaginationButtonEnabled } from './dashboard/helpers/helpers';
+import { formatDate, formatDateTime, select, formatMilliseconds, labelStatusIncident, textStatusIncident, formatInteractionDate, isAdmin, formatIncidentDate, setActiveTab, formatObjectDateTime, buildIncidentsRegistersPerPageUrl, formatRole, formatInteractionColor, isPaginationButtonEnabled, showPendingUserReview } from './dashboard/helpers/helpers';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder, SwaggerDocumentOptions } from '@nestjs/swagger';
 
@@ -62,7 +62,6 @@ async function registerHBSHelpers() {
   hbs.registerHelper('format_milliseconds', formatMilliseconds);
   hbs.registerHelper('label_status_incident', labelStatusIncident);
   hbs.registerHelper('text_status_incident', textStatusIncident);
-  hbs.registerHelper('format_interaction', formatInteraction);
   hbs.registerHelper('format_interaction_date', formatInteractionDate);
   hbs.registerHelper('format_incident_date', formatIncidentDate);
   hbs.registerHelper('is_admin', isAdmin);
@@ -71,6 +70,7 @@ async function registerHBSHelpers() {
   hbs.registerHelper('incidents_registers_per_page_url', buildIncidentsRegistersPerPageUrl);
   hbs.registerHelper('format_interaction_color', formatInteractionColor);
   hbs.registerHelper('is_pagination_button_enabled', isPaginationButtonEnabled);
+  hbs.registerHelper('show_pending_user_review', showPendingUserReview);
   
 }
 

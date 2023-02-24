@@ -2,7 +2,6 @@ import { RoleEnum } from "src/app/enum/role.enum";
 import { IncidentStatusEnum } from "src/app/enum/status.enum";
 import { DateFormatter } from "src/app/util/date.formatter";
 import { QueryStringBuilder } from "src/app/util/query-string.builder";
-import { IncidentInteractionEntity } from "src/incident/entity/incident-interaction.entity";
 import { IncidentsPageContent } from "../content/incidents-page.content";
 import { PageInfo } from "../pagination/page-info";
 
@@ -67,24 +66,19 @@ export function textStatusIncident(status: string) {
       return 'Desconhecido';
   }
 }
-
-export function formatInteraction(interaction: IncidentInteractionEntity) {
-  const color: string = interaction.origin === RoleEnum.ADMIN ? '323232' : '4c90f7';
-  const user: string = interaction.origin === RoleEnum.ADMIN ? 'Admin: ' + interaction.userName : 'Usuário: ' + interaction.userName;
-  const date: string = DateFormatter.formatIncidentDateToString(interaction.sentDate);
-  const content: string = interaction.description;
-
-  return '<div class="d-flex text-muted pt-3"> <i class="bx bxs-user nav_icon" style="color:#' + color + 
-    '"></i> <p class="pb-3 mb-0 small lh-sm border-bottom mx-2"> <strong class="d-block text-gray-dark mx-2">' + user +
-    ' - ' + date + '</strong>' + content + '</p> </div>';
-}
-
 export function isAdmin(role: number) { 
   return role === RoleEnum.ADMIN;
 }
 
 export function formatRole(role: number) { 
-  return role === RoleEnum.ADMIN ? 'Administrador' : 'Usuário';
+  if (role === RoleEnum.SYSTEM) {
+    return 'Sistema';
+  }
+  if (role === RoleEnum.ADMIN) {
+    return 'Administrador';
+  }
+  
+  return 'Usuário';
 }
 
 export function formatInteractionDate(interactionDate: Date) { 
@@ -117,9 +111,40 @@ export function buildIncidentsRegistersPerPageUrl(
 
 
 export function formatInteractionColor(origin: number) {
-  return origin === 0 ? 'text-secondary' : 'text-primary';
+  if (origin === RoleEnum.SYSTEM) {
+    return 'text-success';
+  }
+  if (origin === RoleEnum.ADMIN) {
+    return 'text-secondary';
+  }
+  
+  return 'text-primary';
 }
 
 export function isPaginationButtonEnabled(page: PageInfo | null) {
   return page !== null ? '' : 'disabled';
+}
+
+export function showPendingUserReview(userId: number, userIncidentId: number, endDate: Date | null, rating: number) {
+  if (rating > 0) {
+    return false;
+  }
+
+  if (userId !== userIncidentId) {
+    return false;
+  }
+
+  if (endDate === null) {
+    return false;
+  }
+  
+  const today: Date = new Date();
+  const timeDifference: number = Math.abs(endDate.getTime() - today.getTime());
+  const daysDifference: number = timeDifference / (1000 * 60 * 60 * 24);
+
+  if (daysDifference > 3) {
+    return false;
+  }
+  
+  return true;
 }

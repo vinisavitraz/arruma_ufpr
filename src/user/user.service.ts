@@ -17,7 +17,7 @@ import { InputFieldValidator } from 'src/app/util/input-field.validator';
 import { TokenEntity } from 'src/token/entity/token.entity';
 import { TokenService } from 'src/token/token.service';
 import { UserStatusEnum } from 'src/app/enum/status.enum';
-import { CreateUserWithPasswordRequestDTO } from './dto/request/create-user-with-password-request.dto';
+import { RegisterUserRequestDTO } from './dto/request/register-user-request.dto';
 
 @Injectable()
 export class UserService {
@@ -140,7 +140,7 @@ export class UserService {
     );
   }
 
-  public async createUser(host: string, createUserRequestDTO: CreateUserRequestDTO | CreateUserWithPasswordRequestDTO): Promise<UserEntity> {
+  public async createUser(host: string, createUserRequestDTO: CreateUserRequestDTO | RegisterUserRequestDTO): Promise<UserEntity> {
     InputFieldValidator.validateEmail(createUserRequestDTO.email);
     InputFieldValidator.validateDocument(createUserRequestDTO.document);
     InputFieldValidator.validatePhoneNumber(createUserRequestDTO.phone);
@@ -159,8 +159,8 @@ export class UserService {
       password = this.generatePassword();
     } else {
       await validateOrReject(createUserRequestDTO);
-      PasswordRulesValidator.validateCreateUser(createUserRequestDTO as CreateUserWithPasswordRequestDTO);
-      password = (createUserRequestDTO as CreateUserWithPasswordRequestDTO).password;
+      PasswordRulesValidator.validateCreateUser(createUserRequestDTO as RegisterUserRequestDTO);
+      password = (createUserRequestDTO as RegisterUserRequestDTO).password;
     }
 
     const hashedPassword: string = await this.hashPassword(password);

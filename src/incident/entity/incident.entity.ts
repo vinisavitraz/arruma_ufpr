@@ -16,6 +16,10 @@ export class IncidentEntity {
   @ApiProperty({example: 'Aberto'})
   readonly status: string;
   @ApiProperty({example: 1})
+  readonly priority: number;
+  @ApiProperty({example: 0})
+  readonly rating: number;
+  @ApiProperty({example: 1})
   readonly incidentTypeId: number;
   @ApiProperty({example: 'Manutenção'})
   readonly incidentTypeName: string;
@@ -45,6 +49,8 @@ export class IncidentEntity {
     startDate: Date,
     endDate: Date | null,
     status: string,
+    priority: number,
+    rating: number,
     incidentTypeId: number,
     incidentTypeName: string,
     locationId: number,
@@ -63,6 +69,8 @@ export class IncidentEntity {
     this.startDate = startDate;
     this.endDate = endDate;
     this.status = status;
+    this.priority = priority;
+    this.rating = rating;
     this.incidentTypeId = incidentTypeId;
     this.incidentTypeName = incidentTypeName;
     this.locationId = locationId;
@@ -84,6 +92,8 @@ export class IncidentEntity {
       incident.start_date,
       incident.end_date,
       incident.status,
+      incident.priority,
+      incident.rating,
       incident.type_id,
       incident.incident_type.name,
       incident.location_id,
