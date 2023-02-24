@@ -7,11 +7,24 @@ export class DashboardPagination {
   static MAX_PER_PAGE = 10;
   static DEFAULT_SKIP = 0;
 
-  private pages: PageInfo[];
+  pages: PageInfo[];
+  activePage: PageInfo;
+  previousPage: PageInfo | null;
+  nextPage: PageInfo | null;
+  total: number;
 
-
-  constructor(pages: PageInfo[]) {
+  constructor(
+    pages: PageInfo[],
+    activePage: PageInfo,
+    previousPage: PageInfo | null,
+    nextPage: PageInfo | null,
+    total: number,
+  ) {
     this.pages = pages;
+    this.activePage = activePage;
+    this.previousPage = previousPage;
+    this.nextPage = nextPage;
+    this.total = total;
   }
 
   public static build(
@@ -19,7 +32,15 @@ export class DashboardPagination {
     uri: string,
   ): DashboardPagination {
     if (content.maxPerPage >= content.total) {
-      return new DashboardPagination([new PageInfo(1, QueryStringBuilder.build(content, content.maxPerPage, uri))]);
+      const page: PageInfo = new PageInfo(1, QueryStringBuilder.build(content, content.maxPerPage, uri), 'active');
+
+      return new DashboardPagination(
+        [page],
+        page,
+        null,
+        null,
+        content.total,
+      );
     }
 
     let numberOfPages: number = content.total / content.maxPerPage;
@@ -32,11 +53,46 @@ export class DashboardPagination {
     const pages: PageInfo[] = [];
     let skip: number = 0;
 
+    
+    const activePageNumber: number = this.getActivePage(content.skip, content.maxPerPage);
+    const previousPageNumber: number = activePageNumber - 1;
+    const nextPageNumber: number = activePageNumber + 1;
+    let activePage: PageInfo | null = null;
+    let previousPage: PageInfo | null = null;
+    let nextPage: PageInfo | null = null;
+
     for (let i = 1; i <= numberOfPages; i++) {
-      pages.push(new PageInfo(i, QueryStringBuilder.build(content, content.maxPerPage, uri, skip)));
+      const isActivePage: boolean = i === activePageNumber;
+      const isPreviousPage: boolean = i === previousPageNumber;
+      const isNextPage: boolean = i === nextPageNumber;
+      const active: string = isActivePage ? 'active' : '';
+
+      const page: PageInfo = new PageInfo(i, QueryStringBuilder.build(content, content.maxPerPage, uri, skip,), active);
+
+      if (isActivePage) {
+        activePage = page;
+      }
+      if (isPreviousPage) {
+        previousPage = page;
+      }
+      if (isNextPage) {
+        nextPage = page;
+      }
+
+      pages.push(page);
       skip += content.maxPerPage;
     }
 
-    return new DashboardPagination(pages);
+    return new DashboardPagination(
+      pages,
+      activePage,
+      previousPage,
+      nextPage,  
+      content.total,
+    );
+  }
+
+  private static getActivePage(skip: number, maxPerPage: number): number {
+    return (skip / maxPerPage) + 1;
   }
 }

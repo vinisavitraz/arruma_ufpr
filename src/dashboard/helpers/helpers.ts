@@ -4,6 +4,7 @@ import { DateFormatter } from "src/app/util/date.formatter";
 import { QueryStringBuilder } from "src/app/util/query-string.builder";
 import { IncidentInteractionEntity } from "src/incident/entity/incident-interaction.entity";
 import { IncidentsPageContent } from "../content/incidents-page.content";
+import { PageInfo } from "../pagination/page-info";
 
 export function formatObjectDateTime(date: Date | undefined) { 
   if (!date) {
@@ -117,4 +118,8 @@ export function buildIncidentsRegistersPerPageUrl(
 
 export function formatInteractionColor(origin: number) {
   return origin === 0 ? 'text-secondary' : 'text-primary';
+}
+
+export function isPaginationButtonEnabled(page: PageInfo | null) {
+  return page !== null ? '' : 'disabled';
 }
