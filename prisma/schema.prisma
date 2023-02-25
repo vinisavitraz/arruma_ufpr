@@ -78,6 +78,8 @@ model incident {
   user             user          @relation("user_incidents", fields: [user_id], references: [id])
   admin_id         Int?
   admin            user?         @relation("admin_incidents", fields: [admin_id], references: [id])
+  file_metadata_id Int?
+  file_metadata    file_metadata? @relation(fields: [file_metadata_id], references: [id])
   interactions     incident_interaction[]
 
   @@index([title])
@@ -110,4 +112,14 @@ model user_token {
   user            user     @relation(fields: [user_id], references: [id])
 
   @@index([token_number])
+}
+
+model file_metadata {
+  id          Int         @id @default(autoincrement())
+  filename    String      @db.VarChar(200)
+  path        String      @db.VarChar(100)
+  mimetype    String      @db.VarChar(200)
+  incidents   incident[]
+
+  @@index([filename])
 }

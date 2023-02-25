@@ -12,6 +12,7 @@ import { ClassValidatorExceptionFilter } from './exception/filter/class-validato
 import { HttpOperationExceptionFilter } from './exception/filter/http-operation-exception-filter';
 import { MailModule } from 'src/mail/mail.module';
 import { TokenModule } from 'src/token/token.module';
+import { FileModule } from 'src/file/file.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { TokenModule } from 'src/token/token.module';
     IncidentModule, 
     MailModule,
     TokenModule,
+    FileModule,
   ],
   controllers: [],
   providers: [

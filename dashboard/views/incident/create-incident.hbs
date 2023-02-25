@@ -19,7 +19,7 @@
     {{/if}}
     <div class="row g-5">
       <div class="col-md-12 col-lg-10">
-        <form method="POST" action="{{ uri }}" class="needs-validation" novalidate="" autocomplete="off">
+        <form method="POST" enctype="multipart/form-data" action="{{ uri }}" class="needs-validation" novalidate="" autocomplete="off">
           <input type="hidden" id="id" name="id" value="{{item.id}}">
           <hr class="my-4">
           <h4 class="mb-3">Tipo</h4>
@@ -146,6 +146,15 @@
             <textarea type="text" rows="5" class="form-control" id="description" name="description" placeholder="Detalhes do incidente">{{ incident.description }}</textarea>
           </div>
           <br>
+          <div class="col-12">
+            <label for="image" class="form-label">Imagem</label>
+            <input class="form-control" type="file" id="image" name="image">
+          </div>
+          <br>
+          <div class="col-12">
+            <img hidden id="market-image-preview" src="#" class="img-thumbnail" width="500" height="200">
+          </div>   
+          <br>         
           <hr class="my-4">
           
           <button class="w-100 btn btn-primary btn-lg" type="submit">Salvar</button>

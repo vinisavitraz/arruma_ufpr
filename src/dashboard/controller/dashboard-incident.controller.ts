@@ -1,4 +1,4 @@
-import { Controller, Get, UseFilters, UseGuards, Request, Res, Param, ParseIntPipe, Post, ConsoleLogger } from "@nestjs/common";
+import { Controller, Get, UseFilters, UseGuards, Request, Res, Param, ParseIntPipe, Post, ConsoleLogger, UseInterceptors, UploadedFile } from "@nestjs/common";
 import { Response } from 'express';
 import { DashboardExceptionFilter } from "src/app/exception/filter/dashboard-exception-filter";
 import { AuthenticatedGuard } from "src/auth/guard/authenticated.guard";
@@ -21,13 +21,18 @@ import { RolesGuard } from "src/auth/guard/roles.guard";
 import { IncidentsPageContent } from "../content/incidents-page.content";
 import { DashboardPagination } from "../pagination/dashboard-pagination";
 import { QueryStringBuilder } from "src/app/util/query-string.builder";
+import LocalFilesInterceptor from "src/app/interceptor/local-files.interceptor";
+import { FileService } from "src/file/file.service";
 
 @Controller('dashboard/incident')
 @ApiExcludeController()
 @UseFilters(DashboardExceptionFilter)
 export class DashboardIncidentController {
   
-  constructor(private readonly service: DashboardIncidentService) {}
+  constructor(
+    private readonly service: DashboardIncidentService,
+    private readonly fileService: FileService,
+  ) {}
 
   @Get('create')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
@@ -174,12 +179,17 @@ export class DashboardIncidentController {
   @Post('create')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(AuthenticatedGuard, RolesGuard)
-  public async createIncident(@Request() req, @Res() res: Response): Promise<void> { 
+  @UseInterceptors(LocalFilesInterceptor({
+    fieldName: 'image',
+    path: '/incidents'
+  }))
+  public async createIncident(@Request() req, @Res() res: Response, @UploadedFile() image: Express.Multer.File): Promise<void> { 
     const createIncidentRequestDTO: CreateIncidentRequestDTO = CreateIncidentRequestDTO.fromDashboard(req.body, req.user);
 
     try {
       const incident: IncidentEntity = await this.service.createIncident(createIncidentRequestDTO);
-      
+      const fileMetadata = await this.fileService.saveNewFileMetadataFromDashboard(image);
+
       return res.redirect('/dashboard/incident/' + incident.id);
     } catch (errors) {
       const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();

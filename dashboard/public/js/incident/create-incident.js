@@ -81,4 +81,29 @@ $(function () {
     });
   }
 
+  $("#image").change(function(){
+    readURL(this);
+  });
+
+  $('#save-image').on('click', function(e){
+    const image = $('#image').val();
+    
+    if (image === undefined || image === null || image === '') {
+        e.preventDefault();
+    } 
+  });
+
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#market-image-preview').attr('src', e.target.result);
+        }
+
+        reader.readAsDataURL(input.files[0]);
+        $('#market-image-preview').removeAttr('hidden');
+    }
+  }
+
 });
