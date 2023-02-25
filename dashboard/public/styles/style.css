@@ -5,3 +5,19 @@ body {
 .link_button {
   width: 200px;
 }
+
+.bg-primary-color {
+  background-color: #2d63b4;
+}
+
+.bg-primary-light-color {
+  background-color: #4c90f7;
+}
+
+.bg-secondary-color {
+  background-color: #595959;
+}
+
+.bg-secondary-light-color {
+  background-color: #ada8a8;
+}

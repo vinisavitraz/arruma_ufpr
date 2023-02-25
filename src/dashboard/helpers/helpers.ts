@@ -1,5 +1,5 @@
 import { RoleEnum } from "src/app/enum/role.enum";
-import { IncidentStatusEnum } from "src/app/enum/status.enum";
+import { IncidentPriorityLevelEnum, IncidentStatusEnum } from "src/app/enum/status.enum";
 import { DateFormatter } from "src/app/util/date.formatter";
 import { QueryStringBuilder } from "src/app/util/query-string.builder";
 import { IncidentsPageContent } from "../content/incidents-page.content";
@@ -66,6 +66,33 @@ export function textStatusIncident(status: string) {
       return 'Desconhecido';
   }
 }
+
+export function labelStatusPriority(priority: number) { 
+  switch (priority) {
+    case IncidentPriorityLevelEnum.LOW:
+      return 'success';
+    case IncidentPriorityLevelEnum.MEDIUM:
+      return 'warning';
+    case IncidentPriorityLevelEnum.HIGH:
+      return 'red';
+    default:
+      return 'dark';
+  }
+}
+
+export function textStatusPriority(priority: number) { 
+  switch (priority) {
+    case IncidentPriorityLevelEnum.LOW:
+      return 'Prioridade baixa';
+    case IncidentPriorityLevelEnum.MEDIUM:
+      return 'Prioridade média';
+    case IncidentPriorityLevelEnum.HIGH:
+      return 'Prioridade alta';
+    default:
+      return 'Desconhecido';
+  }
+}
+
 export function isAdmin(role: number) { 
   return role === RoleEnum.ADMIN;
 }
@@ -157,4 +184,36 @@ export function setRatingClass(rating: number, star: string) {
   }
 
   return 'bx bx-star';
+}
+
+export function alignInteraction(userId: number, userRole: number, interactionUserId: number | null, interactionOrigin: number) {
+  if (interactionOrigin === RoleEnum.SYSTEM) {
+    return 'justify-content-center';
+  }
+
+  if (userId === interactionUserId) {
+    return 'justify-content-end';  
+  }
+
+  if (userRole === RoleEnum.ADMIN && interactionOrigin === RoleEnum.ADMIN) {
+    return 'justify-content-end';  
+  }
+  
+  return 'justify-content-start';
+}
+
+export function setInteractionColor(userId: number, userRole: number, interactionUserId: number, interactionOrigin: number) {
+  if (interactionOrigin === RoleEnum.SYSTEM) {
+    return ' bg-primary-light-color';
+  }
+
+  if (userId === interactionUserId) {
+    return 'bg-secondary-light-color';  
+  }
+
+  if (userRole === RoleEnum.ADMIN && interactionOrigin === RoleEnum.ADMIN) {
+    return 'bg-secondary-light-color';  
+  }
+  
+  return 'bg-secondary-color';
 }

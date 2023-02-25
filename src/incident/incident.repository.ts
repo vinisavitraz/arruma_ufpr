@@ -148,7 +148,7 @@ export class IncidentRepository {
       where: { incident_id: incidentId, },
       orderBy: [
         {
-          id: 'desc',
+          id: 'asc',
         },
       ],
       include: {
