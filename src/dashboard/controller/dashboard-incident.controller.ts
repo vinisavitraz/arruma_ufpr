@@ -22,7 +22,6 @@ import { IncidentsPageContent } from "../content/incidents-page.content";
 import { DashboardPagination } from "../pagination/dashboard-pagination";
 import { QueryStringBuilder } from "src/app/util/query-string.builder";
 import LocalFilesInterceptor from "src/app/interceptor/local-files.interceptor";
-import { FileService } from "src/file/file.service";
 
 @Controller('dashboard/incident')
 @ApiExcludeController()
@@ -31,7 +30,6 @@ export class DashboardIncidentController {
   
   constructor(
     private readonly service: DashboardIncidentService,
-    private readonly fileService: FileService,
   ) {}
 
   @Get('create')
@@ -51,7 +49,7 @@ export class DashboardIncidentController {
         locations: locations,
         jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/create-incident.js'}],
         incident: new CreateIncidentRequestDTO(),
-        uri: '/dashboard/incident/create',
+        uri: '/dashboard/incident/create?origin=userIncident',
       }
     );
   }
@@ -184,13 +182,13 @@ export class DashboardIncidentController {
     path: '/incidents'
   }))
   public async createIncident(@Request() req, @Res() res: Response, @UploadedFile() image: Express.Multer.File): Promise<void> { 
+    const origin: string = req.query.origin ?? 'incident';
     const createIncidentRequestDTO: CreateIncidentRequestDTO = CreateIncidentRequestDTO.fromDashboard(req.body, req.user);
-
+    
     try {
-      const incident: IncidentEntity = await this.service.createIncident(createIncidentRequestDTO);
-      const fileMetadata = await this.fileService.saveNewFileMetadataFromDashboard(image);
+      const incident: IncidentEntity = await this.service.createIncident(createIncidentRequestDTO, image);
 
-      return res.redirect('/dashboard/incident/' + incident.id);
+      return res.redirect('/dashboard/incident/' + incident.id + '?origin=' + origin);
     } catch (errors) {
       const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
       const locations: LocationEntity[] = await this.service.findLocations(); 

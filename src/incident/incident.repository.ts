@@ -198,7 +198,8 @@ export class IncidentRepository {
   }
 
   public async createIncident(
-    createIncidentRequestDTO: CreateIncidentRequestDTO
+    createIncidentRequestDTO: CreateIncidentRequestDTO,
+    fileMetadataId: number | null,
   ): Promise<incident & {interactions: incident_interaction[], admin: user | null, user: user, incident_type: incident_type, location: location, item: item} | null> {
     return await this.connection.incident.create({ 
       data: {
@@ -210,6 +211,7 @@ export class IncidentRepository {
         location_id: createIncidentRequestDTO.locationId,
         item_id: createIncidentRequestDTO.itemId,
         user_id: createIncidentRequestDTO.userId,
+        file_metadata_id: fileMetadataId,
       },
       include: {
         interactions: true,

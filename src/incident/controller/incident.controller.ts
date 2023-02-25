@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, UseGuards, Request, Put } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, UseGuards, Request, Put, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiHeader, ApiNotFoundResponse, ApiOkResponse, ApiOperation, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { UnauthorizedExample } from 'src/app/docs/example/auth/unauthorized-example';
 import { IncidentNotFoundExample } from 'src/app/docs/example/incident/incident-not-found-example';
 import { RoleEnum } from 'src/app/enum/role.enum';
+import LocalFilesInterceptor from 'src/app/interceptor/local-files.interceptor';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { Roles } from 'src/auth/roles/require-roles.decorator';
 import { SearchIncidentsRequestDTO } from 'src/dashboard/dto/request/search-incidents-request.dto';
@@ -128,11 +129,15 @@ export class IncidentController {
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Criar novo incidente' })
+  @UseInterceptors(LocalFilesInterceptor({
+    fieldName: 'image',
+    path: '/incidents'
+  }))
   @ApiBody({ type: CreateIncidentRequestDTO })
   @ApiOkResponse({ type: ListIncidentResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
-  public async createIncident(@Body() createIncidentRequestDTO: CreateIncidentRequestDTO): Promise<ListIncidentResponseDTO> {
-    const incident: IncidentEntity = await this.incidentService.createIncident(createIncidentRequestDTO);
+  public async createIncident(@Body() createIncidentRequestDTO: CreateIncidentRequestDTO, @UploadedFile() image: Express.Multer.File): Promise<ListIncidentResponseDTO> {
+    const incident: IncidentEntity = await this.incidentService.createIncident(createIncidentRequestDTO, null);
     
     return new ListIncidentResponseDTO(incident);
   }

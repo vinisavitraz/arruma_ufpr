@@ -8,6 +8,8 @@ import { HttpOperationException } from 'src/app/exception/http-operation.excepti
 import { SearchIncidentTypesRequestDTO } from 'src/dashboard/dto/request/search-incident-types-request.dto';
 import { SearchIncidentsRequestDTO } from 'src/dashboard/dto/request/search-incidents-request.dto';
 import { DatabaseService } from 'src/database/database.service';
+import { FileMetadataEntity } from 'src/file/entity/file-metadata.entity';
+import { FileService } from 'src/file/file.service';
 import { CreateItemRequestDTO } from 'src/item/dto/request/create-item-request.dto';
 import { ItemEntity } from 'src/item/entity/item.entity';
 import { ItemService } from 'src/item/item.service';
@@ -34,6 +36,7 @@ export class IncidentService {
     private locationService: LocationService,
     private itemService: ItemService,
     private incidentTypeService: IncidentTypeService,
+    private fileService: FileService,
   ) {
     this.repository = new IncidentRepository(this.databaseService);
   }
@@ -163,11 +166,18 @@ export class IncidentService {
     return IncidentTypeEntity.fromRepository(incidentTypeDb);
   }
 
-  public async createIncident(createIncidentRequestDTO: CreateIncidentRequestDTO): Promise<IncidentEntity> {
+  public async createIncident(createIncidentRequestDTO: CreateIncidentRequestDTO, image: Express.Multer.File | undefined): Promise<IncidentEntity> {
     await this.findOrCreateIncidentType(createIncidentRequestDTO);
     await this.findOrCreateLocation(createIncidentRequestDTO);
     await this.findOrCreateItem(createIncidentRequestDTO);
 
+    let fileMetadataId: number | null = null;
+
+    if (image !== undefined) {
+      const fileMetadata: FileMetadataEntity = await this.fileService.saveNewFileMetadataFromDashboard(image);
+      fileMetadataId = fileMetadata.id;
+    }
+    
     const incidentDb: incident & {
       interactions: incident_interaction[], 
       admin: user | null, 
@@ -175,7 +185,7 @@ export class IncidentService {
       incident_type: incident_type, 
       location: location,
       item: item,
-    } = await this.repository.createIncident(createIncidentRequestDTO);
+    } = await this.repository.createIncident(createIncidentRequestDTO, fileMetadataId);
 
     return IncidentEntity.fromRepository(incidentDb);
   }

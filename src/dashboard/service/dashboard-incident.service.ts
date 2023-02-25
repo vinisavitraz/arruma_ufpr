@@ -71,10 +71,10 @@ export class DashboardIncidentService {
     return incident;
   }
 
-  public async createIncident(createIncidentRequestDTO: CreateIncidentRequestDTO): Promise<IncidentEntity> {
+  public async createIncident(createIncidentRequestDTO: CreateIncidentRequestDTO, image: Express.Multer.File | undefined): Promise<IncidentEntity> {
     await validateOrReject(createIncidentRequestDTO);
 
-    return await this.incidentService.createIncident(createIncidentRequestDTO); 
+    return await this.incidentService.createIncident(createIncidentRequestDTO, image); 
   }
 
   public async createIncidentInteraction(user: UserEntity, createIncidentInteractionRequestDTO: CreateIncidentInteractionRequestDTO): Promise<void> {

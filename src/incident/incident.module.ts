@@ -6,9 +6,10 @@ import { LocationModule } from 'src/location/location.module';
 import { ItemModule } from 'src/item/item.module';
 import { IncidentTypeController } from './controller/incident-type.controller';
 import { IncidentTypeService } from './service/incident-type.service';
+import { FileModule } from 'src/file/file.module';
 
 @Module({
-  imports: [DatabaseModule, LocationModule, ItemModule],
+  imports: [DatabaseModule, LocationModule, ItemModule, FileModule],
   controllers: [IncidentController, IncidentTypeController],
   providers: [IncidentService, IncidentTypeService],
   exports: [IncidentService, IncidentTypeService],
