@@ -6,7 +6,7 @@ import { resolve } from 'path';
 import * as session from 'express-session';
 import * as passport from 'passport';
 import * as flash from 'connect-flash';
-import { formatDate, formatDateTime, select, formatMilliseconds, labelStatusIncident, textStatusIncident, formatInteractionDate, isAdmin, formatIncidentDate, setActiveTab, formatObjectDateTime, buildIncidentsRegistersPerPageUrl, formatRole, formatInteractionColor, isPaginationButtonEnabled, showPendingUserReview, setRatingClass, labelStatusPriority, textStatusPriority, alignInteraction, setInteractionColor } from './dashboard/helpers/helpers';
+import { formatDate, formatDateTime, select, formatMilliseconds, labelStatusIncident, textStatusIncident, formatInteractionDate, isAdmin, formatIncidentDate, setActiveTab, formatObjectDateTime, buildIncidentsRegistersPerPageUrl, formatRole, formatInteractionColor, isPaginationButtonEnabled, showPendingUserReview, setRatingClass, labelStatusPriority, textStatusPriority, alignInteraction, setInteractionColor, showIncidentImage } from './dashboard/helpers/helpers';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder, SwaggerDocumentOptions } from '@nestjs/swagger';
 
@@ -76,6 +76,7 @@ async function registerHBSHelpers() {
   hbs.registerHelper('set_rating_class', setRatingClass);
   hbs.registerHelper('align_interaction', alignInteraction);
   hbs.registerHelper('set_interaction_color', setInteractionColor);
+  hbs.registerHelper('show_incident_image', showIncidentImage);
   
 }
 

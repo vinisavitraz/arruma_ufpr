@@ -52,4 +52,5 @@ export enum HttpOperationErrorCodes {
     ITEM_NOT_FOUND = 'ITM_004',
     INVALID_ITEM_ID = 'ITM_005',
     FILE_METADATA_NOT_FOUND = 'FM_001',
+    FILE_NOT_FOUND_ON_PATH = 'FM_002',
 }

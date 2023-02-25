@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, StreamableFile } from '@nestjs/common';
 import { file_metadata } from '@prisma/client';
 import { unlink } from 'node:fs/promises';
 import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-codes';
@@ -7,6 +7,9 @@ import { DatabaseService } from 'src/database/database.service';
 import { FileMetadataEntity } from './entity/file-metadata.entity';
 import { FileRepository } from './file.repository';
 import * as fs from 'fs';
+import { FileStreamEntity } from './entity/file-stream.entity';
+import { join } from 'node:path';
+import { createReadStream, ReadStream } from 'node:fs';
 
 @Injectable()
 export class FileService {
@@ -21,7 +24,24 @@ export class FileService {
     return fileExtension === 'jpeg' || fileExtension === 'png' || fileExtension === 'jpg'; 
   }
 
-  public async findFileMetadataByIDOrCry(fileMetadataId: number): Promise<file_metadata> {
+  public async getFileReadStreamOrCry(fileMetadataId: number): Promise<FileStreamEntity> {
+    const fileMetadata: FileMetadataEntity = await this.findFileMetadataByIDOrCry(fileMetadataId);
+    
+    if (!this.fileExists(fileMetadata.path)) {
+      throw new HttpOperationException(
+        HttpStatus.NOT_FOUND, 
+        'File not found on path: ' + fileMetadata.path,
+        HttpOperationErrorCodes.FILE_NOT_FOUND_ON_PATH
+      );
+    }
+
+    const readStream: ReadStream = createReadStream(join(process.cwd(), fileMetadata.path));
+    const fileStream: StreamableFile = new StreamableFile(readStream);
+
+    return FileStreamEntity.fromRepository(fileStream, fileMetadata);
+  }
+
+  public async findFileMetadataByIDOrCry(fileMetadataId: number): Promise<FileMetadataEntity> {
     const fileMetadata: file_metadata | null = await this.repository.getFileByID(fileMetadataId);
     
     if (!fileMetadata) {
@@ -32,7 +52,7 @@ export class FileService {
       );
     }
 
-    return fileMetadata;
+    return FileMetadataEntity.fromRepository(fileMetadata);
   }
 
   public async saveNewFileMetadataFromDashboard(image: Express.Multer.File): Promise<FileMetadataEntity> {
@@ -48,7 +68,7 @@ export class FileService {
   }
 
   public async updateFileMetadataImage(fileMetadataId: number, image: Express.Multer.File): Promise<FileMetadataEntity> {
-    const fileMetadataDb: file_metadata = await this.findFileMetadataByIDOrCry(fileMetadataId);
+    const fileMetadataDb: FileMetadataEntity = await this.findFileMetadataByIDOrCry(fileMetadataId);
 
     await this.deleteFile(fileMetadataDb);
 
@@ -69,7 +89,7 @@ export class FileService {
     await this.repository.deleteFileMetadata(fileMetadataDb.id);
   }
 
-  private async deleteFile(fileMetadata: file_metadata): Promise<void> {
+  private async deleteFile(fileMetadata: FileMetadataEntity): Promise<void> {
       
     try {
       if (fs.existsSync(fileMetadata.path)) {

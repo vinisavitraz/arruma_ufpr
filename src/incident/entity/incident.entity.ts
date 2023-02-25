@@ -41,6 +41,8 @@ export class IncidentEntity {
   readonly adminName: string | null;
   @ApiProperty({example: 1})
   readonly totalInteractions: number;
+  @ApiProperty({example: 1})
+  readonly fileMetadataId: number | null;
 
   constructor(
     id: number,
@@ -62,6 +64,7 @@ export class IncidentEntity {
     adminId: number | null,
     adminName: string | null,
     totalInteractions: number,
+    fileMetadataId: number | null,
   ) {
     this.id = id;
     this.title = title;
@@ -82,6 +85,7 @@ export class IncidentEntity {
     this.adminId = adminId;
     this.adminName = adminName;
     this.totalInteractions = totalInteractions;
+    this.fileMetadataId = fileMetadataId;
   }
 
   public static fromRepository(incident: incident & {interactions: incident_interaction[], admin: user | null, user: user, incident_type: incident_type, location: location, item: item}): IncidentEntity {
@@ -105,6 +109,7 @@ export class IncidentEntity {
       incident.admin_id,
       incident.admin ? incident.admin.name : null,
       incident.interactions.length,
+      incident.file_metadata_id,
     );
   }
 

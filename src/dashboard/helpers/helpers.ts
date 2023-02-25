@@ -217,3 +217,7 @@ export function setInteractionColor(userId: number, userRole: number, interactio
   
   return 'bg-secondary-color';
 }
+
+export function showIncidentImage(fileMetadataId: number | null) {
+  return fileMetadataId !== null;
+}
