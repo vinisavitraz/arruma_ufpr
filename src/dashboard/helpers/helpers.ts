@@ -23,7 +23,7 @@ export function formatDate(date: string | null) {
 
 export function formatDateTime(datetime: string | null) { 
     if (!datetime) {
-      return '';
+      return '-';
     }
     
     return DateFormatter.formatStringDateTime(datetime);

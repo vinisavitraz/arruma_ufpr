@@ -19,207 +19,54 @@
     </div>
   </div>
   <br>
-  {{#if (show_incident_image incident.fileMetadataId)}}
-    <div class="row g-3">
-      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-8  mx-2 border bg-white rounded">
-        <br>
-        <div class="row g-3 mx-5">
-          <br>
-          <h4>Imagem</h4>
-          <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-12">
-            <br>
-            <img src="/file/{{ incident.fileMetadataId }}" class="img-fluid" width="500" height="200" alt="Imagem do incidente">
-          </div>
-        </div>
-        <br>
-      </div>
-      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-2  mx-2 border rounded bg-white">
-        <br>
-        {{#if showButtonAssign }}
-          <a class="btn btn-primary" href="/dashboard/incident/assign/{{ incident.id }}?origin={{ origin }}" role="button">Atender incidente</a>
-        {{/if}}
-        <br>
-        <br>
-        {{#if showButtonClose }}
-          <a class="btn btn-danger" href="/dashboard/incident/close/{{ incident.id }}?origin={{ origin }}" role="button">Finalizar incidente</a>
-        {{/if}}
-        <br>
-        <hr class="my-4">
-        <br>
-        <div class="row g-3 mx-1">
-          <h4>Dados</h4>
-        </div>
-        <br>
-        <div class="row g-3 bg-white">
-          <hr class="my-4">
-          <div class="row mx-1">
-            <h5>Data de abertura</h5>
-          </div>
-          <div class="row mx-1">
-            <h6>{{format_datetime incident.startDate }}</h6>
-          </div>
-          <br>
-          <div class="row mx-1">
-            <h5>Data de fechamento</h5>
-          </div>
-          <div class="row mx-1">
-            <h6>{{format_datetime incident.endDate }}</h6>
-          </div>
-          <br>
-          <div class="row mx-1">
-            <h5>Tipo de incidente</h5>
-          </div>
-          <div class="row mx-1">
-            <h6>{{ incident.incidentTypeName }}</h6>
-          </div>
-          <br>
-          <div class="row mx-1">
-            <h5>Local</h5>
-          </div>
-          <div class="row mx-1">
-            <h6>{{ incident.locationName }}</h6>
-          </div>
-          <br>
-          <div class="row mx-1">
-            <h5>Item</h5>
-          </div>
-          <div class="row mx-1">
-            <h6>{{ incident.itemName }}</h6>
-          </div>
-          <br>
-          <hr class="my-4">
-          <div class="row mx-1">
-            <h5>Usuário</h5>
-          </div>
-          <div class="row mx-1">
-            <h6>{{ incident.userName }}</h6>
-          </div>
-          <br>
-          <div class="row mx-1">
-            <h5>Responsável</h5>
-          </div>
-          <div class="row mx-1">
-            <h6>{{ incident.adminName }}</h6>
-          </div>
-          <br>
-        </div>
-      </div>
-      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-8 mx-2">
-        <div class="row bg-white border border-white rounded">
-          <div class="d-flex flex-row {{{align_interaction ../user.id ../user.role this.userId this.origin}}}">
-            <div>
-              <br>
-              <p class="small p-2 ms-3 mb-1 rounded-3 text-white {{{set_interaction_color user.id user.role incident.userId user.role}}}">{{ incident.description }}</p>
-              <p class="small ms-3 mb-3 rounded-3 text-muted">{{ incident.userName }}  - {{format_incident_date incident.startDate }}</p>
-            </div>
-          </div>
-          {{#if showContent }}
-            {{#each incidentInteractions}}
-              <div class="d-flex flex-row {{{align_interaction ../user.id ../user.role this.userId this.origin}}}">
-                <div>
-                  <br>
-                  <p class="small p-2 ms-3 mb-1 rounded-3 text-white {{{set_interaction_color ../user.id ../user.role this.userId this.origin}}}">{{ this.description }}</p>
-                  <p class="small ms-3 mb-3 rounded-3 text-muted">{{ this.userName }}  - {{format_incident_date this.sentDate }}</p>
-                </div>
-              </div>
-            {{/each}}
-          {{/if}}
-        </div>
-        <br>
-        {{#if showButtonNewMessage }}
-          <div class="row bg-white border border-white rounded">
-            <form method="POST" action="/dashboard/incident/interaction?origin={{ origin }}" class="needs-validation" novalidate="" autocomplete="off">
-              <input type="hidden" id="incidentId" name="incidentId" value="{{incident.id}}">
-              <br>
-              <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-12">
-                <textarea type="text" rows="3" class="form-control" id="description" name="description" minlength="1"></textarea>
-              </div>
-              <br>
-              <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-12 d-flex justify-content-end">
-                <button type="submit" class="btn btn-primary btn-lg" role="button">Nova mensagem</button>
-              </div>
-              <br>
-            </form>    
-          </div>
-        {{/if}}
-        <br>
-      </div>
-    </div>
-  {{else}}
-    <div class="row g-3">
-      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-8 mx-2">
+  <div class="row g-3">
+    <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-8 mx-2">
       <div class="row bg-white border border-white rounded">
-        <div class="d-flex flex-row {{{align_interaction ../user.id ../user.role this.userId this.origin}}}">
-          <div>
-            <br>
-            <p class="small p-2 ms-3 mb-1 rounded-3 text-white {{{set_interaction_color user.id user.role incident.userId user.role}}}">{{ incident.description }}</p>
-            <p class="small ms-3 mb-3 rounded-3 text-muted">{{ incident.userName }}  - {{format_incident_date incident.startDate }}</p>
-          </div>
+        <br>
+        <div class="row mx-1">
+          <h6>Descrição</h6>
         </div>
-        {{#if showContent }}
-          {{#each incidentInteractions}}
-            <div class="d-flex flex-row {{{align_interaction ../user.id ../user.role this.userId this.origin}}}">
-              <div>
-                <br>
-                <p class="small p-2 ms-3 mb-1 rounded-3 text-white {{{set_interaction_color ../user.id ../user.role this.userId this.origin}}}">{{ this.description }}</p>
-                <p class="small ms-3 mb-3 rounded-3 text-muted">{{ this.userName }}  - {{format_incident_date this.sentDate }}</p>
-              </div>
-            </div>
-          {{/each}}
-        {{/if}}
+        <div class="row mx-1">
+          <h3>{{ incident.description }}</h3>
+        </div>
+        <br>
+        <div class="row mx-1">
+          <h6>Data de abertura</h6>
+        </div>
+        <div class="row mx-1">
+          <h3>{{format_datetime incident.startDate }}</h3>
+        </div>
+        <br>
+        <div class="row mx-1">
+          <h6>Data de fechamento</h6>
+        </div>
+        <div class="row mx-1">
+          <h3>{{format_datetime incident.endDate }}</h3>
+        </div>
+        <br>
+        <div class="row mx-1">
+          <h6>Imagem</h6>
+        </div>
+        <div class="row mx-1">
+          <img src="/file/{{ incident.fileMetadataId }}" class="img-fluid" width="400" height="150" alt="Imagem do incidente">
+        </div>
+        <br>
       </div>
-      <br>
-      {{#if showButtonNewMessage }}
-        <div class="row bg-white border border-white rounded">
-          <form method="POST" action="/dashboard/incident/interaction?origin={{ origin }}" class="needs-validation" novalidate="" autocomplete="off">
-            <input type="hidden" id="incidentId" name="incidentId" value="{{incident.id}}">
-            <br>
-            <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-12">
-              <textarea type="text" rows="3" class="form-control" id="description" name="description" minlength="1"></textarea>
-            </div>
-            <br>
-            <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-12 d-flex justify-content-end">
-              <button type="submit" class="btn btn-primary btn-lg" role="button">Nova mensagem</button>
-            </div>
-            <br>
-          </form>    
-        </div>
-      {{/if}}
-      <br>
     </div>
-<div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-2  mx-2 border rounded bg-white">
+    <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-2  mx-2 border rounded bg-white">
       <br>
       {{#if showButtonAssign }}
-        <a class="btn btn-primary" href="/dashboard/incident/assign/{{ incident.id }}?origin={{ origin }}" role="button">Atender incidente</a>
+        <a class="btn btn-primary mx-5" href="/dashboard/incident/assign/{{ incident.id }}?origin={{ origin }}" role="button">Atender incidente</a>
+        <hr class="my-4">
+        <br>
       {{/if}}
-      <br>
-      <br>
       {{#if showButtonClose }}
-        <a class="btn btn-danger" href="/dashboard/incident/close/{{ incident.id }}?origin={{ origin }}" role="button">Finalizar incidente</a>
+        <a class="btn btn-danger mx-5" href="/dashboard/incident/close/{{ incident.id }}?origin={{ origin }}" role="button">Finalizar incidente</a>
+        <hr class="my-4">
+        <br>
       {{/if}}
-      <br>
-      <hr class="my-4">
-      <br>
-      <div class="row g-3 mx-1">
-        <h4>Dados</h4>
-      </div>
       <br>
       <div class="row g-3 bg-white">
-        <hr class="my-4">
-        <div class="row mx-1">
-          <h5>Data de abertura</h5>
-        </div>
-        <div class="row mx-1">
-          <h6>{{format_datetime incident.startDate }}</h6>
-        </div>
-        <br>
-        <div class="row mx-1">
-          <h5>Data de fechamento</h5>
-        </div>
-        <div class="row mx-1">
-          <h6>{{format_datetime incident.endDate }}</h6>
-        </div>
-        <br>
         <div class="row mx-1">
           <h5>Tipo de incidente</h5>
         </div>
@@ -258,6 +105,43 @@
         <br>
       </div>
     </div>
+  </div>
+  <br>
+  <div class="row g-3">
+    <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-10 mx-2 border bg-white border-white rounded">
+      <br>
+      <h3>Mensagens</h3>
+      <hr class="my-4">
+      <div class="row bg-light">
+        {{#if showContent }}
+          {{#each incidentInteractions}}
+            <div class="d-flex flex-row {{{align_interaction ../user.id ../user.role this.userId this.origin}}}">
+              <div>
+                <br>
+                <p class="small p-2 ms-3 mb-1 rounded-3 text-white {{{set_interaction_color ../user.id ../user.role this.userId this.origin}}}">{{ this.description }}</p>
+                <p class="small ms-3 mb-3 rounded-3 text-muted">{{ this.userName }}  - {{format_incident_date this.sentDate }}</p>
+              </div>
+            </div>
+          {{/each}}
+        {{/if}}
+      </div>
+      {{#if showButtonNewMessage }}
+        <div class="row">
+          <form method="POST" action="/dashboard/incident/interaction?origin={{ origin }}" class="needs-validation" novalidate="" autocomplete="off">
+            <input type="hidden" id="incidentId" name="incidentId" value="{{incident.id}}">
+            <br>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-12">
+              <textarea type="text" rows="3" class="form-control" id="description" name="description" minlength="1"></textarea>
+            </div>
+            <br>
+            <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-12 d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary btn-lg" role="button">Nova mensagem</button>
+            </div>
+            <br>
+          </form>    
+        </div>
+      {{/if}}
+      <br>
     </div>
-  {{/if}}
+  </div>
 </body>
