@@ -48,7 +48,12 @@
           <h6>Imagem</h6>
         </div>
         <div class="row mx-1">
-          <img src="/file/{{ incident.fileMetadataId }}" class="img-fluid" width="400" height="150" alt="Imagem do incidente">
+          {{#if (show_incident_image incident.fileMetadataId)}}
+            <img src="/file/{{ incident.fileMetadataId }}" class="img-fluid" width="400" height="150" alt="Imagem do incidente">
+          {{else}}
+          <h3>-</h3>
+          {{/if}}
+          
         </div>
         <br>
       </div>
