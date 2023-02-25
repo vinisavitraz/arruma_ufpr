@@ -91,8 +91,8 @@ export class DashboardIncidentService {
     return await this.incidentService.closeIncident(user, incidentId); 
   }
 
-  // public async searchIncidents(incidentPageContent: IncidentsPageContent): Promise<IncidentEntity[]> {
-  //   return await this.incidentService.searchIncidents(SearchIncidentsRequestDTO.fromPageContent(incidentPageContent)); 
-  // }
+  public async setIncidentRating(user: UserEntity, incidentId: number, rating: number): Promise<IncidentEntity> {
+    return await this.incidentService.setIncidentRating(user, incidentId, rating); 
+  }
 
 }

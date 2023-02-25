@@ -315,6 +315,30 @@ export class IncidentService {
     );
   }
 
+  public async setIncidentRating(user: UserEntity, incidentId: number, rating: number): Promise<IncidentEntity> {
+    if (rating < 0 || rating > 3) {
+      throw new HttpOperationException(
+        HttpStatus.BAD_REQUEST, 
+        'Invalid incident rating: ' + rating, 
+        HttpOperationErrorCodes.INVALID_INCIDENT_RATING,
+      );
+    }
+    const incidentDb: IncidentEntity = await this.findIncidentByIDOrCry(incidentId);
+    const assignedIncident: incident & {
+      interactions: incident_interaction[], 
+      admin: user | null, 
+      user: user,
+      incident_type: incident_type, 
+      location: location,
+      item: item,
+    } = await this.repository.setIncidentRating(incidentDb, rating);
+
+    const suffix: string = rating > 1 ? 'estrelas' : 'estrela';
+    await this.createNewInteractionBySystem(incidentDb, 'Incidente avaliado - O usuário ' + user.name + ' avaliou o atendimento com ' + rating + ' ' + suffix);
+    
+    return IncidentEntity.fromRepository(assignedIncident);
+  }
+
   public async searchIncidents(user: UserEntity | null, searchIncidentsRequestDTO: SearchIncidentsRequestDTO): Promise<IncidentEntity[]> {
     const incidents: IncidentEntity[] = [];
 

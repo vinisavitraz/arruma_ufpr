@@ -148,3 +148,13 @@ export function showPendingUserReview(userId: number, userIncidentId: number, en
   
   return true;
 }
+
+export function setRatingClass(rating: number, star: string) {
+  const starNumber: number = Number(star);
+
+  if (starNumber <= rating) {
+    return 'bx bxs-star';
+  }
+
+  return 'bx bx-star';
+}

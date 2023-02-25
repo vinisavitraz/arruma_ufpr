@@ -72,6 +72,21 @@ export class DashboardIncidentController {
     );
   }
 
+  @Get('set-rating/:rating/incident/:incidentId')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
+  public async setIncidentRating(
+    @Param('rating', ParseIntPipe) rating: number, 
+    @Param('incidentId', ParseIntPipe) incidentId: number, 
+    @Request() req, 
+    @Res() res: Response
+  ): Promise<void> { 
+    const origin: string = req.query.origin ?? '';
+    await this.service.setIncidentRating(req.user, incidentId, rating);
+    
+    return res.redirect('/dashboard/incident/' + incidentId + '?origin=' + origin);
+  }
+
   @Get('assign/:id')
   @Roles(RoleEnum.ADMIN)
   @UseGuards(AuthenticatedGuard, RolesGuard)

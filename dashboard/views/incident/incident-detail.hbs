@@ -67,26 +67,31 @@
         </div>
       </div>
       {{#if (show_pending_user_review user.id incident.userId incident.endDate incident.rating)}}
-      {{!-- <div class="row g-5 mx-5 d-flex justify-content-start">
-      
 
-         <div class="card p-3">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="ratings">
-                    <a href="/dashboard/incident/rating/1"><i onmouseover="hoverRating(this)" onmouseout="normalImg(this)" class="bx bx-star"></i></a>
-                    <a href="/dashboard/incident/rating/2"><i onmouseover="hoverRating(this)" onmouseout="normalImg(this)" class="bx bx-star"></i></a>
-                    <a href="/dashboard/incident/rating/3"><i onmouseover="hoverRating(this)" onmouseout="normalImg(this)" class="bx bx-star"></i></a>
-                </div>
-                <h5 class="review-count">12 Reviews</h5>
-            </div>
+        <div class="row g-5 mx-5 d-flex justify-content-start">
+          <div class="card p-3">
+              <div class="d-flex justify-content-between align-items-center">
+                  <div class="ratings">
+                      <a href="/dashboard/incident/set-rating/1/incident/{{ incident.id }}"><i class="bx bx-star"></i></a>
+                      <a href="/dashboard/incident/set-rating/2/incident/{{ incident.id }}"><i class="bx bx-star"></i></a>
+                      <a href="/dashboard/incident/set-rating/3/incident/{{ incident.id }}"><i class="bx bx-star"></i></a>
+                  </div>
+                  <h5 class="review-count">12 Reviews</h5>
+              </div>
+          </div>
         </div>
-      </div>
-        
-     --}}
-
-   
-    
-
+      {{else}}
+        <div class="row g-5 mx-5 d-flex justify-content-start">
+          <div class="card p-3">
+              <div class="d-flex justify-content-between align-items-center">
+                  <div class="ratings">
+                      <i class="bx bx-start{{set_rating_class incident.rating "1"}}"></i>
+                      <i class="{{set_rating_class incident.rating "2"}}"></i>
+                      <i class="{{set_rating_class incident.rating "3"}}"></i>
+                  </div>
+              </div>
+          </div>
+        </div>
       {{/if}}
       <div class="col-md-12 col-lg-10">
         <hr class="my-4">

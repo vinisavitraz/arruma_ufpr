@@ -273,6 +273,26 @@ export class IncidentRepository {
     });
   }
 
+  public async setIncidentRating(
+    incident: IncidentEntity,
+    rating: number,
+  ): Promise<incident & {interactions: incident_interaction[], admin: user | null, user: user, incident_type: incident_type, location: location, item: item} | null> {
+    return await this.connection.incident.update({ 
+      where: { id: incident.id },
+      data: {
+        rating: rating,
+      },
+      include: {
+        interactions: true,
+        admin: true,
+        user: true,
+        incident_type: true,
+        location: true,
+        item: true,
+      },
+    });
+  }
+
   public async updateIncidentType(updateIncidentTypeRequestDTO: UpdateIncidentTypeRequestDTO): Promise<incident_type | null> {
     return await this.connection.incident_type.update({ 
       where: { id: updateIncidentTypeRequestDTO.id },
