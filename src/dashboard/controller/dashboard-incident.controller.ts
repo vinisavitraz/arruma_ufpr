@@ -22,6 +22,7 @@ import { IncidentsPageContent } from "../content/incidents-page.content";
 import { DashboardPagination } from "../pagination/dashboard-pagination";
 import { QueryStringBuilder } from "src/app/util/query-string.builder";
 import LocalFilesInterceptor from "src/app/interceptor/local-files.interceptor";
+import { UpdateIncidentRequestDTO } from "src/incident/dto/request/update-incident-request.dto";
 
 @Controller('dashboard/incident')
 @ApiExcludeController()
@@ -50,6 +51,7 @@ export class DashboardIncidentController {
         jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/create-incident.js'}],
         incident: new CreateIncidentRequestDTO(),
         uri: '/dashboard/incident/create?origin=userIncident',
+        backUrl: '/dashboard/incident/user',
       }
     );
   }
@@ -115,6 +117,7 @@ export class DashboardIncidentController {
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getIncidentPage(@Param('id', ParseIntPipe) incidentId: number, @Request() req, @Res() res: Response): Promise<void> {  
     const origin: string = req.query.origin ?? '';
+    
     let backUrl: string = '/dashboard/incident';
     let view: string = 'incident';
 
@@ -126,7 +129,10 @@ export class DashboardIncidentController {
     const user: UserEntity = req.user; 
     const incident: IncidentEntity = await this.service.findUserIncidentByIDOrCry(user, incidentId);
     const incidentInteractions: IncidentInteractionEntity[] = await this.service.findIncidentInteractions(incident.id);
-    
+    const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
+    const locations: LocationEntity[] = await this.service.findLocations(); 
+    const items: ItemEntity[] = await this.service.findItemsByLocationID(incident.locationId);
+
     return DashboardResponseRender.renderForAuthenticatedUser(
       res,
       'incident/incident-detail',
@@ -144,6 +150,11 @@ export class DashboardIncidentController {
         showButtonAssign: incident.status === IncidentStatusEnum.OPEN && user.role === RoleEnum.ADMIN,
         showButtonClose: incident.status !== IncidentStatusEnum.CLOSED && user.role === RoleEnum.ADMIN,
         showButtonNewMessage: incident.status !== IncidentStatusEnum.CLOSED,
+        showButtonEdit: incident.status !== IncidentStatusEnum.CLOSED && user.role === RoleEnum.ADMIN,
+        disableEdit:  incident.status === IncidentStatusEnum.CLOSED || user.role !== RoleEnum.ADMIN,
+        incidentTypes: incidentTypes,
+        locations: locations,
+        items: items,
       }
     );
   }
@@ -152,6 +163,7 @@ export class DashboardIncidentController {
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getEditIncidentPage(@Param('id', ParseIntPipe) incidentId: number, @Request() req, @Res() res: Response): Promise<void> {   
+    const origin: string = req.query.origin ?? 'incident';
     const user: UserEntity = req.user; 
     const incident: IncidentEntity = await this.service.findUserIncidentByIDOrCry(user, incidentId);
     const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
@@ -170,6 +182,7 @@ export class DashboardIncidentController {
         locations: locations,
         items: items,
         jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/create-incident.js'}],
+        backUrl: '/dashboard/incident/' + incident.id + '?origin=' + origin,
       }
     );
   }
@@ -181,7 +194,7 @@ export class DashboardIncidentController {
     fieldName: 'image',
     path: '/incidents'
   }))
-  public async createIncident(@Request() req, @Res() res: Response, @UploadedFile() image: Express.Multer.File): Promise<void> { 
+  public async createIncident(@Request() req, @Res() res: Response, @UploadedFile() image: Express.Multer.File | undefined): Promise<void> { 
     const origin: string = req.query.origin ?? 'incident';
     const createIncidentRequestDTO: CreateIncidentRequestDTO = CreateIncidentRequestDTO.fromDashboard(req.body, req.user);
     
@@ -244,6 +257,30 @@ export class DashboardIncidentController {
     return res.redirect(url);
   }
 
+  @Post('update')
+  @Roles(RoleEnum.ADMIN)
+  @UseInterceptors(LocalFilesInterceptor({
+    fieldName: 'image',
+    path: '/incidents'
+  }))
+  @UseGuards(AuthenticatedGuard, RolesGuard)
+  public async updateIncident(@Request() req, @Res() res: Response, @UploadedFile() image: Express.Multer.File | undefined): Promise<void> { 
+    const origin: string = req.query.origin ?? 'incident';
+    const updateIncidentRequestDTO: UpdateIncidentRequestDTO = UpdateIncidentRequestDTO.fromDashboard(req.body);
+
+    try {
+      await this.service.updateIncident(updateIncidentRequestDTO, image);
+    } catch (errors) {
+      return this.renderCreateIncidentPage(
+        res,
+        req.user,
+        '/dashboard/incident/update',
+      );
+    }  
+
+    return res.redirect('/dashboard/incident/' + updateIncidentRequestDTO.incidentId + '?origin=' + origin);
+  }
+
   @Get()
   @Roles(RoleEnum.ADMIN)
   @UseGuards(AuthenticatedGuard, RolesGuard)
@@ -300,6 +337,29 @@ export class DashboardIncidentController {
         showContent: incidents.length > 0,
         cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}, {filePath: '/styles/incidents.css'}],
         jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/incidents.js'}, {filePath: '/js/filter-tables.js'}, {filePath: '/js/search-form.js'}],
+      }
+    );
+  }
+
+  private async renderCreateIncidentPage(
+    @Res() res: Response, 
+    user: UserEntity, 
+    uri: string,
+  ): Promise<void> {
+    const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
+    const locations: LocationEntity[] = await this.service.findLocations();
+
+    return DashboardResponseRender.renderForAuthenticatedUser(
+      res,
+      'incident/create-incident',
+      user,
+      'incident',
+      {
+        incidentTypes: incidentTypes,
+        locations: locations,
+        jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/create-incident.js'}],
+        incident: new CreateIncidentRequestDTO(),
+        uri: '/dashboard/incident/create?origin=userIncident',
       }
     );
   }

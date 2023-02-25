@@ -41,6 +41,16 @@ export class FileService {
     return FileStreamEntity.fromRepository(fileStream, fileMetadata);
   }
 
+  public async getFileMetadataByID(fileMetadataId: number): Promise<FileMetadataEntity | null> {
+    const fileMetadata: file_metadata | null = await this.repository.getFileByID(fileMetadataId);
+    
+    if (!fileMetadata) {
+      return null;
+    }
+
+    return FileMetadataEntity.fromRepository(fileMetadata);
+  }
+
   public async findFileMetadataByIDOrCry(fileMetadataId: number): Promise<FileMetadataEntity> {
     const fileMetadata: file_metadata | null = await this.repository.getFileByID(fileMetadataId);
     

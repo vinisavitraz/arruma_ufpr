@@ -1,6 +1,6 @@
 <body id="body-pd">
   {{>header}}
-  <a class="btn btn-primary btn-lg" href="/dashboard/incident/user" role="button">Voltar</a>
+  <a class="btn btn-primary btn-lg" href="{{ backUrl }}" role="button">Voltar</a>
   <div class="container">
   <main>
     <div class="py-5 text-justify">
@@ -20,7 +20,7 @@
     <div class="row g-5">
       <div class="col-md-12 col-lg-10">
         <form method="POST" enctype="multipart/form-data" action="{{ uri }}" class="needs-validation" novalidate="" autocomplete="off">
-          <input type="hidden" id="id" name="id" value="{{item.id}}">
+          <input type="hidden" id="incidentId" name="incidentId" value="{{incident.id}}">
           <hr class="my-4">
           <h4 class="mb-3">Tipo</h4>
           <div id="incidentTypeSelect" class="d-block">

@@ -20,6 +20,7 @@ import { UserEntity } from 'src/user/entity/user.entity';
 import { CreateIncidentInteractionRequestDTO } from '../dto/request/create-incident-interaction-request.dto';
 import { CreateIncidentRequestDTO } from '../dto/request/create-incident-request.dto';
 import { CreateIncidentTypeRequestDTO } from '../dto/request/create-incident-type-request.dto';
+import { UpdateIncidentRequestDTO } from '../dto/request/update-incident-request.dto';
 import { IncidentInteractionEntity } from '../entity/incident-interaction.entity';
 import { IncidentTypeEntity } from '../entity/incident-type.entity';
 import { IncidentEntity } from '../entity/incident.entity';
@@ -186,6 +187,40 @@ export class IncidentService {
       location: location,
       item: item,
     } = await this.repository.createIncident(createIncidentRequestDTO, fileMetadataId);
+
+    return IncidentEntity.fromRepository(incidentDb);
+  }
+
+  public async updateIncident(updateIncidentRequestDTO: UpdateIncidentRequestDTO, image: Express.Multer.File | undefined): Promise<IncidentEntity> {
+    const incident: IncidentEntity = await this.findIncidentByIDOrCry(updateIncidentRequestDTO.incidentId);
+    const incidentType: IncidentTypeEntity = await this.findIncidentTypeByIDOrCry(updateIncidentRequestDTO.incidentTypeId);
+    const location: LocationEntity = await this.locationService.findLocationByIDOrCry(updateIncidentRequestDTO.locationId);
+    const item: ItemEntity = await this.itemService.findItemByIDOrCry(updateIncidentRequestDTO.itemId);
+    let fileMetadata: FileMetadataEntity | null = null;
+
+    if (incident.fileMetadataId !== null) {
+      fileMetadata = await this.fileService.getFileMetadataByID(incident.fileMetadataId);
+    }
+
+    if (image !== undefined && fileMetadata != null) {
+      await this.fileService.deleteFileMetadataByID(fileMetadata.id);
+      fileMetadata = await this.fileService.saveNewFileMetadataFromDashboard(image);
+    }
+
+    let fileMetadataId: number | null = null;
+
+    if (fileMetadata !== null) {
+      fileMetadataId = fileMetadata.id;
+    }
+    
+    const incidentDb: incident & {
+      interactions: incident_interaction[], 
+      admin: user | null, 
+      user: user,
+      incident_type: incident_type, 
+      location: location,
+      item: item,
+    } = await this.repository.updateIncident(updateIncidentRequestDTO, fileMetadataId);
 
     return IncidentEntity.fromRepository(incidentDb);
   }

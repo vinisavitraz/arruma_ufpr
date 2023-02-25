@@ -5,6 +5,7 @@ import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-
 import { HttpOperationException } from 'src/app/exception/http-operation.exception';
 import { CreateIncidentInteractionRequestDTO } from 'src/incident/dto/request/create-incident-interaction-request.dto';
 import { CreateIncidentRequestDTO } from 'src/incident/dto/request/create-incident-request.dto';
+import { UpdateIncidentRequestDTO } from 'src/incident/dto/request/update-incident-request.dto';
 import { IncidentInteractionEntity } from 'src/incident/entity/incident-interaction.entity';
 import { IncidentTypeEntity } from 'src/incident/entity/incident-type.entity';
 import { IncidentEntity } from 'src/incident/entity/incident.entity';
@@ -75,6 +76,12 @@ export class DashboardIncidentService {
     await validateOrReject(createIncidentRequestDTO);
 
     return await this.incidentService.createIncident(createIncidentRequestDTO, image); 
+  }
+
+  public async updateIncident(updateIncidentRequestDTO: UpdateIncidentRequestDTO, image: Express.Multer.File | undefined): Promise<IncidentEntity> {
+    await validateOrReject(updateIncidentRequestDTO);
+
+    return await this.incidentService.updateIncident(updateIncidentRequestDTO, image); 
   }
 
   public async createIncidentInteraction(user: UserEntity, createIncidentInteractionRequestDTO: CreateIncidentInteractionRequestDTO): Promise<void> {

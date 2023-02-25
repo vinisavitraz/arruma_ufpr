@@ -8,6 +8,7 @@ import { UserEntity } from "src/user/entity/user.entity";
 import { CreateIncidentInteractionRequestDTO } from "./dto/request/create-incident-interaction-request.dto";
 import { CreateIncidentRequestDTO } from "./dto/request/create-incident-request.dto";
 import { CreateIncidentTypeRequestDTO } from "./dto/request/create-incident-type-request.dto";
+import { UpdateIncidentRequestDTO } from "./dto/request/update-incident-request.dto";
 import { UpdateIncidentTypeRequestDTO } from "./dto/request/update-incident-type-request.dto";
 import { IncidentTypeEntity } from "./entity/incident-type.entity";
 import { IncidentEntity } from "./entity/incident.entity";
@@ -212,6 +213,33 @@ export class IncidentRepository {
         item_id: createIncidentRequestDTO.itemId,
         user_id: createIncidentRequestDTO.userId,
         file_metadata_id: fileMetadataId,
+      },
+      include: {
+        interactions: true,
+        admin: true,
+        user: true,
+        incident_type: true,
+        location: true,
+        item: true,
+      },
+    });
+  }
+
+  public async updateIncident(
+    updateIncidentRequestDTO: UpdateIncidentRequestDTO,
+    fileMetadataId: number | null,
+  ): Promise<incident & {interactions: incident_interaction[], admin: user | null, user: user, incident_type: incident_type, location: location, item: item} | null> {
+    return await this.connection.incident.update({ 
+      where: {
+        id: updateIncidentRequestDTO.incidentId,
+      },
+      data: {
+        type_id: updateIncidentRequestDTO.incidentTypeId,
+        location_id: updateIncidentRequestDTO.locationId,
+        item_id: updateIncidentRequestDTO.itemId,
+        file_metadata_id: fileMetadataId,
+        title: updateIncidentRequestDTO.title,
+        description: updateIncidentRequestDTO.description,
       },
       include: {
         interactions: true,
