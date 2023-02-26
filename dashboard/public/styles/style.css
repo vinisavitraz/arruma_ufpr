@@ -27,6 +27,11 @@ body {
   background-color: #2d63b4;
 }
 
+.btn-primary-color:hover {
+  color: #fff;
+  background-color: #4c90f7;
+}
+
 .btn-primary-light-color {
   color: #fff;
   background-color: #4c90f7;
@@ -43,4 +48,20 @@ body {
 
 .btn-secondary-light-color {
   background-color: #ada8a8;
+}
+
+.text-primary-color {
+  color: #2d63b4;
+}
+
+.text-primary-light-color {
+  color: #4c90f7;
+}
+
+.text-secondary-color {
+  color: #595959;
+}
+
+.text-secondary-light-color {
+  color: #ada8a8;
 }

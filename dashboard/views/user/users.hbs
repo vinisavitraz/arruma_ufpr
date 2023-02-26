@@ -8,7 +8,7 @@
         <h1>Usuários</h1>
       </div>
       <div class="col-12 col-sm-12 col-md-6 col-lg-4">
-        <a class="btn btn-primary btn-lg" href="/dashboard/user/create" role="button">Novo usuário</a>
+        <a class="btn btn-primary-light-color btn-lg" href="/dashboard/user/create" role="button">Novo usuário</a>
       </div>
     </div>
     <br>
@@ -88,7 +88,7 @@
     {{#if showContent }}
       {{#each users}}
         <div class="card">
-          <h5 class="card-header bg-primary text-white">#{{this.id}} - {{this.name}}</h5>
+          <h5 class="card-header bg-primary-color text-white">#{{this.id}} - {{this.name}}</h5>
           <div class="card-body">
             <h4 class="card-title">{{this.name}}</h4>
             <br>
@@ -96,8 +96,8 @@
             <br>
             <p><i class='bx bx-envelope nav_icon'></i> {{ this.email }}</p>
             <p><i class='bx bx-user nav_icon'></i> {{format_role this.role }}</p>
-            <a href="/dashboard/user/{{this.id}}" class="btn btn-primary">Editar usuário</a>
-            <a href="/dashboard/user/delete/{{this.id}}" onclick="return confirm('Tem certeza que deseja excluir esse registro?')" class="btn btn-danger">Excluir usuário</a>
+            <a href="/dashboard/user/{{this.id}}" class="btn btn-primary-light-color">Editar</a>
+            <a href="/dashboard/user/delete/{{this.id}}" onclick="return confirm('Tem certeza que deseja excluir esse registro?')" class="btn btn-danger">Excluir</a>
           </div>
         </div>
         <br>

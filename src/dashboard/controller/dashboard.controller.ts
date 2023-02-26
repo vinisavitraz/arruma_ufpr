@@ -23,7 +23,6 @@ export class DashboardController {
   
   constructor(private readonly service: DashboardService) {}
 
-
   @Get('login')
   public async getLoginPage(@Request() req, @Res() res: Response): Promise<void> {    
     const errorCode: string = req.query.errorCode ?? '';
@@ -33,7 +32,7 @@ export class DashboardController {
       res,
       'login/login',
       {
-        cssImports: [{filePath: '/styles/login.css'}],
+        cssImports: [{filePath: '/styles/login.css'}, {filePath: '/styles/style.css'}],
         userMail: mail,
         ...DashboardErrorMapper.mapValidationErrors(errorCode),
       },
