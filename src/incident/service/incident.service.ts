@@ -346,11 +346,53 @@ export class IncidentService {
         incident_type: incident_type, 
         location: location,
         item: item,
-      } = await this.repository.setIncidentToClosed(incidentDb);
+      } = await this.repository.setIncidentStatus(
+        incidentDb,
+        IncidentStatusEnum.CLOSED,
+        new Date(),
+        incidentDb.rating,
+      );
 
       await this.createNewInteractionBySystem(incidentDb, 'Incidente fechado - O administrador ' + user.name + ' fechou este incidente.');
 
       return IncidentEntity.fromRepository(closedIncident);
+    }
+
+    throw new HttpOperationException(
+      HttpStatus.FORBIDDEN, 
+      'Only the user creator or an admin can close the incident.', 
+      HttpOperationErrorCodes.INVALID_ASSIGNED_ADMIN_CLOSE_INCIDENT,
+    );
+  }
+
+  public async reopenIncident(user: UserEntity, incidentId: number): Promise<IncidentEntity> {
+    const incidentDb: IncidentEntity = await this.findIncidentByIDOrCry(incidentId);
+    
+    if (user.role !== RoleEnum.ADMIN) {
+      throw new HttpOperationException(
+        HttpStatus.FORBIDDEN, 
+        'Only the admin can reopen the incident.', 
+        HttpOperationErrorCodes.INVALID_REOPEN_INCIDENT,
+      );
+    }
+    if (user.role === RoleEnum.ADMIN || (incidentDb.userId === user.id)) {
+      const reopenedIncident: incident & {
+        interactions: incident_interaction[], 
+        admin: user | null, 
+        user: user,
+        incident_type: incident_type, 
+        location: location,
+        item: item,
+      } = await this.repository.setIncidentStatus(
+        incidentDb,
+        IncidentStatusEnum.PENDING,
+        null,
+        0,
+      );
+
+      await this.createNewInteractionBySystem(incidentDb, 'Incidente em atendimento - O administrador ' + user.name + ' reabriu este incidente.');
+
+      return IncidentEntity.fromRepository(reopenedIncident);
     }
 
     throw new HttpOperationException(
@@ -379,7 +421,7 @@ export class IncidentService {
     } = await this.repository.setIncidentRating(incidentDb, rating);
 
     const suffix: string = rating > 1 ? 'estrelas' : 'estrela';
-    await this.createNewInteractionBySystem(incidentDb, 'Incidente avaliado - O usuário ' + user.name + ' avaliou o atendimento com ' + rating + ' ' + suffix);
+    await this.createNewInteractionBySystem(incidentDb, 'Atendimento avaliado - O usuário ' + user.name + ' avaliou o atendimento com ' + rating + ' ' + suffix);
     
     return IncidentEntity.fromRepository(assignedIncident);
   }

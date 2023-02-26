@@ -98,6 +98,10 @@ export class DashboardIncidentService {
     return await this.incidentService.closeIncident(user, incidentId); 
   }
 
+  public async reopenIncidente(user: UserEntity, incidentId: number): Promise<IncidentEntity> {
+    return await this.incidentService.reopenIncident(user, incidentId); 
+  }
+
   public async setIncidentRating(user: UserEntity, incidentId: number, rating: number): Promise<IncidentEntity> {
     return await this.incidentService.setIncidentRating(user, incidentId, rating); 
   }

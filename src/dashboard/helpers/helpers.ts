@@ -1,6 +1,7 @@
 import { RoleEnum } from "src/app/enum/role.enum";
 import { IncidentPriorityLevelEnum, IncidentStatusEnum } from "src/app/enum/status.enum";
 import { DateFormatter } from "src/app/util/date.formatter";
+import { IncidentReviewRulesValidator } from "src/app/util/incident-review-rules.validator";
 import { QueryStringBuilder } from "src/app/util/query-string.builder";
 import { IncidentsPageContent } from "../content/incidents-page.content";
 import { PageInfo } from "../pagination/page-info";
@@ -153,27 +154,7 @@ export function isPaginationButtonEnabled(page: PageInfo | null) {
 }
 
 export function showPendingUserReview(userId: number, userIncidentId: number, endDate: Date | null, rating: number) {
-  if (rating > 0) {
-    return false;
-  }
-
-  if (userId !== userIncidentId) {
-    return false;
-  }
-
-  if (endDate === null) {
-    return false;
-  }
-  
-  const today: Date = new Date();
-  const timeDifference: number = Math.abs(endDate.getTime() - today.getTime());
-  const daysDifference: number = timeDifference / (1000 * 60 * 60 * 24);
-
-  if (daysDifference > 3) {
-    return false;
-  }
-  
-  return true;
+  return IncidentReviewRulesValidator.validate(userId, userIncidentId, endDate, rating);
 }
 
 export function setRatingClass(rating: number, star: string) {
@@ -204,7 +185,7 @@ export function alignInteraction(userId: number, userRole: number, interactionUs
 
 export function setInteractionColor(userId: number, userRole: number, interactionUserId: number, interactionOrigin: number) {
   if (interactionOrigin === RoleEnum.SYSTEM) {
-    return ' bg-primary-light-color';
+    return 'bg-primary-light-color';
   }
 
   if (userId === interactionUserId) {

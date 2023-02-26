@@ -74,7 +74,13 @@
       {{/if}}
       {{#if showButtonEdit }}
         <div class="row d-flex justify-content-center mx-5">
-          <a class="btn btn-warning btn-lg text-white" href="/dashboard/incident/edit/{{ incident.id }}?origin={{ origin }}" role="button">Editar</a>
+          <a class="btn btn-warning btn-lg text-white" href="/dashboard/incident/edit/{{ incident.id }}?origin={{ origin }}" role="button">Editar incidente</a>
+        </div>
+        <br>
+      {{/if}}
+      {{#if showButtonReopen }}
+        <div class="row d-flex justify-content-center mx-5">
+          <a class="btn btn-primary btn-lg text-white" href="/dashboard/incident/re-open/{{ incident.id }}?origin={{ origin }}" role="button">Reabrir incidente</a>
         </div>
         <br>
       {{/if}}
@@ -140,6 +146,21 @@
               </div>
             </div>
           {{/each}}
+          {{#if (show_pending_user_review user.id incident.userId incident.endDate incident.rating)}}
+            <div class="d-flex flex-row justify-content-center">
+              <div>
+                <br>
+                <p class="small p-2 ms-3 mb-1 rounded-3 text-white bg-primary-light-color">Avalie seu atendimento</p>
+                <br>
+                <div class="ratings d-flex justify-content-center">
+                    <a href="/dashboard/incident/set-rating/1/incident/{{ incident.id }}?origin={{ origin }}"><i style="color:#ecd70a;" class="bx bx-star"></i></a>
+                    <a href="/dashboard/incident/set-rating/2/incident/{{ incident.id }}?origin={{ origin }}"><i style="color:#ecd70a;" class="bx bx-star"></i></a>
+                    <a href="/dashboard/incident/set-rating/3/incident/{{ incident.id }}?origin={{ origin }}"><i style="color:#ecd70a;" class="bx bx-star"></i></a>
+                </div>
+                <br>
+              </div>
+            </div>
+          {{/if}}
         {{/if}}
       </div>
       {{#if showButtonNewMessage }}

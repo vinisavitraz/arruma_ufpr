@@ -283,14 +283,18 @@ export class IncidentRepository {
     });
   }
 
-  public async setIncidentToClosed(
-    incident: IncidentEntity
+  public async setIncidentStatus(
+    incident: IncidentEntity,
+    status: string,
+    endDate: Date | null,
+    rating: number,
   ): Promise<incident & {interactions: incident_interaction[], admin: user | null, user: user, incident_type: incident_type, location: location, item: item} | null> {
     return await this.connection.incident.update({ 
       where: { id: incident.id },
       data: {
-        status: IncidentStatusEnum.CLOSED,
-        end_date: new Date(),
+        status: status,
+        end_date: endDate,
+        rating: rating,
       },
       include: {
         interactions: true,

@@ -23,6 +23,7 @@ import { DashboardPagination } from "../pagination/dashboard-pagination";
 import { QueryStringBuilder } from "src/app/util/query-string.builder";
 import LocalFilesInterceptor from "src/app/interceptor/local-files.interceptor";
 import { UpdateIncidentRequestDTO } from "src/incident/dto/request/update-incident-request.dto";
+import { IncidentReviewRulesValidator } from "src/app/util/incident-review-rules.validator";
 
 @Controller('dashboard/incident')
 @ApiExcludeController()
@@ -112,6 +113,16 @@ export class DashboardIncidentController {
     return res.redirect('/dashboard/incident/' + incidentId + '?origin=' + origin);
   }
 
+  @Get('re-open/:id')
+  @Roles(RoleEnum.ADMIN)
+  @UseGuards(AuthenticatedGuard, RolesGuard)
+  public async reopenIncidente(@Param('id', ParseIntPipe) incidentId: number, @Request() req, @Res() res: Response): Promise<void> { 
+    const origin: string = req.query.origin ?? '';
+    await this.service.reopenIncidente(req.user, incidentId);
+    
+    return res.redirect('/dashboard/incident/' + incidentId + '?origin=' + origin);
+  }
+
   @Get(':id')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(AuthenticatedGuard, RolesGuard)
@@ -149,8 +160,9 @@ export class DashboardIncidentController {
         jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/incident-detail.js'}],
         showButtonAssign: incident.status === IncidentStatusEnum.OPEN && user.role === RoleEnum.ADMIN,
         showButtonClose: incident.status !== IncidentStatusEnum.CLOSED && user.role === RoleEnum.ADMIN,
-        showButtonNewMessage: incident.status !== IncidentStatusEnum.CLOSED,
+        showButtonNewMessage: incident.status !== IncidentStatusEnum.CLOSED || IncidentReviewRulesValidator.validate(user.id, incident.userId, incident.endDate, incident.rating),
         showButtonEdit: incident.status !== IncidentStatusEnum.CLOSED && user.role === RoleEnum.ADMIN,
+        showButtonReopen: incident.status === IncidentStatusEnum.CLOSED && user.role === RoleEnum.ADMIN,
         disableEdit:  incident.status === IncidentStatusEnum.CLOSED || user.role !== RoleEnum.ADMIN,
         incidentTypes: incidentTypes,
         locations: locations,
@@ -203,7 +215,6 @@ export class DashboardIncidentController {
 
       return res.redirect('/dashboard/incident/' + incident.id + '?origin=' + origin);
     } catch (errors) {
-      console.log(errors);
       const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
       const locations: LocationEntity[] = await this.service.findLocations(); 
       const items: ItemEntity[] = await this.service.findItemsByLocationID(createIncidentRequestDTO.locationId);
@@ -272,7 +283,6 @@ export class DashboardIncidentController {
     try {
       await this.service.updateIncident(updateIncidentRequestDTO, image);
     } catch (errors) {
-      console.log(errors);
       return this.renderCreateIncidentPage(
         res,
         req.user,
