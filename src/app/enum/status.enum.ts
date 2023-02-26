@@ -22,5 +22,6 @@ export enum UserStatusEnum {
 
 export enum IncidentInteractionStatusEnum {
   SENT = 'sent',
+  MAIL_SENT = 'mailSent',
   READ = 'read',
 }

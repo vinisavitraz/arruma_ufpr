@@ -1,8 +1,9 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { incident, incident_interaction, incident_type, item, location, user } from '@prisma/client';
 import { validateOrReject } from 'class-validator';
 import { RoleEnum } from 'src/app/enum/role.enum';
-import { IncidentStatusEnum } from 'src/app/enum/status.enum';
+import { IncidentInteractionStatusEnum, IncidentStatusEnum } from 'src/app/enum/status.enum';
 import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-codes';
 import { HttpOperationException } from 'src/app/exception/http-operation.exception';
 import { SearchIncidentTypesRequestDTO } from 'src/dashboard/dto/request/search-incident-types-request.dto';
@@ -17,6 +18,7 @@ import { CreateLocationRequestDTO } from 'src/location/dto/request/create-locati
 import { LocationEntity } from 'src/location/entity/location.entity';
 import { LocationService } from 'src/location/location.service';
 import { UserEntity } from 'src/user/entity/user.entity';
+import { UserService } from 'src/user/user.service';
 import { CreateIncidentInteractionRequestDTO } from '../dto/request/create-incident-interaction-request.dto';
 import { CreateIncidentRequestDTO } from '../dto/request/create-incident-request.dto';
 import { CreateIncidentTypeRequestDTO } from '../dto/request/create-incident-type-request.dto';
@@ -24,6 +26,7 @@ import { UpdateIncidentRequestDTO } from '../dto/request/update-incident-request
 import { IncidentsUnreadByStatusResponseDTO } from '../dto/response/incidents-unread-by-status-response.dto';
 import { IncidentInteractionEntity } from '../entity/incident-interaction.entity';
 import { IncidentTypeEntity } from '../entity/incident-type.entity';
+import { IncidentUserPendingInteractionsEntity } from '../entity/incident-user-pending-interactions.entity';
 import { IncidentEntity } from '../entity/incident.entity';
 import { IncidentRepository } from '../incident.repository';
 import { IncidentTypeService } from './incident-type.service';
@@ -39,8 +42,16 @@ export class IncidentService {
     private itemService: ItemService,
     private incidentTypeService: IncidentTypeService,
     private fileService: FileService,
+    private userService: UserService,
   ) {
     this.repository = new IncidentRepository(this.databaseService);
+  }
+
+  @Cron(CronExpression.EVERY_5_SECONDS)
+  public async sendUnreadInteractionsEmail(): Promise<void> {
+    console.log('sendUnreadInteractionsEmail');
+    const usersWithUnreadInteractions: IncidentUserPendingInteractionsEntity[] = await this.findUsersWithUnreadInteractions();
+    console.log(usersWithUnreadInteractions);
   }
 
   public async findIncidentsByStatus(user: UserEntity | null, searchIncidentsRequestDTO: SearchIncidentsRequestDTO): Promise<IncidentEntity[]> {    
@@ -527,6 +538,44 @@ export class IncidentService {
       totalUnreadClosed,
       totalUnread,
     );
+  }
+
+  public async findUsersWithUnreadInteractions(): Promise<IncidentUserPendingInteractionsEntity[]> {
+    const usersWithUnread: IncidentUserPendingInteractionsEntity[] = [];
+    const usersDb: (user & {interactions: incident_interaction[]})[] = await this.userService.findUsersWithUnreadInteractions();
+    console.log(usersDb);
+    for (let i = 0; i < usersDb.length; i++) {
+      const user: user & {interactions: incident_interaction[]} = usersDb[i];
+      let totalUnread: number = 0;
+
+      for (let j = 0; j < user.interactions.length; i++) {
+        const interaction: incident_interaction = user.interactions[j];
+
+        if (interaction.status === IncidentInteractionStatusEnum.MAIL_SENT 
+          || interaction.status === IncidentInteractionStatusEnum.READ) {
+          continue;
+        }
+
+        if (interaction.user_id === user.id) {
+          continue;
+        }
+
+        if (interaction.origin === user.role) {
+          continue;
+        }
+
+        totalUnread++;
+      }
+
+      usersWithUnread.push(
+        new IncidentUserPendingInteractionsEntity(
+          user.email,
+          totalUnread,
+        )
+      );
+    }
+
+    return usersWithUnread;
   }
 
 }

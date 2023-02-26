@@ -1,5 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { user } from '@prisma/client';
+import { incident_interaction, user } from '@prisma/client';
 import { HttpOperationErrorCodes } from 'src/app/exception/http-operation-error-codes';
 import { HttpOperationException } from 'src/app/exception/http-operation.exception';
 import { SearchUsersRequestDTO } from 'src/dashboard/dto/request/search-users-request.dto';
@@ -255,6 +255,10 @@ export class UserService {
     const token: TokenEntity = await this.tokenService.getResetPasswordToken(tokenNumber);
 
     return await this.findUserByIDOrCry(token.userId);
+  }
+
+  public async findUsersWithUnreadInteractions(): Promise<(user & {interactions: incident_interaction[]})[]> {
+    return await this.repository.findUsersWithUnreadInteractions();
   }
 
   private generatePassword(): string {

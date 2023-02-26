@@ -392,7 +392,14 @@ export class IncidentRepository {
     return await this.connection.incident_interaction.findMany({ 
       where: { 
         incident_id: incidentId,
-        status: IncidentInteractionStatusEnum.SENT,
+        OR: [
+          {
+            status: IncidentInteractionStatusEnum.SENT,
+          },
+          {
+            status: IncidentInteractionStatusEnum.MAIL_SENT,
+          },
+        ],
         NOT: [
           {
             origin: origin,
@@ -418,7 +425,14 @@ export class IncidentRepository {
         status: incidentStatus,
         interactions: {
           some: {
-            status: IncidentInteractionStatusEnum.SENT,
+            OR: [
+              {
+                status: IncidentInteractionStatusEnum.SENT,
+              },
+              {
+                status: IncidentInteractionStatusEnum.MAIL_SENT,
+              },
+            ],
             NOT: [
               {
                 origin: origin,
@@ -432,5 +446,5 @@ export class IncidentRepository {
       }
     });
   }
-  
+
 }

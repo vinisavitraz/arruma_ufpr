@@ -13,9 +13,11 @@ import { HttpOperationExceptionFilter } from './exception/filter/http-operation-
 import { MailModule } from 'src/mail/mail.module';
 import { TokenModule } from 'src/token/token.module';
 import { FileModule } from 'src/file/file.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     DatabaseModule, 
     AuthModule, 
     DashboardModule, 
