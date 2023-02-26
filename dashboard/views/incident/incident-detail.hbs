@@ -62,25 +62,25 @@
       <br>
       {{#if showButtonAssign }}
         <div class="row d-flex justify-content-center mx-5">
-          <a class="btn btn-primary btn-lg mx-5" href="/dashboard/incident/assign/{{ incident.id }}?origin={{ origin }}" role="button">Atender incidente</a>
+          <a class="btn btn-primary mx-5" href="/dashboard/incident/assign/{{ incident.id }}?origin={{ origin }}" role="button">Atender incidente</a>
         </div>
         <br>
       {{/if}}
       {{#if showButtonClose }}
         <div class="row d-flex justify-content-center mx-5">
-          <a class="btn btn-danger btn-lg mx-5" href="/dashboard/incident/close/{{ incident.id }}?origin={{ origin }}" role="button">Finalizar incidente</a>
+          <a class="btn btn-danger mx-5" href="/dashboard/incident/close/{{ incident.id }}?origin={{ origin }}" role="button">Finalizar incidente</a>
         </div>
         <br>
       {{/if}}
       {{#if showButtonEdit }}
         <div class="row d-flex justify-content-center mx-5">
-          <a class="btn btn-warning btn-lg text-white" href="/dashboard/incident/edit/{{ incident.id }}?origin={{ origin }}" role="button">Editar incidente</a>
+          <a class="btn btn-warning text-white" href="/dashboard/incident/edit/{{ incident.id }}?origin={{ origin }}" role="button">Editar incidente</a>
         </div>
         <br>
       {{/if}}
       {{#if showButtonReopen }}
         <div class="row d-flex justify-content-center mx-5">
-          <a class="btn btn-primary btn-lg text-white" href="/dashboard/incident/re-open/{{ incident.id }}?origin={{ origin }}" role="button">Reabrir incidente</a>
+          <a class="btn btn-primary text-white" href="/dashboard/incident/re-open/{{ incident.id }}?origin={{ origin }}" role="button">Reabrir incidente</a>
         </div>
         <br>
       {{/if}}

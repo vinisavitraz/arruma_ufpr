@@ -21,7 +21,19 @@
       <div class="col-md-12 col-lg-10">
         <form method="POST" enctype="multipart/form-data" action="{{ uri }}" class="needs-validation" novalidate="" autocomplete="off">
           <input type="hidden" id="id" name="id" value="{{incident.id}}">
-          <input type="hidden" id="priority" name="priority" value="{{incident.priority}}">
+          <hr class="my-4">
+          <h4 class="mb-3">Prioridade</h4>
+          <div class="col-md-12">
+            <label for="incidentTypeId" class="form-label">Prioridade do incidente</label>
+            <select class="form-select form-control" id="priority" name="priority">
+              {{#select incident.priority}}
+                <option disabled selected value>Selecione...</option>
+                <option value="0">Baixa</option>
+                <option value="1">Média</option>
+                <option value="2">Alta</option>
+              {{/select}}
+            </select>
+          </div>
           <hr class="my-4">
           <h4 class="mb-3">Tipo</h4>
           <div id="incidentTypeSelect" class="d-block">

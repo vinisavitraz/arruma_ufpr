@@ -1,5 +1,4 @@
 import { incident, incident_interaction, incident_type, item, location, user } from "@prisma/client";
-import { RoleEnum } from "src/app/enum/role.enum";
 import { EntityStatusEnum, IncidentInteractionStatusEnum, IncidentStatusEnum } from "src/app/enum/status.enum";
 import { SearchIncidentTypesRequestDTO } from "src/dashboard/dto/request/search-incident-types-request.dto";
 import { SearchIncidentsRequestDTO } from "src/dashboard/dto/request/search-incidents-request.dto";
@@ -69,11 +68,12 @@ export class IncidentRepository {
               admin_id: user === null ? undefined : user.id,
             },
           ],
-        }
-        // user_id: user === null ? undefined : (user.role === RoleEnum.USER ? user.id : undefined),
-        // admin_id: user === null ? undefined : (user.role === RoleEnum.ADMIN ? user.id : undefined),
+        },
       },
       orderBy: [
+        {
+          priority: 'desc',
+        },
         {
           id: 'desc',
         },
@@ -226,6 +226,7 @@ export class IncidentRepository {
         item_id: createIncidentRequestDTO.itemId,
         user_id: createIncidentRequestDTO.userId,
         file_metadata_id: fileMetadataId,
+        priority: createIncidentRequestDTO.priority,
       },
       include: {
         interactions: true,
@@ -253,6 +254,7 @@ export class IncidentRepository {
         file_metadata_id: fileMetadataId,
         title: updateIncidentRequestDTO.title,
         description: updateIncidentRequestDTO.description,
+        priority: updateIncidentRequestDTO.priority,
       },
       include: {
         interactions: true,

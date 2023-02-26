@@ -61,7 +61,7 @@ export class UpdateIncidentRequestDTO {
   @ApiProperty({example: 'Projetor da sala A10'})
   itemDescription: string;
   
-  @IsString({message: HttpOperationErrorCodes.INVALID_INCIDENT_PRIORITY})
+  @IsInt({message: HttpOperationErrorCodes.INVALID_INCIDENT_PRIORITY})
   @ApiProperty({example: 0})
   priority: number;
 
@@ -71,7 +71,7 @@ export class UpdateIncidentRequestDTO {
     updateIncidentRequestDTO.id = payload['id'] ? Number(payload['id']) : undefined;
     updateIncidentRequestDTO.title = payload['title'] ? payload['title'] : undefined;
     updateIncidentRequestDTO.description = payload['description'] ? payload['description'] : undefined;
-    updateIncidentRequestDTO.priority = payload['priority'] ? payload['priority'] : undefined;
+    updateIncidentRequestDTO.priority = payload['priority'] ? Number(payload['priority']) : undefined;
     updateIncidentRequestDTO.incidentTypeId = payload['incidentTypeId'] ? Number(payload['incidentTypeId']) : undefined;
     updateIncidentRequestDTO.incidentTypeName = payload['incidentTypeName'] ?? '';
     updateIncidentRequestDTO.incidentTypeDescription = payload['incidentTypeDescription'] ?? '';

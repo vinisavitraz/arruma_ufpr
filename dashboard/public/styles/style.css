@@ -21,3 +21,26 @@ body {
 .bg-secondary-light-color {
   background-color: #ada8a8;
 }
+
+.btn-primary-color {
+  color: #fff;
+  background-color: #2d63b4;
+}
+
+.btn-primary-light-color {
+  color: #fff;
+  background-color: #4c90f7;
+}
+
+.btn-primary-light-color:hover {
+  color: #fff;
+  background-color: #2d63b4;
+}
+
+.btn-secondary-color {
+  background-color: #595959;
+}
+
+.btn-secondary-light-color {
+  background-color: #ada8a8;
+}

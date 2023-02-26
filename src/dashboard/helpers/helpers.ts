@@ -75,7 +75,7 @@ export function labelStatusPriority(priority: number) {
     case IncidentPriorityLevelEnum.MEDIUM:
       return 'warning';
     case IncidentPriorityLevelEnum.HIGH:
-      return 'red';
+      return 'danger';
     default:
       return 'dark';
   }

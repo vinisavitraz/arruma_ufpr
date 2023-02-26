@@ -9,7 +9,7 @@
       </div>
       {{#if showCreateIncidentButton}}
         <div class="col-12 col-sm-12 col-md-6 col-lg-4">
-          <a class="btn btn-primary btn-lg" href="/dashboard/incident/create?origin={{ content.origin }}" role="button">Novo incidente</a>
+          <a class="btn btn-primary-light-color btn-lg" href="/dashboard/incident/create?origin={{ content.origin }}" role="button">Novo incidente</a>
         </div>
       {{/if}}
     </div>
@@ -127,8 +127,9 @@
     {{#if showContent }}
       {{#each incidents}}
         <div class="card">
-          <h5 class="card-header bg-primary text-white">#{{this.id}} | {{this.userName}} - {{format_incident_date this.startDate}}</h5>
+          <h5 class="card-header bg-primary-color text-white">#{{this.id}} | {{this.userName}} - {{format_incident_date this.startDate}}</h5>
           <div class="card-body">
+            <p><span class="badge bg-{{label_status_priority this.priority}}">{{text_status_priority this.priority }}</span></p>
             <p><span class="badge bg-{{label_status_incident this.status}}">{{text_status_incident this.status }}</span></p>
             <h4 class="card-title">{{this.title}}</h4>
             <br>
@@ -136,7 +137,7 @@
             <p><i class='bx bx-buildings nav_icon'></i> {{ this.locationName }}</p>
             <p><i class='bx bx-package nav_icon'></i> {{ this.itemName }}</p>
             <p><i class='bx bx-message nav_icon'></i> {{ this.totalInteractions }}</p>
-            <a href="/dashboard/incident/{{this.id}}?origin={{ ../content.origin }}" class="btn btn-primary">Acessar incidente</a>
+            <a href="/dashboard/incident/{{this.id}}?origin={{ ../content.origin }}" class="btn btn-primary-light-color">Acessar incidente</a>
           </div>
         </div>
         <br>

@@ -1,4 +1,4 @@
-import { Controller, Get, UseFilters, UseGuards, Request, Res, Param, ParseIntPipe, Post, ConsoleLogger, UseInterceptors, UploadedFile } from "@nestjs/common";
+import { Controller, Get, UseFilters, UseGuards, Request, Res, Param, ParseIntPipe, Post, UseInterceptors, UploadedFile } from "@nestjs/common";
 import { Response } from 'express';
 import { DashboardExceptionFilter } from "src/app/exception/filter/dashboard-exception-filter";
 import { AuthenticatedGuard } from "src/auth/guard/authenticated.guard";
@@ -38,22 +38,15 @@ export class DashboardIncidentController {
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getCreateIncidentPage(@Request() req, @Res() res: Response): Promise<void> {    
-    const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
-    const locations: LocationEntity[] = await this.service.findLocations();
-
-    return DashboardResponseRender.renderForAuthenticatedUser(
+    
+    return this.renderCreateIncidentPage(
       res,
-      'incident/create-incident',
       req.user,
-      'incident',
-      {
-        incidentTypes: incidentTypes,
-        locations: locations,
-        jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/create-incident.js'}],
-        incident: new CreateIncidentRequestDTO(),
-        uri: '/dashboard/incident/create?origin=userIncident',
-        backUrl: '/dashboard/incident/user',
-      }
+      '/dashboard/incident/create?origin=userIncident',
+      'userIncident',
+      new CreateIncidentRequestDTO(),
+      0,
+      null,
     );
   }
 
@@ -178,24 +171,15 @@ export class DashboardIncidentController {
     const origin: string = req.query.origin ?? 'incident';
     const user: UserEntity = req.user; 
     const incident: IncidentEntity = await this.service.findUserIncidentByIDOrCry(user, incidentId);
-    const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
-    const locations: LocationEntity[] = await this.service.findLocations(); 
-    const items: ItemEntity[] = await this.service.findItemsByLocationID(incident.locationId);
-
-    return DashboardResponseRender.renderForAuthenticatedUser(
+    
+    return this.renderCreateIncidentPage(
       res,
-      'incident/create-incident',
       req.user,
-      'incident',
-      {
-        incident: CreateIncidentRequestDTO.fromEntity(incident),
-        uri: '/dashboard/incident/update',
-        incidentTypes: incidentTypes,
-        locations: locations,
-        items: items,
-        jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/create-incident.js'}],
-        backUrl: '/dashboard/incident/' + incident.id + '?origin=' + origin,
-      }
+      '/dashboard/incident/update?origin=' + origin,
+      origin,
+      CreateIncidentRequestDTO.fromEntity(incident),
+      incident.id,
+      null,
     );
   }
 
@@ -215,22 +199,15 @@ export class DashboardIncidentController {
 
       return res.redirect('/dashboard/incident/' + incident.id + '?origin=' + origin);
     } catch (errors) {
-      const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
-      const locations: LocationEntity[] = await this.service.findLocations(); 
-      const items: ItemEntity[] = await this.service.findItemsByLocationID(createIncidentRequestDTO.locationId);
-
-      return DashboardResponseRender.renderForAuthenticatedUser(
+      
+      return this.renderCreateIncidentPage(
         res,
-        'incident/create-incident',
         req.user,
-        'incident',
-        {
-          incidentTypes: incidentTypes,
-          locations: locations,
-          items: items,
-          incident: createIncidentRequestDTO,
-          ...DashboardErrorMapper.mapValidationErrors(errors)
-        }
+        'incident/create-incident?origin=' + origin,
+        origin,
+        createIncidentRequestDTO,
+        createIncidentRequestDTO.id,
+        errors,
       );
     } 
   }
@@ -286,7 +263,11 @@ export class DashboardIncidentController {
       return this.renderCreateIncidentPage(
         res,
         req.user,
-        '/dashboard/incident/update',
+        '/dashboard/incident/update?origin=' + origin,
+        origin,
+        updateIncidentRequestDTO,
+        updateIncidentRequestDTO.id,
+        errors,
       );
     }  
 
@@ -357,21 +338,35 @@ export class DashboardIncidentController {
     @Res() res: Response, 
     user: UserEntity, 
     uri: string,
+    module: string,
+    createIncidentRequestDTO: CreateIncidentRequestDTO | UpdateIncidentRequestDTO,
+    incidentId: number,
+    errors: any,
   ): Promise<void> {
     const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
     const locations: LocationEntity[] = await this.service.findLocations();
+    const items: ItemEntity[] = createIncidentRequestDTO.locationId != null && createIncidentRequestDTO.locationId != undefined ? await this.service.findItemsByLocationID(createIncidentRequestDTO.locationId) : [];
+
+    let backUrl: string = '/dashboard/incident/user';
+
+    if (incidentId > 0 && module === 'incident') {
+      backUrl = '/dashboard/incident/' + incidentId + '?origin=' + module;
+    }
 
     return DashboardResponseRender.renderForAuthenticatedUser(
       res,
       'incident/create-incident',
       user,
-      'incident',
+      module,
       {
         incidentTypes: incidentTypes,
         locations: locations,
+        items: items,
         jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/create-incident.js'}],
-        incident: new CreateIncidentRequestDTO(),
-        uri: '/dashboard/incident/create?origin=userIncident',
+        incident: createIncidentRequestDTO,
+        uri: uri,
+        backUrl: backUrl,
+        ...DashboardErrorMapper.mapValidationErrors(errors)
       }
     );
   }
