@@ -138,8 +138,12 @@ export class IncidentController {
   @ApiBody({ type: CreateIncidentRequestDTO })
   @ApiOkResponse({ type: ListIncidentResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
-  public async createIncident(@Body() createIncidentRequestDTO: CreateIncidentRequestDTO, @UploadedFile() image: Express.Multer.File): Promise<ListIncidentResponseDTO> {
-    const incident: IncidentEntity = await this.incidentService.createIncident(createIncidentRequestDTO, null);
+  public async createIncident(@Body() createIncidentRequestDTO: CreateIncidentRequestDTO, @UploadedFile() image: Express.Multer.File | null): Promise<ListIncidentResponseDTO> {
+    console.log('to aqui');
+    console.log(createIncidentRequestDTO);
+    console.log(image);
+
+    const incident: IncidentEntity = await this.incidentService.createIncident(createIncidentRequestDTO, image);
     
     return new ListIncidentResponseDTO(incident);
   }
