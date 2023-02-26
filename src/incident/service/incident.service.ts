@@ -228,6 +228,21 @@ export class IncidentService {
     return IncidentEntity.fromRepository(incidentDb);
   }
 
+  public async addImageToIncident(incidentId: number, image: Express.Multer.File | undefined): Promise<void> {
+    const incident: IncidentEntity = await this.findIncidentByIDOrCry(incidentId);
+
+    if (image === undefined) {
+      throw new HttpOperationException(
+        HttpStatus.NOT_FOUND, 
+        'Invalid image', 
+        HttpOperationErrorCodes.INVALID_INCIDENT_IMAGE,
+      );
+    }
+
+    const file: FileMetadataEntity = await this.fileService.saveNewFileMetadataFromDashboard(image);
+    await this.repository.updateIncidentFile(incidentId, file.id);
+  }
+
   public async createIncidentInteraction(user: UserEntity, createIncidentInteractionRequestDTO: CreateIncidentInteractionRequestDTO): Promise<IncidentInteractionEntity> {
     const incidentDb: IncidentEntity = await this.findIncidentByIDOrCry(createIncidentInteractionRequestDTO.incidentId);
 

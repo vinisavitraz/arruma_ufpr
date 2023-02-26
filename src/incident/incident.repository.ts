@@ -266,6 +266,20 @@ export class IncidentRepository {
     });
   }
 
+  public async updateIncidentFile(
+    incidentId: number,
+    fileMetadataId: number | null,
+  ): Promise<void> {
+    await this.connection.incident.update({ 
+      where: {
+        id: incidentId,
+      },
+      data: {
+        file_metadata_id: fileMetadataId,
+      },
+    });
+  }
+
   public async createIncidentType(createIncidentTypeRequestDTO: CreateIncidentTypeRequestDTO): Promise<incident_type | null> {
     return await this.connection.incident_type.create({ 
       data: {

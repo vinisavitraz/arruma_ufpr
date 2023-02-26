@@ -10,6 +10,7 @@ import { SearchIncidentsRequestDTO } from 'src/dashboard/dto/request/search-inci
 import { UserEntity } from 'src/user/entity/user.entity';
 import { CreateIncidentInteractionRequestDTO } from '../dto/request/create-incident-interaction-request.dto';
 import { CreateIncidentRequestDTO } from '../dto/request/create-incident-request.dto';
+import { AddImageIncidentResponseDTO } from '../dto/response/add-image-incident-response.dto';
 import { AssignIncidentResponseDTO } from '../dto/response/assign-incident-response.dto';
 import { CloseIncidentResponseDTO } from '../dto/response/close-incident-response.dto';
 import { ListIncidentInteractionResponseDTO } from '../dto/response/list-incident-interaction-response.dto';
@@ -131,6 +132,19 @@ export class IncidentController {
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Criar novo incidente' })
+  @ApiBody({ type: CreateIncidentRequestDTO })
+  @ApiOkResponse({ type: ListIncidentResponseDTO })
+  @ApiUnauthorizedResponse({type: UnauthorizedExample})
+  public async createIncident(@Body() createIncidentRequestDTO: CreateIncidentRequestDTO): Promise<ListIncidentResponseDTO> {
+    const incident: IncidentEntity = await this.incidentService.createIncident(createIncidentRequestDTO, undefined);
+    
+    return new ListIncidentResponseDTO(incident);
+  }
+
+  @Put('image/:id')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Adicionar imagem no incidente' })
   @UseInterceptors(LocalFilesInterceptor({
     fieldName: 'image',
     path: '/incidents'
@@ -138,14 +152,10 @@ export class IncidentController {
   @ApiBody({ type: CreateIncidentRequestDTO })
   @ApiOkResponse({ type: ListIncidentResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
-  public async createIncident(@Body() createIncidentRequestDTO: CreateIncidentRequestDTO, @UploadedFile() image: Express.Multer.File | null): Promise<ListIncidentResponseDTO> {
-    console.log('to aqui');
-    console.log(createIncidentRequestDTO);
-    console.log(image);
-
-    const incident: IncidentEntity = await this.incidentService.createIncident(createIncidentRequestDTO, image);
+  public async addImageToIncident(@Param('id', ParseIntPipe) id: number, @UploadedFile() image: Express.Multer.File | null): Promise<AddImageIncidentResponseDTO> {
+    await this.incidentService.addImageToIncident(id, image);
     
-    return new ListIncidentResponseDTO(incident);
+    return new AddImageIncidentResponseDTO('added');
   }
   
 }
