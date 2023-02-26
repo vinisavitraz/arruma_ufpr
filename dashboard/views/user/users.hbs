@@ -58,34 +58,6 @@
     <br>
     <br>
     {{#if showContent }}
-    <div class="row g-3 d-flex flex-row-reverse">
-        <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-2">
-          <nav aria-label="Páginas">
-            <ul class="pagination">
-              {{#each pagination.pages}}
-                <li class="page-item">
-                  <a class="page-link" href="{{ this.pageUrl }}">{{ this.pageNumber }}</a>
-                </li>
-              {{/each}}
-            </ul>
-          </nav>
-        </div>
-      <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-2">
-        <select class="form-select" name="limit" id="registers-per-page">
-          {{#select content.maxPerPage}}
-            <option disabled selected value>Registros por página</option>
-            <option data-url="{{ incidents_registers_per_page_url "1" uri content }}" value="1">1 registro</option>
-            <option data-url="{{ incidents_registers_per_page_url "10" uri content }}" value="10">10 registros</option>
-            <option data-url="{{ incidents_registers_per_page_url "25" uri content }}" value="25">25 registros</option>
-            <option data-url="{{ incidents_registers_per_page_url "50" uri content }}" value="50">50 registros</option>
-            <option data-url="{{ incidents_registers_per_page_url "100" uri content }}" value="100">100 registros</option>
-          {{/select}}
-        </select>
-      </div>
-    </div>
-    {{/if}}
-    <br>
-    {{#if showContent }}
       {{#each users}}
         <div class="card">
           <h5 class="card-header bg-primary-color text-white">#{{this.id}} - {{this.name}}</h5>
@@ -102,6 +74,46 @@
         </div>
         <br>
       {{/each}}
+      <br>
+      <div class="row g-3">
+        <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-2">
+          <p>Total de resultados: {{ pagination.total }}</p>
+        </div>
+        <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-2">
+          <select class="form-select" name="limit" id="registers-per-page">
+            {{#select content.maxPerPage}}
+              <option disabled selected value>Registros por página</option>
+              <option data-url="{{ incidents_registers_per_page_url "1" uri content }}" value="1">1 registro por página</option>
+              <option data-url="{{ incidents_registers_per_page_url "2" uri content }}" value="2">2 registros por página</option>
+              <option data-url="{{ incidents_registers_per_page_url "3" uri content }}" value="3">3 registros por página</option>
+              <option data-url="{{ incidents_registers_per_page_url "4" uri content }}" value="4">4 registros por página</option>
+              <option data-url="{{ incidents_registers_per_page_url "5" uri content }}" value="5">5 registros por página</option>
+              <option data-url="{{ incidents_registers_per_page_url "10" uri content }}" value="10">10 registros por página</option>
+            {{/select}}
+          </select>
+        </div>
+        <div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-1">
+          <nav aria-label="Páginas">
+            <ul class="pagination">
+              <li class="page-item {{is_pagination_button_enabled pagination.previousPage}}">
+                <a class="page-link" href="{{ pagination.previousPage.pageUrl }}" aria-label="Anterior">
+                  <span aria-hidden="true">&laquo;</span>
+                </a>
+              </li>
+              {{#each pagination.pages}}
+                <li class="page-item mx-1 rounded-circle {{ this.active }}">
+                  <a class="page-link" href="{{ this.pageUrl }}">{{ this.pageNumber }}</a>
+                </li>
+              {{/each}}
+              <li class="page-item {{is_pagination_button_enabled pagination.nextPage}}">
+                <a class="page-link" href="{{ pagination.nextPage.pageUrl }}" aria-label="Próximo">
+                  <span aria-hidden="true">&raquo;</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
       <br>
     {{else}}
       <br>

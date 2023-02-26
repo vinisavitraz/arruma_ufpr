@@ -114,7 +114,7 @@ export class DashboardController {
       res,
       'login/forgot-password',
       {
-        cssImports: [{filePath: '/styles/login.css'}],
+        cssImports: [{filePath: '/styles/login.css'}, {filePath: '/styles/style.css'}],
       },
     );
   }
@@ -125,7 +125,7 @@ export class DashboardController {
       res,
       'login/mail-sent',
       {
-        cssImports: [{filePath: '/styles/login.css'}],
+        cssImports: [{filePath: '/styles/login.css'}, {filePath: '/styles/style.css'}],
       },
     );
   }
@@ -140,7 +140,7 @@ export class DashboardController {
         res,
         'login/reset-password',
         {
-          cssImports: [{filePath: '/styles/login.css'}],
+          cssImports: [{filePath: '/styles/login.css'}, {filePath: '/styles/style.css'}],
           user: user,
         }
       );
@@ -149,7 +149,7 @@ export class DashboardController {
         res,
         'login/reset-password',
         {
-          cssImports: [{filePath: '/styles/login.css'}],
+          cssImports: [{filePath: '/styles/login.css'}, {filePath: '/styles/style.css'}],
           ...DashboardErrorMapper.mapValidationErrors(errors)
         }
       );
@@ -162,7 +162,7 @@ export class DashboardController {
       res,
       'login/password-changed',
       {
-        cssImports: [{filePath: '/styles/login.css'}],
+        cssImports: [{filePath: '/styles/login.css'}, {filePath: '/styles/style.css'}],
       }
     );
   }
@@ -180,7 +180,7 @@ export class DashboardController {
         res,
         'login/forgot-password',
         {
-          cssImports: [{filePath: '/styles/login.css'}],
+          cssImports: [{filePath: '/styles/login.css'}, {filePath: '/styles/style.css'}],
           ...DashboardErrorMapper.mapValidationErrors(exception)
         }
       );
@@ -201,7 +201,7 @@ export class DashboardController {
         res,
         'login/reset-password',
         {
-          cssImports: [{filePath: '/styles/login.css'}],
+          cssImports: [{filePath: '/styles/login.css'}, {filePath: '/styles/style.css'}],
           ...DashboardErrorMapper.mapValidationErrors(exception)
         }
       );
@@ -215,7 +215,7 @@ export class DashboardController {
       res,
       'login/register',
       {
-        cssImports: [{filePath: '/styles/register.css'}],
+        cssImports: [{filePath: '/styles/register.css'}, {filePath: '/styles/style.css'}],
         jsScripts: [{filePath: '/js/user-form.js'}],
         ...DashboardErrorMapper.mapValidationErrors(error),
         user: createUserRequestDTO,

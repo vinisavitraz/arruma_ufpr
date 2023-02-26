@@ -43,11 +43,23 @@ body {
 }
 
 .btn-secondary-color {
+  color: #fff;
   background-color: #595959;
 }
 
-.btn-secondary-light-color {
+.btn-secondary-color:hover {
+  color: #fff;
   background-color: #ada8a8;
+}
+
+.btn-secondary-light-color {
+  color: #fff;
+  background-color: #ada8a8;
+}
+
+.btn-secondary-light-color:hover {
+  color: #fff;
+  background-color: #595959;
 }
 
 .text-primary-color {
