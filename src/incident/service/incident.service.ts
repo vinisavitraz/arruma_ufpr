@@ -236,7 +236,17 @@ export class IncidentService {
     return IncidentInteractionEntity.fromRepository(incidentInteractionDb);
   }
 
-  public async findIncidentInteractions(incidentId: number): Promise<IncidentInteractionEntity[]> {
+  public async findIncidentInteractionsAndMarkAsRead(user: UserEntity, incidentId: number): Promise<IncidentInteractionEntity[]> {
+    const incidentDb: IncidentEntity = await this.findIncidentByIDOrCry(incidentId);
+
+    if (user.role === RoleEnum.ADMIN && incidentDb.adminId === user.id)  {
+      await this.repository.markIncidentInteractionsAsRead(incidentDb, RoleEnum.USER);
+    }
+
+    if (user.role === RoleEnum.USER && incidentDb.userId === user.id) {
+      await this.repository.markIncidentInteractionsAsRead(incidentDb, RoleEnum.ADMIN);
+    }
+    
     const incidentInteractionsDb: (incident_interaction & { user: user })[] = await this.repository.findIncidentInteractions(incidentId);
 
     return incidentInteractionsDb.map((incidentInteraction: incident_interaction & { user: user }) => {

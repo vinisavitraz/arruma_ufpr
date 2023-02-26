@@ -46,8 +46,8 @@ export class DashboardIncidentService {
     return await this.incidentService.findIncidentTypes();
   }
 
-  public async findIncidentInteractions(interactionId: number): Promise<IncidentInteractionEntity[]> {
-    return await this.incidentService.findIncidentInteractions(interactionId);
+  public async findIncidentInteractions(user: UserEntity, interactionId: number): Promise<IncidentInteractionEntity[]> {
+    return await this.incidentService.findIncidentInteractionsAndMarkAsRead(user, interactionId);
   }
 
   public async findLocations(): Promise<LocationEntity[]> {

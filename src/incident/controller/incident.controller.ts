@@ -57,8 +57,8 @@ export class IncidentController {
   @ApiOperation({ summary: 'Listar interações do incidente'})
   @ApiOkResponse({ type: ListIncidentInteractionsResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
-  public async listIncidentInteractions(@Param('id', ParseIntPipe) id: number): Promise<ListIncidentInteractionsResponseDTO> {
-    const incidents: IncidentInteractionEntity[] = await this.incidentService.findIncidentInteractions(id);
+  public async listIncidentInteractions(@Request() req, @Param('id', ParseIntPipe) id: number): Promise<ListIncidentInteractionsResponseDTO> {
+    const incidents: IncidentInteractionEntity[] = await this.incidentService.findIncidentInteractionsAndMarkAsRead(req.user, id);
 
     return new ListIncidentInteractionsResponseDTO(incidents);
   }

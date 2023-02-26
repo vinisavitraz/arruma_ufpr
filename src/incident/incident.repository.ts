@@ -158,6 +158,19 @@ export class IncidentRepository {
     });
   }
 
+  public async markIncidentInteractionsAsRead(incident: IncidentEntity, origin: number): Promise<void> {
+    await this.connection.incident_interaction.updateMany({
+      where: { 
+        incident_id: incident.id, 
+        origin: origin,
+      },
+      data: {
+        status: IncidentInteractionStatusEnum.READ,
+        
+      },
+    });
+  }
+
   public async findIncidentByID(
     id: number
   ): Promise<incident & {interactions: incident_interaction[], admin: user | null, user: user, incident_type: incident_type, location: location, item: item} | null> {

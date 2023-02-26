@@ -139,7 +139,7 @@ export class DashboardIncidentController {
 
     const user: UserEntity = req.user; 
     const incident: IncidentEntity = await this.service.findUserIncidentByIDOrCry(user, incidentId);
-    const incidentInteractions: IncidentInteractionEntity[] = await this.service.findIncidentInteractions(incident.id);
+    const incidentInteractions: IncidentInteractionEntity[] = await this.service.findIncidentInteractions(user, incident.id);
     const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
     const locations: LocationEntity[] = await this.service.findLocations(); 
     const items: ItemEntity[] = await this.service.findItemsByLocationID(incident.locationId);
