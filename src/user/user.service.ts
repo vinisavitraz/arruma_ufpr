@@ -257,10 +257,6 @@ export class UserService {
     return await this.findUserByIDOrCry(token.userId);
   }
 
-  public async findUsersWithUnreadInteractions(): Promise<(user & {interactions: incident_interaction[]})[]> {
-    return await this.repository.findUsersWithUnreadInteractions();
-  }
-
   private generatePassword(): string {
     const validChars: string = '0123456789abcdefghijklmnopqrstuvwxyz!@#%*ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const passwordLength: number = 8;

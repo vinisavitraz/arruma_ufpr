@@ -1,5 +1,5 @@
-import { incident_interaction, user } from "@prisma/client";
-import { IncidentInteractionStatusEnum, UserStatusEnum } from "src/app/enum/status.enum";
+import { user } from "@prisma/client";
+import { UserStatusEnum } from "src/app/enum/status.enum";
 import { SearchUsersRequestDTO } from "src/dashboard/dto/request/search-users-request.dto";
 import { DatabaseService } from "src/database/database.service";
 import { CreateUserRequestDTO } from "./dto/request/create-user-request.dto";
@@ -137,25 +137,6 @@ export class UserRepository {
 
   public async findTotalUsers(): Promise<number> {
     return await this.connection.user.count({where: {status: UserStatusEnum.ACTIVE}});
-  }
-
-  public async findUsersWithUnreadInteractions(): Promise<(user & {interactions: incident_interaction[]})[]> {
-    return await this.connection.user.findMany({ 
-      where: {
-        interactions: {
-          some: {
-            OR: [
-              {
-                status: IncidentInteractionStatusEnum.SENT,
-              },
-            ],
-          },
-        },
-      },
-      include: {
-        interactions: true,
-      },
-    });
   }
   
 }
