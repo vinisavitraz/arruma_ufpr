@@ -21,6 +21,7 @@ import { CreateIncidentInteractionRequestDTO } from '../dto/request/create-incid
 import { CreateIncidentRequestDTO } from '../dto/request/create-incident-request.dto';
 import { CreateIncidentTypeRequestDTO } from '../dto/request/create-incident-type-request.dto';
 import { UpdateIncidentRequestDTO } from '../dto/request/update-incident-request.dto';
+import { IncidentsUnreadByStatusResponseDTO } from '../dto/response/incidents-unread-by-status-response.dto';
 import { IncidentInteractionEntity } from '../entity/incident-interaction.entity';
 import { IncidentTypeEntity } from '../entity/incident-type.entity';
 import { IncidentEntity } from '../entity/incident.entity';
@@ -489,6 +490,43 @@ export class IncidentService {
     const incidentInteractionDb: incident_interaction & {user: user} | null = await this.repository.createIncidentInteraction(incidentInteraction);
 
     return IncidentInteractionEntity.fromRepository(incidentInteractionDb);
+  }
+
+  public async findIncidentTotalUnreadInteractions(user: UserEntity, incidentId: number): Promise<number> {
+    await this.findIncidentByIDOrCry(incidentId);
+    const incidentInteractionsDb: (incident_interaction & { user: user | null})[] = await this.repository.findIncidentUnreadInteractions(
+      incidentId,
+      user.role,
+      user.id,
+    );
+
+    return incidentInteractionsDb.length;
+  }
+
+  public async findIncidentsUnreadInteractionsByStatus(user: UserEntity): Promise<IncidentsUnreadByStatusResponseDTO> {
+    const totalUnreadOpen: number = await this.repository.findIncidentUnreadInteractionsByStatus(
+      IncidentStatusEnum.OPEN,
+      user.role,
+      user.id,
+    );
+    const totalUnreadPending: number = await this.repository.findIncidentUnreadInteractionsByStatus(
+      IncidentStatusEnum.PENDING,
+      user.role,
+      user.id,
+    );
+    const totalUnreadClosed: number = await this.repository.findIncidentUnreadInteractionsByStatus(
+      IncidentStatusEnum.CLOSED,
+      user.role,
+      user.id,
+    );
+    const totalUnread: number = totalUnreadOpen + totalUnreadPending + totalUnreadClosed;
+
+    return new IncidentsUnreadByStatusResponseDTO(
+      totalUnreadOpen,
+      totalUnreadPending,
+      totalUnreadClosed,
+      totalUnread,
+    );
   }
 
 }

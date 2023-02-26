@@ -6,6 +6,7 @@ import { HttpOperationException } from 'src/app/exception/http-operation.excepti
 import { CreateIncidentInteractionRequestDTO } from 'src/incident/dto/request/create-incident-interaction-request.dto';
 import { CreateIncidentRequestDTO } from 'src/incident/dto/request/create-incident-request.dto';
 import { UpdateIncidentRequestDTO } from 'src/incident/dto/request/update-incident-request.dto';
+import { IncidentsUnreadByStatusResponseDTO } from 'src/incident/dto/response/incidents-unread-by-status-response.dto';
 import { IncidentInteractionEntity } from 'src/incident/entity/incident-interaction.entity';
 import { IncidentTypeEntity } from 'src/incident/entity/incident-type.entity';
 import { IncidentEntity } from 'src/incident/entity/incident.entity';
@@ -31,15 +32,33 @@ export class DashboardIncidentService {
     return await this.incidentService.findTotalIncidentsByStatusAndUser(incidentStatus, userId);
   }
 
-  public async findIncidentsByStatus(incidentPageContent: IncidentsPageContent): Promise<IncidentEntity[]> {
-    return await this.incidentService.findIncidentsByStatus(null, SearchIncidentsRequestDTO.fromPageContent(incidentPageContent));
+  public async findIncidentsByStatus(user: UserEntity, incidentPageContent: IncidentsPageContent): Promise<IncidentEntity[]> {
+    const incidents: IncidentEntity[] = await this.incidentService.findIncidentsByStatus(null, SearchIncidentsRequestDTO.fromPageContent(incidentPageContent));
+
+    for (let i = 0; i < incidents.length; i++) {
+      const incident: IncidentEntity = incidents[i];
+
+      const totalUnread: number = await this.incidentService.findIncidentTotalUnreadInteractions(user, incident.id);
+      (incident as any).totalUnreadInteractions = totalUnread;
+    }
+
+    return incidents;
   }
 
   public async findUserIncidentsByStatus(
     user: UserEntity, 
     incidentPageContent: IncidentsPageContent,
   ): Promise<IncidentEntity[]> {
-    return await this.incidentService.findIncidentsByStatus(user, SearchIncidentsRequestDTO.fromPageContent(incidentPageContent));
+    const incidents: IncidentEntity[] =  await this.incidentService.findIncidentsByStatus(user, SearchIncidentsRequestDTO.fromPageContent(incidentPageContent));
+
+    for (let i = 0; i < incidents.length; i++) {
+      const incident: IncidentEntity = incidents[i];
+
+      const totalUnread: number = await this.incidentService.findIncidentTotalUnreadInteractions(user, incident.id);
+      (incident as any).totalUnreadInteractions = totalUnread;
+    }
+
+    return incidents;
   }
 
   public async findIncidentTypes(): Promise<IncidentTypeEntity[]> {
@@ -104,6 +123,10 @@ export class DashboardIncidentService {
 
   public async setIncidentRating(user: UserEntity, incidentId: number, rating: number): Promise<IncidentEntity> {
     return await this.incidentService.setIncidentRating(user, incidentId, rating); 
+  }
+
+  public async findIncidentsUnreadInteractionsByStatus(user: UserEntity): Promise<IncidentsUnreadByStatusResponseDTO> {
+    return await this.incidentService.findIncidentsUnreadInteractionsByStatus(user); 
   }
 
 }

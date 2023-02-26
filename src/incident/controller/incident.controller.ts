@@ -7,6 +7,7 @@ import LocalFilesInterceptor from 'src/app/interceptor/local-files.interceptor';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { Roles } from 'src/auth/roles/require-roles.decorator';
 import { SearchIncidentsRequestDTO } from 'src/dashboard/dto/request/search-incidents-request.dto';
+import { UserEntity } from 'src/user/entity/user.entity';
 import { CreateIncidentInteractionRequestDTO } from '../dto/request/create-incident-interaction-request.dto';
 import { CreateIncidentRequestDTO } from '../dto/request/create-incident-request.dto';
 import { AssignIncidentResponseDTO } from '../dto/response/assign-incident-response.dto';
@@ -82,7 +83,8 @@ export class IncidentController {
   @ApiOkResponse({ type: ListIncidentsResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
   public async listUserIncidentsByStatus(@Param('status') status: string, @Request() req): Promise<ListIncidentsResponseDTO> {
-    const incidents: IncidentEntity[] = await this.incidentService.findIncidentsByStatus(req.user, SearchIncidentsRequestDTO.fromStatus(status));
+    const user: UserEntity = req.user;
+    const incidents: IncidentEntity[] = await this.incidentService.findIncidentsByStatus(user, SearchIncidentsRequestDTO.fromStatus(status));
 
     return new ListIncidentsResponseDTO(incidents);
   }

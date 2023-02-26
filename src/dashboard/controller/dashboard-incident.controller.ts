@@ -24,6 +24,7 @@ import { QueryStringBuilder } from "src/app/util/query-string.builder";
 import LocalFilesInterceptor from "src/app/interceptor/local-files.interceptor";
 import { UpdateIncidentRequestDTO } from "src/incident/dto/request/update-incident-request.dto";
 import { IncidentReviewRulesValidator } from "src/app/util/incident-review-rules.validator";
+import { IncidentsUnreadByStatusResponseDTO } from "src/incident/dto/response/incidents-unread-by-status-response.dto";
 
 @Controller('dashboard/incident')
 @ApiExcludeController()
@@ -279,7 +280,7 @@ export class DashboardIncidentController {
   @UseGuards(AuthenticatedGuard, RolesGuard)
   public async getIncidentsPage(@Request() req, @Res() res: Response): Promise<void> { 
     const incidentPageContent: IncidentsPageContent = IncidentsPageContent.fromQueryParams('incident', req.query);
-    const incidents: IncidentEntity[] = await this.service.findIncidentsByStatus(incidentPageContent);
+    const incidents: IncidentEntity[] = await this.service.findIncidentsByStatus(req.user, incidentPageContent);
     incidentPageContent.total = await this.service.findTotalIncidentsByStatusAndUser(
       incidentPageContent.incidentStatus,
       undefined,
@@ -309,6 +310,7 @@ export class DashboardIncidentController {
       incidentPageContent, 
       uri,
     );
+    const incidentsUnreadByStatusResponseDTO: IncidentsUnreadByStatusResponseDTO = await this.service.findIncidentsUnreadInteractionsByStatus(user);
     
     return DashboardResponseRender.renderForAuthenticatedUser(
       res,
@@ -330,6 +332,7 @@ export class DashboardIncidentController {
         showContent: incidents.length > 0,
         cssImports: [{filePath: '/styles/style.css'}, {filePath: '/styles/header.css'}, {filePath: '/styles/incidents.css'}],
         jsScripts: [{filePath: '/js/header.js'}, {filePath: '/js/incident/incidents.js'}, {filePath: '/js/filter-tables.js'}, {filePath: '/js/search-form.js'}],
+        unreads: incidentsUnreadByStatusResponseDTO,
       }
     );
   }

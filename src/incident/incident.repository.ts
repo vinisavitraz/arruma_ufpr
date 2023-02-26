@@ -166,7 +166,6 @@ export class IncidentRepository {
       },
       data: {
         status: IncidentInteractionStatusEnum.READ,
-        
       },
     });
   }
@@ -387,6 +386,51 @@ export class IncidentRepository {
 
   public async findTotalIncidentTypes(): Promise<number> {
     return await this.connection.incident_type.count({where: {status: EntityStatusEnum.ACTIVE}});
+  }
+
+  public async findIncidentUnreadInteractions(incidentId: number, origin: number, userId: number): Promise<(incident_interaction & { user: user | null })[]> {
+    return await this.connection.incident_interaction.findMany({ 
+      where: { 
+        incident_id: incidentId,
+        status: IncidentInteractionStatusEnum.SENT,
+        NOT: [
+          {
+            origin: origin,
+          },
+          {
+            user_id: userId,
+          },
+        ],
+      },
+      include: {
+        user: true,
+      }
+    });
+  }
+
+  public async findIncidentUnreadInteractionsByStatus(
+    incidentStatus: string, 
+    origin: number, 
+    userId: number,
+  ): Promise<number> {
+    return await this.connection.incident.count({ 
+      where: { 
+        status: incidentStatus,
+        interactions: {
+          some: {
+            status: IncidentInteractionStatusEnum.SENT,
+            NOT: [
+              {
+                origin: origin,
+              },
+              {
+                user_id: userId,
+              },
+            ],
+          },
+        },
+      }
+    });
   }
   
 }

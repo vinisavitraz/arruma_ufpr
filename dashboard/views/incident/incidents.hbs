@@ -24,16 +24,16 @@
           <br>
           <ul class="navbar-nav">
             <li class="nav-item">
-              <a class="nav_link {{ set_active_tab "pendente" content.incidentStatus }}" href="{{ uri }}?incidentStatus=pendente">Em atendimento</a>
+              <a class="nav_link {{ set_active_tab "pendente" content.incidentStatus }}" href="{{ uri }}?incidentStatus=pendente">Em atendimento{{#if unreads.totalUnreadPending }}<span class="badge bg-danger">{{ unreads.totalUnreadPending }}</span>{{/if}}</a>
             </li>
             <li class="nav-item">
-              <a class="nav_link {{ set_active_tab "aberto" content.incidentStatus }}" href="{{ uri }}?incidentStatus=aberto">Abertos</a>
+              <a class="nav_link {{ set_active_tab "aberto" content.incidentStatus }}" href="{{ uri }}?incidentStatus=aberto">Abertos{{#if unreads.totalUnreadOpen }}<span class="badge bg-danger">{{ unreads.totalUnreadOpen }}</span>{{/if}}</a>
             </li>
             <li class="nav-item">
-              <a class="nav_link {{ set_active_tab "fechado" content.incidentStatus }}" href="{{ uri }}?incidentStatus=fechado">Finalizados</a>
+              <a class="nav_link {{ set_active_tab "fechado" content.incidentStatus }}" href="{{ uri }}?incidentStatus=fechado">Finalizados{{#if unreads.totalUnreadClosed }}<span class="badge bg-danger">{{ unreads.totalUnreadClosed }}</span>{{/if}}</a>
             </li>
             <li class="nav-item">
-              <a class="nav_link {{ set_active_tab "" content.incidentStatus }}" href="{{ uri }}">Todos</a>
+              <a class="nav_link {{ set_active_tab "" content.incidentStatus }}" href="{{ uri }}">Todos{{#if unreads.totalUnread }}<span class="badge bg-danger">{{ unreads.totalUnread }}</span>{{/if}}</a>
             </li>
           </ul>
         </div>
@@ -136,7 +136,7 @@
             <p><i class='bx bx-category nav_icon'></i> {{ this.incidentTypeName }}</p>
             <p><i class='bx bx-buildings nav_icon'></i> {{ this.locationName }}</p>
             <p><i class='bx bx-package nav_icon'></i> {{ this.itemName }}</p>
-            <p><i class='bx bx-message nav_icon'></i> {{ this.totalInteractions }}</p>
+            <p><i class='bx bx-message nav_icon'></i> {{ this.totalInteractions }} {{#if this.totalUnreadInteractions}} - <span class="badge bg-danger">{{ this.totalUnreadInteractions }}</span> {{/if}}</p>
             <a href="/dashboard/incident/{{this.id}}?origin={{ ../content.origin }}" class="btn btn-primary-light-color">Acessar incidente</a>
           </div>
         </div>
