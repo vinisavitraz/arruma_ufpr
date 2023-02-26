@@ -98,11 +98,11 @@ $(function () {
         var reader = new FileReader();
 
         reader.onload = function (e) {
-            $('#market-image-preview').attr('src', e.target.result);
+            $('#incident-image-preview').attr('src', e.target.result);
         }
 
         reader.readAsDataURL(input.files[0]);
-        $('#market-image-preview').removeAttr('hidden');
+        $('#incident-image-preview').removeAttr('hidden');
     }
   }
 

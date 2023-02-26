@@ -219,5 +219,5 @@ export function setInteractionColor(userId: number, userRole: number, interactio
 }
 
 export function showIncidentImage(fileMetadataId: number | null) {
-  return fileMetadataId !== null;
+  return fileMetadataId !== null && fileMetadataId != undefined && fileMetadataId > 0;
 }

@@ -203,6 +203,7 @@ export class DashboardIncidentController {
 
       return res.redirect('/dashboard/incident/' + incident.id + '?origin=' + origin);
     } catch (errors) {
+      console.log(errors);
       const incidentTypes: IncidentTypeEntity[] = await this.service.findIncidentTypes();
       const locations: LocationEntity[] = await this.service.findLocations(); 
       const items: ItemEntity[] = await this.service.findItemsByLocationID(createIncidentRequestDTO.locationId);
@@ -271,6 +272,7 @@ export class DashboardIncidentController {
     try {
       await this.service.updateIncident(updateIncidentRequestDTO, image);
     } catch (errors) {
+      console.log(errors);
       return this.renderCreateIncidentPage(
         res,
         req.user,
@@ -278,7 +280,7 @@ export class DashboardIncidentController {
       );
     }  
 
-    return res.redirect('/dashboard/incident/' + updateIncidentRequestDTO.incidentId + '?origin=' + origin);
+    return res.redirect('/dashboard/incident/' + updateIncidentRequestDTO.id + '?origin=' + origin);
   }
 
   @Get()

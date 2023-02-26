@@ -231,7 +231,7 @@ export class IncidentRepository {
   ): Promise<incident & {interactions: incident_interaction[], admin: user | null, user: user, incident_type: incident_type, location: location, item: item} | null> {
     return await this.connection.incident.update({ 
       where: {
-        id: updateIncidentRequestDTO.incidentId,
+        id: updateIncidentRequestDTO.id,
       },
       data: {
         type_id: updateIncidentRequestDTO.incidentTypeId,

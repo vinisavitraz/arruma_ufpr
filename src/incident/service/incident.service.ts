@@ -192,7 +192,7 @@ export class IncidentService {
   }
 
   public async updateIncident(updateIncidentRequestDTO: UpdateIncidentRequestDTO, image: Express.Multer.File | undefined): Promise<IncidentEntity> {
-    const incident: IncidentEntity = await this.findIncidentByIDOrCry(updateIncidentRequestDTO.incidentId);
+    const incident: IncidentEntity = await this.findIncidentByIDOrCry(updateIncidentRequestDTO.id);
     const incidentType: IncidentTypeEntity = await this.findIncidentTypeByIDOrCry(updateIncidentRequestDTO.incidentTypeId);
     const location: LocationEntity = await this.locationService.findLocationByIDOrCry(updateIncidentRequestDTO.locationId);
     const item: ItemEntity = await this.itemService.findItemByIDOrCry(updateIncidentRequestDTO.itemId);

@@ -68,6 +68,16 @@ export class CreateIncidentRequestDTO {
   @ApiProperty({example: 'Projetor da sala A10'})
   itemDescription: string;
 
+  @IsOptional()
+  @IsInt({message: HttpOperationErrorCodes.INVALID_INCIDENT_FILEMETADATA})
+  @ApiProperty({example: 0})
+  fileMetadataId: number;
+
+  @IsOptional()
+  @IsInt({message: HttpOperationErrorCodes.INVALID_INCIDENT_PRIORITY})
+  @ApiProperty({example: 0})
+  priority: number;
+
   public static fromDashboard(payload: any, user: UserEntity): CreateIncidentRequestDTO {
     const createIncidentRequestDTO: CreateIncidentRequestDTO = new CreateIncidentRequestDTO();
 
@@ -84,6 +94,8 @@ export class CreateIncidentRequestDTO {
     createIncidentRequestDTO.itemId = payload['itemId'] ? Number(payload['itemId']) : 0;
     createIncidentRequestDTO.itemName = payload['itemName'] ?? '';
     createIncidentRequestDTO.itemDescription = payload['itemDescription'] ?? '';
+    createIncidentRequestDTO.fileMetadataId = payload['fileMetadataId'] ? Number(payload['fileMetadataId']) : 0;
+    createIncidentRequestDTO.priority = payload['priority'] ? Number(payload['priority']) : 0;
 
     return createIncidentRequestDTO;
   }
@@ -97,6 +109,8 @@ export class CreateIncidentRequestDTO {
     createIncidentRequestDTO.incidentTypeId = incident.incidentTypeId;
     createIncidentRequestDTO.locationId = incident.locationId;
     createIncidentRequestDTO.itemId = incident.itemId;
+    createIncidentRequestDTO.fileMetadataId = incident.fileMetadataId;
+    createIncidentRequestDTO.priority = incident.priority;
 
     return createIncidentRequestDTO;
 
