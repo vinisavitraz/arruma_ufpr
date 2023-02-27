@@ -164,7 +164,6 @@ export class IncidentController {
   @ApiOkResponse({ type: ListIncidentResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
   public async createIncident(@Body() createIncidentRequestDTO: CreateIncidentRequestDTO): Promise<ListIncidentResponseDTO> {
-    console.log(createIncidentRequestDTO);
     const incident: IncidentEntity = await this.incidentService.createIncident(createIncidentRequestDTO, undefined);
     
     return new ListIncidentResponseDTO(incident);
