@@ -17,6 +17,8 @@ import { ListIncidentInteractionResponseDTO } from '../dto/response/list-inciden
 import { ListIncidentInteractionsResponseDTO } from '../dto/response/list-incident-interactions-response.dto';
 import { ListIncidentResponseDTO } from '../dto/response/list-incident-response.dto';
 import { ListIncidentsResponseDTO } from '../dto/response/list-incidents-response.dto';
+import { ReopenIncidentResponseDTO } from '../dto/response/reopen-incident-response.dto';
+import { SetIncidentRatingResponseDTO } from '../dto/response/set-incident-rating-response.dto';
 import { IncidentInteractionEntity } from '../entity/incident-interaction.entity';
 import { IncidentEntity } from '../entity/incident.entity';
 import { IncidentService } from '../service/incident.service';
@@ -53,6 +55,18 @@ export class IncidentController {
     return new AssignIncidentResponseDTO('fechado');
   }
 
+  @Put('re-open/:id')
+  @Roles(RoleEnum.ADMIN, RoleEnum.USER)
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Reabrir incidente'})
+  @ApiOkResponse({ type: ReopenIncidentResponseDTO })
+  @ApiUnauthorizedResponse({type: UnauthorizedExample})
+  public async reopenIncident(@Param('id', ParseIntPipe) incidentId: number, @Request() req): Promise<ReopenIncidentResponseDTO> { 
+    await this.incidentService.reopenIncident(req.user, incidentId);
+    
+    return new ReopenIncidentResponseDTO('pending');
+  }
+
   @Get('interaction/:id')
   @Roles(RoleEnum.ADMIN, RoleEnum.USER)
   @UseGuards(JwtAuthGuard)
@@ -71,8 +85,15 @@ export class IncidentController {
   @ApiOperation({ summary: 'Listar incidentes filtrados por status'})
   @ApiOkResponse({ type: ListIncidentsResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
-  public async listIncidentsByStatus(@Param('status') status: string): Promise<ListIncidentsResponseDTO> {
+  public async listIncidentsByStatus(@Request() req, @Param('status') status: string): Promise<ListIncidentsResponseDTO> {
     const incidents: IncidentEntity[] = await this.incidentService.findIncidentsByStatus(null, SearchIncidentsRequestDTO.fromStatus(status));
+
+    for (let i = 0; i < incidents.length; i++) {
+      const incident: IncidentEntity = incidents[i];
+
+      const totalUnread: number = await this.incidentService.findIncidentTotalUnreadInteractions(req.user, incident.id);
+      (incident as any).totalUnreadInteractions = totalUnread;
+    }
 
     return new ListIncidentsResponseDTO(incidents);
   }
@@ -87,6 +108,13 @@ export class IncidentController {
     const user: UserEntity = req.user;
     const incidents: IncidentEntity[] = await this.incidentService.findIncidentsByStatus(user, SearchIncidentsRequestDTO.fromStatus(status));
 
+    for (let i = 0; i < incidents.length; i++) {
+      const incident: IncidentEntity = incidents[i];
+
+      const totalUnread: number = await this.incidentService.findIncidentTotalUnreadInteractions(req.user, incident.id);
+      (incident as any).totalUnreadInteractions = totalUnread;
+    }
+    
     return new ListIncidentsResponseDTO(incidents);
   }
 
@@ -136,6 +164,7 @@ export class IncidentController {
   @ApiOkResponse({ type: ListIncidentResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
   public async createIncident(@Body() createIncidentRequestDTO: CreateIncidentRequestDTO): Promise<ListIncidentResponseDTO> {
+    console.log(createIncidentRequestDTO);
     const incident: IncidentEntity = await this.incidentService.createIncident(createIncidentRequestDTO, undefined);
     
     return new ListIncidentResponseDTO(incident);
@@ -149,13 +178,28 @@ export class IncidentController {
     fieldName: 'image',
     path: '/incidents'
   }))
-  @ApiBody({ type: CreateIncidentRequestDTO })
-  @ApiOkResponse({ type: ListIncidentResponseDTO })
+  @ApiOkResponse({ type: AddImageIncidentResponseDTO })
   @ApiUnauthorizedResponse({type: UnauthorizedExample})
   public async addImageToIncident(@Param('id', ParseIntPipe) id: number, @UploadedFile() image: Express.Multer.File | null): Promise<AddImageIncidentResponseDTO> {
     await this.incidentService.addImageToIncident(id, image);
     
     return new AddImageIncidentResponseDTO('added');
+  }
+
+  @Put('set-rating/:rating/incident/:incidentId')
+  @Roles(RoleEnum.USER)
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Adicionar avaliação ao atendimento do incidente' })
+  @ApiOkResponse({ type: SetIncidentRatingResponseDTO })
+  @ApiUnauthorizedResponse({type: UnauthorizedExample})
+  public async setIncidentRating(
+    @Param('rating', ParseIntPipe) rating: number, 
+    @Param('incidentId', ParseIntPipe) incidentId: number,  
+    @Request() req,
+  ): Promise<SetIncidentRatingResponseDTO> {
+    await this.incidentService.setIncidentRating(req.user, incidentId, rating);
+    
+    return new SetIncidentRatingResponseDTO('added');
   }
   
 }
